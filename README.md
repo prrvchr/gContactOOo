@@ -22,5 +22,5 @@ Libre Office 5.0.5 or higher: www.libreoffice.org/download/libreoffice-fresh/
 Mozilla Thunderbird 38.5.1 or higher: www.mozilla.org/thunderbird/
   You need gContactSync 2.0.10, you can install in the Thunderbird extention manager.
 
-Load GContactOOoPdf.odt and have a play...
+Load GContactOOoPdf.odt and have fun...
 
