@@ -34,6 +34,6 @@ Libre Office 5.0.5 or higher: www.libreoffice.org/download/libreoffice-fresh/
   Register GContactOOo.odb with the same name as the file (ie: GContactOOo).
   Check the presence of the AddressBook (ie:Addresses) 
 
-Load GContactOOo.odt chose the conresponding database to your AddressBook (ie:Addresses)
+Load GContactOOo.odt chose the corresponding database to your AddressBook (ie:Addresses)
 Change the path of template file (ie:model.odt) with the directory where it is located...
 and have fun...
