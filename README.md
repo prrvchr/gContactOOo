@@ -3,10 +3,14 @@ Google Contact to OpenOffice to Pdf Mail merge
 
 Requirement:
 
+
 GMail https://myaccount.google.com/security?utm_source=OGB#connectedapps
+
   enable less secured application. Needed but apparently the connection is under SSL...
-  
+
+
 Libre Office 5.0.5 or higher: www.libreoffice.org/download/libreoffice-fresh/
+
   You need the ORB (Oracle Report Builder) and may be, must be installed separately... (like this on Lubuntu...)
 
   You need to copy this file: mailmerge.py to /usr/lib/libreoffice/program (on Linux)
@@ -21,11 +25,11 @@ Libre Office 5.0.5 or higher: www.libreoffice.org/download/libreoffice-fresh/
 
   In Writer->Tools->Options->LibreOffice Base->Database:
   Register GContactOOo.odb with the same name as the file (ie: GContactOOo).
-  
-  
+
+
 Mozilla Thunderbird 38.5.1 or higher: www.mozilla.org/thunderbird/
   You need gContactSync 2.0.10, you can install in the Thunderbird extention manager.
 
+
 Load GContactOOo.odt change the path of template file (ie:model.odt) with the directory where it is located...
 and have fun...
-
