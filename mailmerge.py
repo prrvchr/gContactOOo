@@ -111,7 +111,7 @@ class PyMailSMTPService(unohelper.Base, XSmtpService):
 			self.server = smtplib.SMTP_SSL(server, port, timeout=tout)
 		else:
 			self.server = smtplib.SMTP(server, port, timeout=tout)
-		if connectiontype.upper() == 'STARTTLS':
+		if port == 587:
 			self.server.ehlo()
 			self.server.starttls()
 			self.server.ehlo()
