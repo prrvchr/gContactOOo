@@ -1,0 +1,2 @@
+
+gContactOOo is a Google Contact integration for LibreOffice.
