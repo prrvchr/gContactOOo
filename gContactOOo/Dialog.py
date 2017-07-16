@@ -559,8 +559,9 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         if document.supportsService("com.sun.star.document.OfficeDocument"):
             url = self._getBaseUrl(document, type) if url is None else url
             args = []
-            args.append(PropertyValue("FilterName", -1, self._getDocumentFilter(document, type), 0))
-            args.append(PropertyValue("Overwrite", -1, True, 0))
+            value = uno.Enum("com.sun.star.beans.PropertyState", "DIRECT_VALUE")
+            args.append(PropertyValue("FilterName", -1, self._getDocumentFilter(document, type), value))
+            args.append(PropertyValue("Overwrite", -1, True, value))
             document.storeToURL(url, args)
             return url
         return None
@@ -670,20 +671,22 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     def _getDataDescriptor(self, row):
         args = []
-        args.append(PropertyValue("DataSourceName", -1, self.recipient.ActiveConnection.Parent.Name, 0))
-        args.append(PropertyValue("ActiveConnection", -1, self.recipient.ActiveConnection, 0))
-        args.append(PropertyValue("Command", -1, self.query.Name, 0))
-        args.append(PropertyValue("CommandType", -1, uno.getConstantByName("com.sun.star.sdb.CommandType.QUERY"), 0))
-        args.append(PropertyValue("Cursor", -1, self.recipient, 0))
-        args.append(PropertyValue("Selection", -1, [row], 0))
+        value = uno.Enum("com.sun.star.beans.PropertyState", "DIRECT_VALUE")
+        args.append(PropertyValue("DataSourceName", -1, self.recipient.ActiveConnection.Parent.Name, value))
+        args.append(PropertyValue("ActiveConnection", -1, self.recipient.ActiveConnection, value))
+        args.append(PropertyValue("Command", -1, self.query.Name, value))
+        args.append(PropertyValue("CommandType", -1, uno.getConstantByName("com.sun.star.sdb.CommandType.QUERY"), value))
+        args.append(PropertyValue("Cursor", -1, self.recipient, value))
+        args.append(PropertyValue("Selection", -1, [row], value))
         # We use record numbers in "Selection"
-        args.append(PropertyValue("BookmarkSelection", -1, False, 0))
+        args.append(PropertyValue("BookmarkSelection", -1, False, value))
         return args
 
     def _getConfiguration(self, nodepath, update=False):
+        value = uno.Enum("com.sun.star.beans.PropertyState", "DIRECT_VALUE")
         config = self.ctx.ServiceManager.createInstance("com.sun.star.configuration.ConfigurationProvider")
         service = "com.sun.star.configuration.ConfigurationUpdateAccess" if update else "com.sun.star.configuration.ConfigurationAccess"
-        access = config.createInstanceWithArguments(service, (PropertyValue("nodepath", -1, nodepath, 0),))
+        access = config.createInstanceWithArguments(service, (PropertyValue("nodepath", -1, nodepath, value),))
         return access
 
     def _setDocumentUserProperty(self, property, value):
@@ -801,8 +804,11 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     def _getCurrentLocale(self):
         configuration = self._getConfiguration("/org.openoffice.Setup/L10N")
-        locale = configuration.getByName("ooSetupSystemLocale").split("-")
-        return Locale(locale[0], locale[1], "")
+        locale = configuration.getByName("ooLocale").split("-")
+        language = locale[0]
+        country = "" if len(locale) < 2 else locale[1]
+        variant = "" if len(locale) < 3 else locale[2]
+        return Locale(language, country, variant)
 
     def _getStringResource(self):
         service = "com.sun.star.resource.StringResourceWithLocation"
