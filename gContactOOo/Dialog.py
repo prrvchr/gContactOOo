@@ -82,21 +82,24 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         else:
             return self._getUrlContent(transferable)
     def getTransferDataFlavors(self):
-        flavor = DataFlavor()
+#        flavor = DataFlavor()
         transferable = self.transferable[0]
         if transferable == "body":
             if self._getDocumentUserProperty("SendAsHtml"):
-                flavor.MimeType = "text/html;charset=utf-8"
-                flavor.HumanPresentableName = "HTML-Documents"
-#               flavor.DataType = XInputStream
+#                flavor.MimeType = "text/html;charset=utf-8"
+#                flavor.HumanPresentableName = "HTML-Documents"
+#                flavor.DataType = XInputStream
+                return (DataFlavor("text/html;charset=utf-8", "HTML-Documents", None),)
             else:
-                flavor.MimeType = "text/plain;charset=utf-16"
-                flavor.HumanPresentableName = "Unicode text"
+#                flavor.MimeType = "text/plain;charset=utf-16"
+#                flavor.HumanPresentableName = "Unicode text"
+                return (DataFlavor("text/plain;charset=utf-16", "Unicode text", None),)
         else:
             type = self._getAttachmentType(transferable)
-            flavor.MimeType = type
-            flavor.HumanPresentableName = type
-        return (flavor,)
+#            flavor.MimeType = type
+#            flavor.HumanPresentableName = type
+            return (DataFlavor(type, type, None),)
+#        return (flavor,)
     def isDataFlavorSupported(self, flavor):
         transferable = self.transferable[0]
         if transferable == "body":
@@ -805,17 +808,20 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
     def _getCurrentLocale(self):
         configuration = self._getConfiguration("/org.openoffice.Setup/L10N")
         locale = configuration.getByName("ooLocale").split("-")
-        language = locale[0]
-        country = "" if len(locale) < 2 else locale[1]
-        variant = "" if len(locale) < 3 else locale[2]
-        return Locale(language, country, variant)
+        if len(locale) < 2:
+            locale.append(self._getLanguageCountry(locale[0]))
+        return Locale(locale[0], locale[1], "")
+
+    def _getLanguageCountry(self, language):
+        service = self.ctx.ServiceManager.createInstance("com.sun.star.i18n.LocaleData")
+        info = service.getLanguageCountryInfo(Locale(language, "", ""))
+        return info.Country
 
     def _getStringResource(self):
         service = "com.sun.star.resource.StringResourceWithLocation"
         arguments = (self._getResourceLocation(), True, self._getCurrentLocale(), "DialogStrings", "", self)
         resource = self.ctx.ServiceManager.createInstanceWithArgumentsAndContext(service, arguments, self.ctx)
         return resource
-
 
 
 g_ImplementationHelper.addImplementation( \
