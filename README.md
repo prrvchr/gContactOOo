@@ -2,6 +2,8 @@
 
 ## Google Contact integration for LibreOffice.
 
+![gContactOOo screenshot](gContactOOo AddressBook.png)
+
 ## Has been tested with:
 	
 * LibreOffice 5.3.3.2 - Lubuntu 16.10 -  LxQt 0.11.0.3
