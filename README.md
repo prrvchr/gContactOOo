@@ -2,7 +2,7 @@
 
 ## Google Contact integration for LibreOffice.
 
-![gContactOOo screenshot](gContactOOo AddressBook.png)
+![gContactOOo screenshot](gContactOOo.png)
 
 ## Has been tested with:
 	
