@@ -8,7 +8,10 @@
 	
 * LibreOffice 5.3.3.2 - Lubuntu 16.10 -  LxQt 0.11.0.3
 
-## Requirement:
+I encourage you in case of problem to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)
+I will try to solve it :-)
+
+## Requirements:
 
 * Google Mail:
 	
@@ -35,8 +38,14 @@ Go back and normally you can test the connection. It must operate...
   
 In Writer go to Tools -> Address Book Source -> Address Data Source(Button) -> Thunderbird/icedove -> Next(Button)
 -> AddressBook(in the list) -> Next(Button) and Finish(Button)
+
+In Writer go to Tools -> Add-Ons -> gContactOOo:
+Normally you can see your Address Book.
   
  ## Use:
 
+In Writer go to Insert -> Field -> More Fields. In database Selection under your address database, choose any field from the "gContactOOo" query.
+
 In Writer go to Tools -> Add-Ons -> gContactOOo
+
 Have fun...
