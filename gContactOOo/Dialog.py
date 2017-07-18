@@ -14,7 +14,6 @@ from com.sun.star.datatransfer import XTransferable, DataFlavor
 from com.sun.star.beans import PropertyValue
 from com.sun.star.util import URL
 
-import socket
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
@@ -51,24 +50,21 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     # XCurrentContext
     def getValueByName(self, name):
-        configuration = self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard")
         if name == "ServerName":
-            return configuration.getByName("MailServer")
+            return self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard").getByName("MailServer")
         elif name == "Port":
-            return configuration.getByName("MailPort")
+            return self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard").getByName("MailPort")
         elif name ==  "ConnectionType":
-            if configuration.getByName("IsSecureConnection"):
+            if self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard").getByName("IsSecureConnection"):
                 return "SSL"
             else:
                 return "Insecure"
 
     # XAuthenticator
     def getUserName(self):
-        configuration = self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard")
-        return configuration.getByName("MailUserName")
+        return self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard").getByName("MailUserName")
     def getPassword(self):
-        configuration = self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard")
-        return configuration.getByName("MailPassword")
+        return self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard").getByName("MailPassword")
 
     # XTransferable
     def getTransferData(self, flavor):
@@ -77,29 +73,24 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             if flavor.MimeType == "text/plain;charset=utf-16":
                 return self._getDocumentDescription()
             elif flavor.MimeType == "text/html;charset=utf-8":
-                url = self._saveDocumentAs("html")
-                return self._getUrlContent(url)
+                return self._getUrlContent(self._saveDocumentAs("html"))
         else:
             return self._getUrlContent(transferable)
     def getTransferDataFlavors(self):
-#        flavor = DataFlavor()
+        flavor = DataFlavor()
         transferable = self.transferable[0]
         if transferable == "body":
             if self._getDocumentUserProperty("SendAsHtml"):
-#                flavor.MimeType = "text/html;charset=utf-8"
-#                flavor.HumanPresentableName = "HTML-Documents"
-#                flavor.DataType = XInputStream
-                return (DataFlavor("text/html;charset=utf-8", "HTML-Documents", None),)
+                flavor.MimeType = "text/html;charset=utf-8"
+                flavor.HumanPresentableName = "HTML-Documents"
             else:
-#                flavor.MimeType = "text/plain;charset=utf-16"
-#                flavor.HumanPresentableName = "Unicode text"
-                return (DataFlavor("text/plain;charset=utf-16", "Unicode text", None),)
+                flavor.MimeType = "text/plain;charset=utf-16"
+                flavor.HumanPresentableName = "Unicode text"
         else:
             type = self._getAttachmentType(transferable)
-#            flavor.MimeType = type
-#            flavor.HumanPresentableName = type
-            return (DataFlavor(type, type, None),)
-#        return (flavor,)
+            flavor.MimeType = type
+            flavor.HumanPresentableName = type
+        return (flavor,)
     def isDataFlavorSupported(self, flavor):
         transferable = self.transferable[0]
         if transferable == "body":
@@ -237,7 +228,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     def _getAttachments(self):
         attachments = self._getDocumentUserProperty("Attachments")
-        attachments = [] if not attachments else attachments.split(self.attachmentsjoin)
+        attachments = attachments.split(self.attachmentsjoin) if attachments else []
         return attachments
 
     def _getAttachmentsPath(self):
@@ -248,8 +239,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     def _getAttachmentsString(self):
         urls = []
-        control = self.dialog.getControl("Attachments").Model
-        for path in control.StringItemList:
+        for path in self.dialog.getControl("Attachments").Model.StringItemList:
             urls.append(uno.systemPathToFileUrl(path))
         return self.attachmentsjoin.join(urls)
 
@@ -584,8 +574,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         self._setAttachments(control.SelectedItemPos)
 
     def _viewAttachments(self):
-        control = self.dialog.getControl("Attachments")
-        url = uno.systemPathToFileUrl(control.SelectedItem)
+        url = uno.systemPathToFileUrl(self.dialog.getControl("Attachments").SelectedItem)
         self._executeShell(url)
 
     def _getSelectedFiles(self, path=None):
@@ -806,16 +795,17 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         return "%s/gContactOOo" % (provider.getPackageLocation(identifier))
 
     def _getCurrentLocale(self):
-        configuration = self._getConfiguration("/org.openoffice.Setup/L10N")
-        locale = configuration.getByName("ooLocale").split("-")
-        if len(locale) < 2:
-            locale.append(self._getLanguageCountry(locale[0]))
-        return Locale(locale[0], locale[1], "")
+        parts = self._getConfiguration("/org.openoffice.Setup/L10N").getByName("ooLocale").split("-")
+        locale = Locale(parts[0], "", "")
+        if len(parts) == 2:
+            locale.Country = parts[1]
+        else:
+            locale.Country = self._getLanguageCountry(locale)
+        return locale
 
-    def _getLanguageCountry(self, language):
+    def _getLanguageCountry(self, locale):
         service = self.ctx.ServiceManager.createInstance("com.sun.star.i18n.LocaleData")
-        info = service.getLanguageCountryInfo(Locale(language, "", ""))
-        return info.Country
+        return service.getLanguageCountryInfo(locale).Country
 
     def _getStringResource(self):
         service = "com.sun.star.resource.StringResourceWithLocation"
