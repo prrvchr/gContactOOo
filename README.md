@@ -20,7 +20,7 @@ You must enable less secured application.
 
 You need [Thunderbird 38.5.1 or higher](https://www.mozilla.org/thunderbird/)
 
-You need gContactSync 2.0.10 or higher, you can install in the Thunderbird extention manager.
+You need [gContactSync 2.0.10 or higher](https://addons.mozilla.org/en-US/thunderbird/addon/gcontactsync/), you can install it in the Thunderbird extention manager.
 
 * Libre Office:
 
