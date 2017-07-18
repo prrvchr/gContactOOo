@@ -24,7 +24,7 @@ You need gContactSync 2.0.10 or higher, you can install in the Thunderbird exten
 
 * Libre Office:
 
-Install [LibreOffice 5.0.5 or higher](www.libreoffice.org/download/libreoffice-fresh/)
+You need [LibreOffice 5.0.5 or higher](https://www.libreoffice.org/download/libreoffice-fresh/)
 
 ## Configuration:
 
