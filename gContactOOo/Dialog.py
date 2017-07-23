@@ -31,10 +31,14 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         self.columnfilters = (0, 1, 4)
         self.attachmentsjoin = ", "
         self.maxsize = 5 * 1024 * 1024
-        self.document = None
-        self.services = ("com.sun.star.text.TextDocument", "com.sun.star.sheet.SpreadsheetDocument",
-                            "com.sun.star.drawing.DrawingDocument", "com.sun.star.presentation.PresentationDocument")
-        self.resource = None
+        self.document = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx).CurrentComponent
+        self.services = ("com.sun.star.text.TextDocument",
+                         "com.sun.star.sheet.SpreadsheetDocument",
+                         "com.sun.star.drawing.DrawingDocument",
+                         "com.sun.star.presentation.PresentationDocument")
+        resource = "com.sun.star.resource.StringResourceWithLocation"
+        arguments = (self._getResourceLocation(), True, self._getCurrentLocale(), "DialogStrings", "", self)
+        self.resource = self.ctx.ServiceManager.createInstanceWithArgumentsAndContext(resource, arguments, self.ctx)
         self.dialog = None
         self.table = None
         self.query = None
@@ -45,10 +49,6 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     # XJobExecutor
     def trigger(self, args):
-        self.document = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx).CurrentComponent
-        service = "com.sun.star.resource.StringResourceWithLocation"
-        arguments = (self._getResourceLocation(), True, self._getCurrentLocale(), "DialogStrings", "", self)
-        self.resource = self.ctx.ServiceManager.createInstanceWithArgumentsAndContext(service, arguments, self.ctx)
         provider = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.DialogProvider", self.ctx)
         self.dialog = provider.createDialogWithHandler("vnd.sun.star.script:gContactOOo.Dialog?location=application", self)
         datasources = self._getDataSources()
@@ -81,8 +81,11 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
                 control.selectItemPos(0, True)
             self._setStep()
             self.dialog.getControl("Subject").Text = self.document.DocumentProperties.Subject
-            self.dialog.getControl("Description").Text = self.document.DocumentProperties.Description
-            self.dialog.getControl("SendAsHtml").Model.State = self._getDocumentUserProperty("SendAsHtml", False)
+            description = self.dialog.getControl("Description")
+            state = self._getDocumentUserProperty("SendAsHtml", False)
+            description.Text = self.document.DocumentProperties.Description
+            description.Model.Enabled = not state
+            self.dialog.getControl("SendAsHtml").Model.State = state
             self.dialog.getControl("SendAsPdf").Model.State = self._getDocumentUserProperty("SendAsPdf", True)
             self.dialog.getControl("Attachments").Model.StringItemList = self._getAttachmentsPath("")
             self.dialog.execute()
@@ -310,14 +313,17 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     def _openDialog(self, step):
         self.dialog.Model.Step = step
+        self._setDialogError()
+        self.dialog.execute()
+        self.dialog.dispose()
+        self.dialog = None
+
+    def _setDialogError(self):
         self.dialog.Title = self.resource.resolveString("7.Dialog.Title")
         next = self.dialog.getControl("ButtonNext").Model
         next.Label = self.resource.resolveString("23.Dialog.ButtonNext.Label")
         next.Tag = "7"
         next.Enabled = True
-        self.dialog.execute()
-        self.dialog.dispose()
-        self.dialog = None
 
     def _checkDocumentService(self):
         for service in self.services:
@@ -505,47 +511,46 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         back = self.dialog.getControl("ButtonBack").Model
         next = self.dialog.getControl("ButtonNext").Model
         if tag == "1":
-            self.dialog.Model.Step = 1
-            self.dialog.Title = self.resource.resolveString("1.Dialog.Title")
             back.Enabled = False
             next.Tag = "2"
             next.Enabled = True
+            self.dialog.Model.Step = 1
+            self.dialog.Title = self.resource.resolveString("1.Dialog.Title")
         elif tag == "2":
-            self.dialog.Model.Step = 2
-            self.dialog.Title = self.resource.resolveString("2.Dialog.Title")
             back.Tag = "1"
             back.Enabled = True
             next.Tag = "3"
             next.Enabled = (self.recipient.RowCount != 0)
+            self.dialog.Model.Step = 2
+            self.dialog.Title = self.resource.resolveString("2.Dialog.Title")
         elif tag == "3":
-            self.dialog.Model.Step = 3
-            self.dialog.Title = self.resource.resolveString("3.Dialog.Title")
             back.Tag = "2"
             next.Tag = "4"
+            self.dialog.Model.Step = 3
+            self.dialog.Title = self.resource.resolveString("3.Dialog.Title")
         elif tag == "4":
-            self.dialog.Model.Step = 4
-            self.dialog.Title = self.resource.resolveString("4.Dialog.Title")
             back.Tag = "3"
             next.Tag = "5"
             next.Enabled = True
             next.Label = self.resource.resolveString("21.Dialog.ButtonNext.Label")
+            self.dialog.Model.Step = 4
+            self.dialog.Title = self.resource.resolveString("4.Dialog.Title")
         elif tag == "5":
-            self.dialog.Model.Step = 5
-            self.dialog.Title = self.resource.resolveString("5.Dialog.Title")
             back.Tag = "4"
             next.Tag = "6"
             next.Enabled = False
             next.Label = self.resource.resolveString("22.Dialog.ButtonNext.Label")
             self.dialog.getControl("TextMerge").Text = ""
+            self.dialog.Model.Step = 5
+            self.dialog.Title = self.resource.resolveString("5.Dialog.Title")
             next.Enabled = self._checkMessages()
         elif tag == "6":
-            self.dialog.Title = self.resource.resolveString("6.Dialog.Title")
             next.Tag = "7"
             next.Enabled = False
-            self._sendMessages()
-            self.dialog.Title = self.resource.resolveString("7.Dialog.Title")
-            next.Label = self.resource.resolveString("23.Dialog.ButtonNext.Label")
-            next.Enabled = True
+            if self._sendMessages():
+                self.dialog.Title = self.resource.resolveString("6.Dialog.Title")
+                next.Label = self.resource.resolveString("23.Dialog.ButtonNext.Label")
+                next.Enabled = True
         elif tag == "7":
             self.dialog.endExecute()
 
@@ -681,11 +686,11 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         if properties.PropertySetInfo.hasPropertyByName(property):
             properties.setPropertyValue(property, value)
         else:
-            properties.addProperty(property, \
-            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.MAYBEVOID") + \
-            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.BOUND") + \
-            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.REMOVABLE") + \
-            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.MAYBEDEFAULT"), \
+            properties.addProperty(property,
+            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.MAYBEVOID") + 
+            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.BOUND") + 
+            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.REMOVABLE") + 
+            uno.getConstantByName("com.sun.star.beans.PropertyAttribute.MAYBEDEFAULT"),
             value)
 
     def _getDocumentUserProperty(self, property, default=None):
@@ -714,19 +719,24 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             service.connect(self, self)
         except Exception as e:
             self._logMessage("TextMerge", "71.Dialog.TextMerge.Text", (e,))
+            self._setDialogError()
         else:
             if service.isConnected():
+                state = True
                 frm = self._getConfiguration("/org.openoffice.Office.Writer/MailMergeWizard").getByName("MailAddress")
                 subject = self.document.DocumentProperties.Subject
                 attachments = self._getAttachments()
                 self.recipient.beforeFirst()
-                while self.recipient.next():
+                while self.recipient.next() and state:
                     self._setDocumentRecord(self.recipient.Row -1)
                     arguments = (self.recipient.getString(self.columnindex +1), frm, subject, self)
-                    self._sendMessage(service, arguments, attachments)
+                    state = state and self._sendMessage(service, arguments, attachments)
                 service.disconnect()
+                return state
             else:
                 self._logMessage("TextMerge", "71.Dialog.TextMerge.Text", ("",))
+                self._setDialogError()
+        return False
  
     def _sendMessage(self, service, arguments, attachments=[]):
         self.transferable = ["body"]
@@ -744,8 +754,11 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             recipients = self._getRecipientFilters(range(self.recipient.Row))
             self._rowRecipientExecute(recipients)
             self._logMessage("TextMerge", "78.Dialog.TextMerge.Text", (arguments[0], e))
+            self._setDialogError()
         else:
             self._logMessage("TextMerge", "77.Dialog.TextMerge.Text", (arguments[0],))
+            return True
+        return False
 
     def _getAttachment(self, url):
         attachment = MailAttachment()
@@ -793,16 +806,15 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         return locale
 
 
-g_ImplementationHelper.addImplementation( \
-        PyDialog,                                                              # UNO object class
-        g_ImplementationName,                                                  # Implementation name
-        ("com.sun.star.lang.XServiceInfo",
-        "com.sun.star.task.XJobExecutor",
-        "com.sun.star.awt.XDialogEventHandler",
-        "com.sun.star.awt.XActionListener",
-        "com.sun.star.awt.XItemListener",
-        "com.sun.star.sdbc.XRowSetListener",
-        "com.sun.star.uno.XCurrentContext",
-        "com.sun.star.mail.XAuthenticator",
-        "com.sun.star.datatransfer.XTransferable",
-        "com.sun.star.task.XInteractionHandler"), )                            # List of implemented services
+g_ImplementationHelper.addImplementation(PyDialog,                                                   # UNO object class
+                                         g_ImplementationName,                                       # Implementation name
+                                         ("com.sun.star.lang.XServiceInfo",
+                                         "com.sun.star.task.XJobExecutor",
+                                         "com.sun.star.awt.XDialogEventHandler",
+                                         "com.sun.star.awt.XActionListener",
+                                         "com.sun.star.awt.XItemListener",
+                                         "com.sun.star.sdbc.XRowSetListener",
+                                         "com.sun.star.uno.XCurrentContext",
+                                         "com.sun.star.mail.XAuthenticator",
+                                         "com.sun.star.datatransfer.XTransferable",
+                                         "com.sun.star.task.XInteractionHandler"), )                 # List of implemented services
