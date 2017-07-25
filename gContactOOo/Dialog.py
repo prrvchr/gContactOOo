@@ -15,22 +15,20 @@ from com.sun.star.beans import PropertyValue
 from com.sun.star.util import URL
 
 
-# pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
 g_ImplementationName = "com.gmail.prrvchr.extensions.gContactOOo.Dialog"
 
-g_SettingNodePath = "com.gmail.prrvchr.extensions.gContactOOo/Options"
-
 
 class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, XActionListener, XItemListener,
-                XRowSetListener, XCurrentContext, XAuthenticator, XTransferable, XInteractionHandler):
+               XRowSetListener, XCurrentContext, XAuthenticator, XTransferable, XInteractionHandler):
     def __init__(self, ctx):
         self.ctx = ctx
         self.tableindex = 0
         self.columnindex = 4
         self.columnfilters = (0, 1, 4)
         self.attachmentsjoin = ", "
-        self.maxsize = 5 * 1024 * 1024
+        self.configuration = "com.gmail.prrvchr.extensions.gContactOOo/Options"
+        self.maxsize = self._getConfiguration(self.configuration).getByName("MaxSizeMo") * 1024 * 1024
         self.document = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx).CurrentComponent
         self.services = ("com.sun.star.text.TextDocument",
                          "com.sun.star.sheet.SpreadsheetDocument",
@@ -45,17 +43,18 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         self.address = None
         self.recipient = None
         self.transferable = []
-        self.index = None
+        self.index = -1
 
     # XJobExecutor
     def trigger(self, args):
         provider = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.DialogProvider", self.ctx)
         self.dialog = provider.createDialogWithHandler("vnd.sun.star.script:gContactOOo.Dialog?location=application", self)
+        configuration = self._getConfiguration(self.configuration)
         datasources = self._getDataSources()
         if not self._checkDocumentService():
             self._logMessage("TextMerge", "79.Dialog.TextMerge.Text", ("",))
             self._openDialog(5)
-        elif not self._checkMailService():
+        elif not configuration.getByName("OffLineUse") and not self._checkMailService():
             self._openDialog(5)
         elif not len(datasources):
             self._logMessage("TextMsg", "12.Dialog.TextMsg.Text")
@@ -82,14 +81,21 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             self._setStep()
             self.dialog.getControl("Subject").Text = self.document.DocumentProperties.Subject
             description = self.dialog.getControl("Description")
-            state = self._getDocumentUserProperty("SendAsHtml", False)
+            state = self._getDocumentUserProperty("SendAsHtml", configuration.getByName("SendAsHtml"))
             description.Text = self.document.DocumentProperties.Description
             description.Model.Enabled = not state
             self.dialog.getControl("SendAsHtml").Model.State = state
-            self.dialog.getControl("SendAsPdf").Model.State = self._getDocumentUserProperty("SendAsPdf", True)
+            self.dialog.getControl("SendAsPdf").Model.State = self._getDocumentUserProperty("SendAsPdf", configuration.getByName("SendAsPdf"))
             self.dialog.getControl("Attachments").Model.StringItemList = self._getAttachmentsPath("")
             self.dialog.execute()
             self._saveDialog()
+            self.recipient.dispose()
+            self.address.dispose()
+            self.dialog.getControl("Attachments").dispose()
+            self.dialog.getControl("Recipient").dispose()
+            self.dialog.getControl("Address").dispose()
+            self.dialog.getControl("AddressBook").dispose()
+            self.dialog.getControl("DataSource").dispose()
             self.dialog.dispose()
             self.dialog = None
 
@@ -234,7 +240,22 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     # XActionListener, XItemListener, XRowSetListener
     def disposing(self, event):
-        pass
+        if event.Source == self.recipient:
+            event.Source.removeRowSetListener(self)
+            self.recipient = None
+        elif event.Source == self.address:
+            event.Source.removeRowSetListener(self)
+            self.address = None
+        elif event.Source == self.dialog.getControl("Attachments"):
+            event.Source.removeItemListener(self)
+        elif event.Source == self.dialog.getControl("Recipient"):
+            event.Source.removeItemListener(self)
+        elif event.Source == self.dialog.getControl("Address"):
+            event.Source.removeItemListener(self)
+        elif event.Source == self.dialog.getControl("AddressBook"):
+            event.Source.removeActionListener(self)
+        elif event.Source == self.dialog.getControl("DataSource"):
+            event.Source.removeActionListener(self)
     def actionPerformed(self, event):
         if event.Source == self.dialog.getControl("DataSource"):
             datasource = event.Source.SelectedItem
@@ -290,22 +311,18 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
     def rowSetChanged(self, event):
         if event.Source == self.address:
             self.dialog.getControl("ButtonAdd").Model.Enabled = False
-            address = self.dialog.getControl("Address").Model
-            address.StringItemList = self._getRowResult(self.address)
+            self.dialog.getControl("Address").Model.StringItemList = self._getRowResult(self.address)
             self.dialog.getControl("ButtonAddAll").Model.Enabled = (self.address.RowCount != 0)
         elif event.Source == self.recipient:
             self.dialog.getControl("ButtonRemove").Model.Enabled = False
-            recipient = self.dialog.getControl("Recipient")
-            recipient.Model.StringItemList = self._getRowResult(self.recipient)
-            if recipient.SelectedItemPos == -1 and recipient.ItemCount:
-                recipient.selectItemPos(0, True)
+            self.dialog.getControl("Recipient").Model.StringItemList = self._getRowResult(self.recipient)
             self.dialog.getControl("ButtonRemoveAll").Model.Enabled = (self.recipient.RowCount != 0)
             if self.dialog.Model.Step == 2:
                 self.dialog.getControl("ButtonNext").Model.Enabled = (self.recipient.RowCount != 0)
 
     # XServiceInfo
-    def supportsService(self, serviceName):
-        return g_ImplementationHelper.supportsService(g_ImplementationName, serviceName)
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
     def getImplementationName(self):
         return g_ImplementationName
     def getSupportedServiceNames(self):
@@ -453,12 +470,6 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
                     if master.supportsService("com.sun.star.text.fieldmaster.Database"):
                         master.DataBaseName = datasource
                         master.DataTableName = queryname
-
-    def _checkMessages(self):
-        if self._checkAttachments():
-            self._logMessage("TextMerge", "76.Dialog.TextMerge.Text", (self._getPageCount(), self.recipient.RowCount))
-            return True
-        return False
         
     def _checkMailService(self):
         self._logMessage("TextMerge", "69.Dialog.TextMerge.Text")
@@ -491,15 +502,18 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         service = self.ctx.ServiceManager.createInstance("com.sun.star.ucb.SimpleFileAccess")
         for url in self._getAttachments():
             state = state and self._checkAttachment(service, url)
+        if state:
+            self._logMessage("TextMerge", "76.Dialog.TextMerge.Text", (self._getPageCount(), self.recipient.RowCount))
         return state
 
     def _checkAttachment(self, service, url):
         self._logMessage("TextMerge", "72.Dialog.TextMerge.Text", (uno.fileUrlToSystemPath(url),))
         if service.exists(url):
             size = service.getSize(url)
-            if size != 0 and size <= self.maxsize:
-               self._logMessage("TextMerge", "73.Dialog.TextMerge.Text")
-               return True
+            maxsize = self.maxsize if self.maxsize != 0 else size
+            if size != 0 and size <= maxsize:
+                self._logMessage("TextMerge", "73.Dialog.TextMerge.Text")
+                return True
             else:
                 self._logMessage("TextMerge", "74.Dialog.TextMerge.Text")
         else:
@@ -543,7 +557,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             self.dialog.getControl("TextMerge").Text = ""
             self.dialog.Model.Step = 5
             self.dialog.Title = self.resource.resolveString("5.Dialog.Title")
-            next.Enabled = self._checkMessages()
+            next.Enabled = self._checkAttachments()
         elif tag == "6":
             next.Tag = "7"
             next.Enabled = False
@@ -556,9 +570,8 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     def _saveDialog(self):
         step = self.dialog.Model.Step
-        if step == 2:
-            if self.query is not None:
-                self.recipient.ActiveConnection.Parent.DatabaseDocument.store()
+        if step == 2 and self.query is not None:
+            self.recipient.ActiveConnection.Parent.DatabaseDocument.store()
         elif step == 3:
             self.document.DocumentProperties.Subject = self.dialog.getControl("Subject").Text
             self.document.DocumentProperties.Description =  self.dialog.getControl("Description").Text
@@ -589,7 +602,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         return url
 
     def _getSelectedFiles(self, path=None):
-        path = self._getWorkPath() if path is None else path
+        path = self._getPath().Work if path is None else path
         dialog = self.ctx.ServiceManager.createInstance("com.sun.star.ui.dialogs.FilePicker")
         dialog.setDisplayDirectory(path)
         dialog.setMultiSelectionMode(True)
@@ -599,7 +612,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             return []
 
     def _getBaseUrl(self, extension):
-        url = self._getUrl(self._getTempPath()).Main
+        url = self._getUrl(self._getPath().Temp).Main
         template = self.document.DocumentProperties.TemplateName
         name = template if template else self.document.Title
         url = "%s/%s.%s" % (url, name, extension)
@@ -618,18 +631,10 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         elif self.document.supportsService("com.sun.star.presentation.PresentationDocument"):
             filter = {"pdf":"impress_pdf_Export", "html":"impress_html_Export"}
             return filter[type]
-        elif self.document.supportsService("com.sun.star.formula.FormulaProperties"):
-            filter = {"pdf":"math_pdf_Export", "html":""}
-            return filter[type]
         return None
 
-    def _getTempPath(self):
-        paths = self.ctx.ServiceManager.createInstance("com.sun.star.util.PathSettings")
-        return paths.Temp
-
-    def _getWorkPath(self):
-        paths = self.ctx.ServiceManager.createInstance("com.sun.star.util.PathSettings")
-        return paths.Work
+    def _getPath(self):
+        return self.ctx.ServiceManager.createInstance("com.sun.star.util.PathSettings")
 
     def _setDocumentRecord(self, index):
         dispatch = None
@@ -670,7 +675,6 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         args.append(PropertyValue("CommandType", -1, uno.getConstantByName("com.sun.star.sdb.CommandType.QUERY"), value))
         args.append(PropertyValue("Cursor", -1, self.recipient, value))
         args.append(PropertyValue("Selection", -1, [row], value))
-        # We use record numbers in "Selection"
         args.append(PropertyValue("BookmarkSelection", -1, False, value))
         return args
 
@@ -678,8 +682,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         value = uno.Enum("com.sun.star.beans.PropertyState", "DIRECT_VALUE")
         config = self.ctx.ServiceManager.createInstance("com.sun.star.configuration.ConfigurationProvider")
         service = "com.sun.star.configuration.ConfigurationUpdateAccess" if update else "com.sun.star.configuration.ConfigurationAccess"
-        access = config.createInstanceWithArguments(service, (PropertyValue("nodepath", -1, nodepath, value),))
-        return access
+        return config.createInstanceWithArguments(service, (PropertyValue("nodepath", -1, nodepath, value),))
 
     def _setDocumentUserProperty(self, property, value):
         properties = self.document.DocumentProperties.UserDefinedProperties
