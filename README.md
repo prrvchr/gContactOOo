@@ -1,4 +1,4 @@
-# gContactOOo
+# gContactOOo v0.0.2
 
 ## Google Contact integration for LibreOffice.
 

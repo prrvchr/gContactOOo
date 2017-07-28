@@ -608,8 +608,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         dialog.setMultiSelectionMode(True)
         if dialog.execute():
             return dialog.SelectedFiles
-        else:
-            return []
+        return []
 
     def _getBaseUrl(self, extension):
         url = self._getUrl(self._getPath().Temp).Main
