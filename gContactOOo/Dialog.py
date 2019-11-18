@@ -4,7 +4,7 @@
 import uno
 import unohelper
 
-from com.sun.star.lang import XServiceInfo, Locale
+from com.sun.star.lang import XServiceInfo
 from com.sun.star.task import XJobExecutor, XInteractionHandler
 from com.sun.star.awt import XDialogEventHandler, XActionListener, XItemListener
 from com.sun.star.sdbc import XRowSetListener
@@ -387,7 +387,7 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             query = queries.getByName(queryname)
         else:
             query = self.ctx.ServiceManager.createInstance("com.sun.star.sdb.QueryDefinition")
-            query.Command = self._getQueryCommand()
+            query.Command = "SELECT * FROM \"%s\"" % (self.table.Name)
             query.Filter = self._getQueryFilter([])
             query.Order = self._getQueryOrder()
             query.UpdateTableName = self.table.Name
@@ -395,10 +395,6 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
             queries.insertByName(queryname, query)
             database.DatabaseDocument.store()
         return query
-
-    def _getQueryCommand(self):
-        command = "SELECT * FROM \"%s\"" % (self.table.Name)
-        return command
 
     def _getQueryFilter(self, filters=None):
         if filters is None:
@@ -681,7 +677,10 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
         value = uno.Enum("com.sun.star.beans.PropertyState", "DIRECT_VALUE")
         config = self.ctx.ServiceManager.createInstance("com.sun.star.configuration.ConfigurationProvider")
         service = "com.sun.star.configuration.ConfigurationUpdateAccess" if update else "com.sun.star.configuration.ConfigurationAccess"
-        return config.createInstanceWithArguments(service, (PropertyValue("nodepath", -1, nodepath, value),))
+        argument = uno.createUnoStruct("com.sun.star.beans.PropertyValue")
+        argument.Name = "nodepath"
+        argument.Value = nodepath
+        return config.createInstanceWithArguments(service, (argument,))
 
     def _setDocumentUserProperty(self, property, value):
         properties = self.document.DocumentProperties.UserDefinedProperties
@@ -799,7 +798,8 @@ class PyDialog(unohelper.Base, XServiceInfo, XJobExecutor, XDialogEventHandler, 
 
     def _getCurrentLocale(self):
         parts = self._getConfiguration("/org.openoffice.Setup/L10N").getByName("ooLocale").split("-")
-        locale = Locale(parts[0], "", "")
+        locale = uno.createUnoStruct("com.sun.star.lang.Locale")
+        locale.Language = parts[0]
         if len(parts) == 2:
             locale.Country = parts[1]
         else:

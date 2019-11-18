@@ -72,5 +72,4 @@ class PyOptionsDialog(unohelper.Base, XServiceInfo, XContainerWindowEventHandler
 # uno implementation
 g_ImplementationHelper.addImplementation(PyOptionsDialog,                                            # UNO object class
                                          g_ImplementationName,                                       # Implementation name
-                                         ("com.sun.star.lang.XServiceInfo",
-                                         "com.sun.star.awt.XContainerWindowEventHandler"), )         # List of implemented services
+                                         ())                                                         # List of implemented services
