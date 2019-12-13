@@ -6,38 +6,72 @@ import unohelper
 
 from com.sun.star.lang import XServiceInfo
 from com.sun.star.awt import XContainerWindowEventHandler
-from com.sun.star.beans import PropertyValue
+from com.sun.star.awt import XDialogEventHandler
+from com.sun.star.logging.LogLevel import INFO
+from com.sun.star.logging.LogLevel import SEVERE
 
+from cloudcontact import g_identifier
+from cloudcontact import getConfiguration
 
+import traceback
+
+# pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationName = "com.gmail.prrvchr.extensions.gContactOOo.OptionsDialog"
+g_ImplementationName = '%s.OptionsDialog' % g_identifier
 
 
-class PyOptionsDialog(unohelper.Base, XServiceInfo, XContainerWindowEventHandler):
+class OptionsDialog(unohelper.Base,
+                    XServiceInfo,
+                    XContainerWindowEventHandler,
+                    XDialogEventHandler):
     def __init__(self, ctx):
         self.ctx = ctx
-        self.dialog = None
-        self.configuration = "com.gmail.prrvchr.extensions.gContactOOo/Options"
-        return
 
-    # XContainerWindowEventHandler
+    # XContainerWindowEventHandler, XDialogEventHandler
     def callHandlerMethod(self, dialog, event, method):
-        if dialog.Model.Name == "OptionsDialog":
-            if method == "external_event":
-                if event == "ok":
-                    self._saveSetting()
-                    return True
-                elif event == "back":
-                    self._loadSetting()
-                    return True
-                elif event == "initialize":
-                    if self.dialog is None:
-                        self.dialog = dialog
-                    self._loadSetting()
-                    return True
-        return False
+        handled = False
+        if method == 'external_event':
+            if event == 'ok':
+                self._saveSetting(dialog)
+                handled = True
+            elif event == 'back':
+                self._loadSetting(dialog)
+                handled = True
+            elif event == 'initialize':
+                self._loadSetting(dialog)
+                handled = True
+        elif method == 'LoadUcp':
+            self._loadUcp(dialog)
+            handled = True
+        return handled
     def getSupportedMethodNames(self):
-        return ("external_event",)
+        return ('external_event', 'LoadUcp')
+
+    def _loadSetting(self, dialog):
+        pass
+
+    def _saveSetting(self, dialog):
+        pass
+
+    def _loadUcp(self, window):
+        try:
+            print("OptionDialog._loadUcp()")
+            configuration = getConfiguration(self.ctx, 'org.openoffice.Office.DataAccess', True)
+            mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
+            #mri.inspect(configuration)
+            drivermgr = self.ctx.ServiceManager.createInstance('com.sun.star.sdbc.DriverManager')
+            connection = drivermgr.getConnection('sdbc:google-contact:prrvchr')
+            #drivers = drivermgr.createEnumeration()
+            #while drivers.hasMoreElements():
+            #    driver = drivers.nextElement()
+            #    if driver:
+            #        print("Driver: %s" % driver.getImplementationName())
+            #        infos = driver.getPropertyInfo('sdbc:odbc://', ())
+            #        for info in infos:
+            #            print("Driver: %s" % info)
+            #mri.inspect(connection)
+        except Exception as e:
+            print("OptionDialog._loadUcp() ERROR: %s - %s" % (e, traceback.print_exc()))
 
     # XServiceInfo
     def supportsService(self, service):
@@ -47,29 +81,7 @@ class PyOptionsDialog(unohelper.Base, XServiceInfo, XContainerWindowEventHandler
     def getSupportedServiceNames(self):
         return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
 
-    def _loadSetting(self):
-        configuration = self._getConfiguration(self.configuration)
-        self.dialog.getControl("SendAsHtml").setState(configuration.getByName("SendAsHtml"))
-        self.dialog.getControl("SendAsPdf").setState(configuration.getByName("SendAsPdf"))
-        self.dialog.getControl("MaxSizeMo").setValue(configuration.getByName("MaxSizeMo"))
-        self.dialog.getControl("OffLineUse").setState(configuration.getByName("OffLineUse"))
 
-    def _saveSetting(self):
-        configuration = self._getConfiguration(self.configuration, True)
-        configuration.replaceByName("SendAsHtml", self.dialog.getControl("SendAsHtml").getState() != 0)
-        configuration.replaceByName("SendAsPdf", self.dialog.getControl("SendAsPdf").getState() != 0)
-        configuration.replaceByName("MaxSizeMo", int(self.dialog.getControl("MaxSizeMo").getValue()))
-        configuration.replaceByName("OffLineUse", self.dialog.getControl("OffLineUse").getState() != 0)
-        configuration.commitChanges()
-
-    def _getConfiguration(self, nodepath, update=False):
-        value = uno.Enum("com.sun.star.beans.PropertyState", "DIRECT_VALUE")
-        config = self.ctx.ServiceManager.createInstance("com.sun.star.configuration.ConfigurationProvider")
-        service = "com.sun.star.configuration.ConfigurationUpdateAccess" if update else "com.sun.star.configuration.ConfigurationAccess"
-        return config.createInstanceWithArguments(service, (PropertyValue("nodepath", -1, nodepath, value),))
-
-
-# uno implementation
-g_ImplementationHelper.addImplementation(PyOptionsDialog,                                            # UNO object class
-                                         g_ImplementationName,                                       # Implementation name
-                                         ())                                                         # List of implemented services
+g_ImplementationHelper.addImplementation(OptionsDialog,
+                                         g_ImplementationName,
+                                        (g_ImplementationName,))

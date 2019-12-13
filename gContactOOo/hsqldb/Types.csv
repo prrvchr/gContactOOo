@@ -1,0 +1,14 @@
+Type|Name|Value|Custom
+0|Home|home|false
+1|Work|work|false
+2|School|school|false
+3|Mobile|mobile|false
+4|WorkMobile|workMobile|false
+5|HomeFax|homeFax|false
+6|WorkFax|workFax|false
+7|OtherFax|otherFax|false
+8|Pager|pager|false
+9|WorkPager|workPager|false
+10|Main|main|false
+11|Voice|googleVoice|false
+12|Other|other|false

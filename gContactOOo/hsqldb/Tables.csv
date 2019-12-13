@@ -1,0 +1,15 @@
+Table|Name|Identity|View
+0|Tables||
+1|Columns||
+2|Labels||
+3|Types||
+4|Peoples|0|false
+5|Connections|5|false
+6|Locales||true
+7|Names||true
+8|Addresses||true
+9|Emails||true
+10|Phones||true
+11|Organisations||true
+12|Sips||true
+13|Defineds||true

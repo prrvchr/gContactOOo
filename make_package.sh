@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./make_rdb.sh
+
 cd ./gContactOOo/
 
 zip -0 gContactOOo.zip mimetype

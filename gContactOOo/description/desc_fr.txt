@@ -1,2 +1,1 @@
-
-gContactOOo est une integration de Google Contact pour LibreOffice.
+Vos contacts téléphoniques enfin accessibles dans LibreOffice / OpenOffice.
