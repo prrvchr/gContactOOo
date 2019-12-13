@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/prrvchr/CloudContactOOo.git
+	branch = master
+	commit = 463866062a332a1a48a5fcd890a510a80442f2d0
+	parent = 247deb7a28d382dd60144f980e4e78afb0f4b891
+	method = merge
+	cmdver = 0.4.0
