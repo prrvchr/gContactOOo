@@ -1,22 +1,22 @@
-## Terms Of Use for [CloudContactOOo](https://github.com/prrvchr/CloudContactOOo)
+## Terms Of Use for [gContactOOo](https://github.com/prrvchr/gContactOOo)
 
 
 ### Introduction:
 
-The CloudContactOOo library is a part of a personnal project.
-Full documentation is available [on this page](https://prrvchr.github.io/CloudContactOOo).
+The gContactOOo library is a part of a personnal project.
+Full documentation is available [on this page](https://prrvchr.github.io/gContactOOo).
 
-Use of this software subjects you to our **Data Protection Policy** as described in [this document](https://prrvchr.github.io/CloudContactOOo/CloudContactOOo/registration/PrivacyPolicy_en).
+Use of this software subjects you to our **Data Protection Policy** as described in [this document](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en).
 
 
 ### Responsibilities:
 
-CloudContactOOo is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of **MERCHANTABILITY** or **FITNESS FOR A PARTICULAR PURPOSE**.
+gContactOOo is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of **MERCHANTABILITY** or **FITNESS FOR A PARTICULAR PURPOSE**.
 
 
 ### License:
 
-CloudContactOOo is free software; you can redistribute it and/or modify it under the terms of either (at your option):
+gContactOOo is free software; you can redistribute it and/or modify it under the terms of either (at your option):
 
 - The Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain one [at](http://mozilla.org/MPL/2.0/).
 
