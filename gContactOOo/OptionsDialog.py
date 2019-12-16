@@ -10,8 +10,8 @@ from com.sun.star.awt import XDialogEventHandler
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
-from cloudcontact import g_identifier
-from cloudcontact import getConfiguration
+from gcontact import g_identifier
+from oauth2 import getConfiguration
 
 import traceback
 

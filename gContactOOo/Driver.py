@@ -19,7 +19,7 @@ from com.sun.star.sdbc.ResultSetConcurrency import UPDATABLE
 
 from com.sun.star.uno import Exception as UnoException
 
-from cloudcontact import g_identifier
+from gcontact import g_identifier
 
 from cloudcontact import User
 from cloudcontact import DataSource
@@ -27,8 +27,8 @@ from cloudcontact import Connection
 from cloudcontact import getDataSourceUrl
 from cloudcontact import getDataSourceConnection
 from cloudcontact import getDataBaseInfo
-from cloudcontact import getLogger
-from cloudcontact import getConfiguration
+from oauth2 import getLogger
+from oauth2 import getConfiguration
 
 import traceback
 
