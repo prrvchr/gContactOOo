@@ -26,6 +26,7 @@ from .configuration import g_peoplefields
 
 import json
 
+
 class Provider(unohelper.Base,
                XRestProvider):
     def __init__(self, ctx):
