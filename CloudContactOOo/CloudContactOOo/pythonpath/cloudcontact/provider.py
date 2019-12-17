@@ -15,7 +15,8 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 
 from com.sun.star.sdbc import XRestProvider
 
-from .logger import getLogger
+from oauth2 import getLogger
+
 from .configuration import g_host
 from .configuration import g_url
 from .configuration import g_timestamp

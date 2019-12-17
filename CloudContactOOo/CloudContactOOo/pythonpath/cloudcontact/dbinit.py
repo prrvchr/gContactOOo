@@ -2,9 +2,12 @@
 # -*- coding: utf_8 -*-
 
 
-from .unotools import getResourceLocation
-from .unotools import getSimpleFile
+from oauth2 import KeyMap
+from oauth2 import getResourceLocation
+from oauth2 import getSimpleFile
 
+from .dbconfig import g_path
+from .dbqueries import getSqlQuery
 from .dbtools import getTablesAndStatements
 from .dbtools import getDataSourceCall
 from .dbtools import getSequenceFromResult
@@ -14,10 +17,6 @@ from .dbtools import executeQueries
 from .dbtools import getDataSourceLocation
 from .dbtools import getDataSourceInfo
 from .dbtools import getDataSourceJavaInfo
-
-from .keymap import KeyMap
-from .dbqueries import getSqlQuery
-from .configuration import g_path
 
 import traceback
 

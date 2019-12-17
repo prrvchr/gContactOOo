@@ -15,23 +15,21 @@ from com.sun.star.ucb.ConnectionMode import ONLINE
 
 from com.sun.star.sdbc import XRestDataSource
 
+from oauth2 import KeyMap
+from oauth2 import getResourceLocation
+from oauth2 import getPropertyValue
+from oauth2 import parseDateTime
+
 from .configuration import g_identifier
+from .provider import Provider
+from .dbparser import DataParser
 
 from .dbqueries import getSqlQuery
-
-from .unotools import getResourceLocation
-from .unotools import getPropertyValue
-from .unotools import parseDateTime
-
 from .dbinit import getDataSourceUrl
-
 from .dbtools import getDataSourceConnection
 from .dbtools import getKeyMapFromResult
 from .dbtools import getDataSourceCall
 
-from .provider import Provider
-from .keymap import KeyMap
-from .dbparser import DataParser
 
 import binascii
 import traceback
