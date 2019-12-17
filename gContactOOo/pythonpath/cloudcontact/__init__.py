@@ -5,6 +5,7 @@ import traceback
 try:
     from .user import User
     from .datasource import DataSource
+    from .dataparser import DataParser
     from .connection import Connection
     from .provider import Provider
 
