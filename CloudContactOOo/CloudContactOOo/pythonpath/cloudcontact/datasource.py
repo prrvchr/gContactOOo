@@ -22,7 +22,7 @@ from oauth2 import parseDateTime
 
 from .configuration import g_identifier
 from .provider import Provider
-from .dbparser import DataParser
+from .dataparser import DataParser
 
 from .dbqueries import getSqlQuery
 from .dbinit import getDataSourceUrl
