@@ -1,8 +1,7 @@
 # gContactOOo v0.0.3
 
-## Google Contact integration for LibreOffice.
+## Google Contact integration for LibreOffice / OpenOffice.
 
-![gContactOOo screenshot 1](gContactOOo-1.png)
 
 ## Has been tested with:
 
