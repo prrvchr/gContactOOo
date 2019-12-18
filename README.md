@@ -1,17 +1,23 @@
-# gContactOOo v0.0.3
+**The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
-## Google Contact integration for LibreOffice / OpenOffice.
+## gContactOOo v0.0.3
+
+### Google Contact integration for LibreOffice / OpenOffice.
+
+### Use:
+
+#### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extention v 0.0.4.
+
+You must install this extention first!!!
+
+Restart LibreOffice / OpenOffice after installation.
+
+#### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extention v 0.0.3.
+
+Restart LibreOffice / OpenOffice after installation.
 
 
-## Has been tested with:
-
-* LibreOffice 6.3.2.2 - Lubuntu 18.04 -  LxQt 0.12.0.4
-
-I encourage you in case of problem to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)
-I will try to solve it :-)
-
-
-## Configuration:
+### Configuration:
 
 In Writer go to File -> Wizards -> Address Data Source...:
 
@@ -45,3 +51,11 @@ Go back and normally you can test the connection. It must operate...
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 
 Have fun...
+
+### Has been tested with:
+
+* LibreOffice 6.3.2.2 - Lubuntu 18.04 -  LxQt 0.12.0.4
+
+I encourage you in case of problem to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)
+I will try to solve it :-)
+
