@@ -2,7 +2,7 @@
 
 ## Google Contact integration for LibreOffice.
 
-![gContactOOo screenshot](gContactOOo.png)
+![gContactOOo screenshot 1](gContactOOo-1.png)
 
 ## Has been tested with:
 
@@ -16,20 +16,33 @@ I will try to solve it :-)
 
 In Writer go to File -> Wizards -> Address Data Source...:
 
+![gContactOOo screenshot 1](gContactOOo-1.png)
+
 In step: 1. Address Book Type:
-- choise: Other external data source -> Next(Button)
+- select: Other external data source -> Next(Button)
+
+![gContactOOo screenshot 2](gContactOOo-2.png)
 
 In step: 2. Connection Settings:
 -> Settings(Button)
 
+![gContactOOo screenshot 3](gContactOOo-3.png)
+
 In Database type list:
-- choise: Google REST API -> Next(Button)
+- select: Google REST API -> Next(Button)
+
+![gContactOOo screenshot 4](gContactOOo-4.png)
 
 In General: Datasource Url:
 - put: peoples
+
 In User Authentication: user name:
 - put your Google account
 
+![gContactOOo screenshot 5](gContactOOo-5.png)
+
 Go back and normally you can test the connection. It must operate...
+
+![gContactOOo screenshot 6](gContactOOo-6.png)
 
 Have fun...
