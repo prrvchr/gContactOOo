@@ -1,51 +1,35 @@
-# gContactOOo v0.0.2
+# gContactOOo v0.0.3
 
 ## Google Contact integration for LibreOffice.
 
 ![gContactOOo screenshot](gContactOOo.png)
 
 ## Has been tested with:
-	
-* LibreOffice 5.3.3.2 - Lubuntu 16.10 -  LxQt 0.11.0.3
+
+* LibreOffice 6.3.2.2 - Lubuntu 18.04 -  LxQt 0.12.0.4
 
 I encourage you in case of problem to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)
 I will try to solve it :-)
 
-## Requirements:
-
-* Google Mail:
-	
-Load: [Google Account Setting](https://myaccount.google.com/security?utm_source=OGB#connectedapps)
-
-You must enable less secured application.
-
-* Mozilla Thunderbird:
-
-You need [Thunderbird 38.5.1 or higher](https://www.mozilla.org/thunderbird/)
-
-You need [gContactSync 2.0.10 or higher](https://addons.mozilla.org/en-US/thunderbird/addon/gcontactsync/), you can install it in the Thunderbird extention manager.
-
-* Libre Office:
-
-You need [LibreOffice 5.0.5 or higher](https://www.libreoffice.org/download/libreoffice-fresh/)
 
 ## Configuration:
 
-In Writer go to Tools -> Options -> LibreOffice Writer -> Mail Merge E-mail:
-put your Name, your email address, server name (ie: smtp.gmail.com), port (587) and check "Use secure connection (SSL)"
-In Server Authentication put your email address again and your password.
+In Writer go to File -> Wizards -> Address Data Source...:
+
+In step: 1. Address Book Type:
+- choise: Other external data source -> Next(Button)
+
+In step: 2. Connection Settings:
+-> Settings(Button)
+
+In Database type list:
+- choise: Google REST API -> Next(Button)
+
+In General: Datasource Url:
+- put: peoples
+In User Authentication: user name:
+- put your Google account
+
 Go back and normally you can test the connection. It must operate...
-  
-In Writer go to Tools -> Address Book Source -> Address Data Source(Button) -> Thunderbird/icedove -> Next(Button)
--> AddressBook(in the list) -> Next(Button) and Finish(Button)
-
-In Writer go to Tools -> Add-Ons -> gContactOOo:
-Normally you can see your Address Book.
-  
- ## Use:
-
-In Writer go to Insert -> Field -> More Fields. In database Selection under your address database, choose any field from the "gContactOOo" query.
-
-In Writer go to Tools -> Add-Ons -> gContactOOo
 
 Have fun...
