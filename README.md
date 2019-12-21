@@ -16,33 +16,40 @@ Restart LibreOffice / OpenOffice after installation.
 
 Restart LibreOffice / OpenOffice after installation.
 
+### Requirement:
+
+LibreOffice users need to have no Hsqldb driver installed with LibreOffice  
+(see your Installed Application under Windows or your Packet Manager under Linux)
+OpenOffice doesn't seem to need this workaround.
 
 ### Configuration:
 
-In Writer go to File -> Wizards -> Address Data Source...:
+In LibreOffice / OpenOffice go to File -> Wizards -> Address Data Source...:
 
 ![gContactOOo screenshot 1](gContactOOo-1.png)
 
 In step: 1. Address Book Type:
-- select: Other external data source -> Next(Button)
+- select: Other external data source
+- click: Next(Button)
 
 ![gContactOOo screenshot 2](gContactOOo-2.png)
 
 In step: 2. Connection Settings:
--> Settings(Button)
+- click: Settings(Button)
 
 ![gContactOOo screenshot 3](gContactOOo-3.png)
 
 In Database type list:
-- select: Google REST API -> Next(Button)
+- select: Google REST API
+- click: Next(Button)
 
 ![gContactOOo screenshot 4](gContactOOo-4.png)
 
 In General: Datasource Url:
-- put: peoples
+- put: peoples (or people))
 
 In User Authentication: user name:
-- put your Google account
+- put: your Google account (ie: your_account@gmail.com)
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
