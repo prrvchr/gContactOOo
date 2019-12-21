@@ -18,8 +18,8 @@ Restart LibreOffice / OpenOffice after installation.
 
 ### Requirement:
 
-LibreOffice users need to have no Hsqldb driver installed with LibreOffice  
-(see your Installed Application under Windows or your Packet Manager under Linux)
+Using a version of Hsqldb higher than 1.8 requires that LibreOffice users must have no Hsqldb driver installed with LibreOffice  
+(check your Installed Application under Windows or your Packet Manager under Linux)  
 OpenOffice doesn't seem to need this workaround.
 
 ### Configuration:
