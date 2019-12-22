@@ -26,7 +26,7 @@ from .dataparser import DataParser
 
 from .dbqueries import getSqlQuery
 from .dbinit import getDataSourceUrl
-from .dbtools import getDataSourceConnection
+from .dbtools import getDataBaseConnection
 from .dbtools import getKeyMapFromResult
 from .dbtools import getDataSourceCall
 
@@ -82,7 +82,7 @@ class DataSource(unohelper.Base,
             return not self.Connection.isClosed()
         return False
     def connect(self, dbcontext, url):
-        connection, error = getDataSourceConnection(dbcontext, url)
+        connection, error = getDataBaseConnection(dbcontext, url)
         if error:
             self._Warnings.append(error)
             return False
@@ -116,10 +116,10 @@ class DataSource(unohelper.Base,
 
     def setUser(self, user, scheme, key, password):
         dbcontext = self.ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')
-        path = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
+        path, error = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
         credential = user.getCredential(password)
         print("DataSource.setUser() %s - %s" % credential)
-        connection, error = getDataSourceConnection(dbcontext, path, *credential)
+        connection, error = getDataBaseConnection(dbcontext, path, *credential)
         if error is not None:
             print("DataSource.setUser %s" % error)
             self._Warnings.append(error)

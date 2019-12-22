@@ -17,40 +17,50 @@ from .dbtools import executeQueries
 from .dbtools import getDataSourceLocation
 from .dbtools import getDataSourceInfo
 from .dbtools import getDataSourceJavaInfo
+from .dbtools import getDataSourceConnection
+from .dbtools import checkDataBase
 
 import traceback
 
 
 def getDataSourceUrl(ctx, dbctx, dbname, plugin, register):
+    error = None
     location = getResourceLocation(ctx, plugin, g_path)
     url = '%s/%s.odb' % (location, dbname)
     if not getSimpleFile(ctx).exists(url):
-        _createDataSource(ctx, dbctx, url, location, dbname)
-        if register:
+        error = _createDataSource(ctx, dbctx, url, location, dbname)
+        if error is None and register:
             registerDataSource(dbctx, dbname, url)
-    return url
+    return url, error
 
 def _createDataSource(ctx, dbcontext, url, location, dbname):
     datasource = dbcontext.createInstance()
     datasource.URL = getDataSourceLocation(location, dbname, False)
     datasource.Info = getDataSourceInfo() + getDataSourceJavaInfo(location)
     datasource.DatabaseDocument.storeAsURL(url, ())
-    _createDataBase(ctx, datasource)
+    error = _createDataBase(ctx, datasource)
     datasource.DatabaseDocument.store()
+    return error
 
 def _createDataBase(ctx, datasource):
-    connection = datasource.getConnection('', '')
-    statement = connection.createStatement()
-    _createStaticTable(statement, _getStaticTables())
-    tables, statements = getTablesAndStatements(statement)
-    _executeQueries(statement, tables)
-    _createPreparedStatement(ctx, datasource, statements)
-    executeQueries(statement, _getQueries())
-    _createDynamicView(statement)
-    #mri = ctx.ServiceManager.createInstance('mytools.Mri')
-    #mri.inspect(connection)
+    connection, error = getDataSourceConnection(datasource)
+    if error is not None:
+        return error
+    error = checkDataBase(connection)
+    if error is None:
+        print("dbinit._createDataBase()")
+        statement = connection.createStatement()
+        _createStaticTable(statement, _getStaticTables())
+        tables, statements = getTablesAndStatements(statement)
+        _executeQueries(statement, tables)
+        _createPreparedStatement(ctx, datasource, statements)
+        executeQueries(statement, _getQueries())
+        _createDynamicView(statement)
+        #mri = ctx.ServiceManager.createInstance('mytools.Mri')
+        #mri.inspect(connection)
     connection.close()
     connection.dispose()
+    return error
 
 def _getTableColumns(connection, tables):
     columns = {}
@@ -112,6 +122,7 @@ def _getCreateViewQueries(statement):
             f2 = []
             data = getKeyMapFromResult(result, KeyMap())
             view = data.getValue('View')
+            versioned = data.getValue('Versioned')
             ptable = data.getValue('PrimaryTable')
             pcolumn = data.getValue('PrimaryColumn')
             ftable = data.getValue('ForeignTable')
