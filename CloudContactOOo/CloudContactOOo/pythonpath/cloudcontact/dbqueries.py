@@ -119,6 +119,12 @@ def getSqlQuery(name, format=None):
 # Create Cached Table Queries
     elif name == 'createTable':
         query = 'CREATE CACHED TABLE "%s"(%s)' % format
+    elif name == 'getPeriodColumns':
+        query = '"Start" TIMESTAMP GENERATED ALWAYS AS ROW START,'
+        query += '"Stop" TIMESTAMP GENERATED ALWAYS AS ROW END,'
+        query += 'PERIOD FOR SYSTEM_TIME("Start","Stop")'
+    elif name == 'getSystemVersioning':
+        query = ' WITH SYSTEM VERSIONING'
 
 # Create Dynamic View Queries
     elif name == 'createView':
