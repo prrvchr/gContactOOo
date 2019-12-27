@@ -19,7 +19,6 @@ from com.sun.star.sdbc.ResultSetConcurrency import UPDATABLE
 
 from com.sun.star.uno import Exception as UnoException
 
-from unolib import getLogger
 from unolib import getConfiguration
 
 from cloudcontact import g_identifier
@@ -29,6 +28,7 @@ from cloudcontact import Connection
 from cloudcontact import getDataSourceUrl
 from cloudcontact import getDataSourceConnection
 from cloudcontact import getDataBaseInfo
+from cloudcontact import logMessage
 
 import traceback
 
@@ -49,7 +49,6 @@ class Driver(unohelper.Base,
         self.ctx = ctx
         self._supportedProtocol = 'sdbc:google:'
         self._supportedSubProtocols = ('people', 'peoples')
-        self.Logger = getLogger(self.ctx)
         print("Driver.__init__()")
 
     def __del__(self):
@@ -131,7 +130,7 @@ class Driver(unohelper.Base,
                 #mri.inspect(config)
                 print("Driver.connect() 4 *****************")
             msg += "Done"
-            self.Logger.logp(level, 'Driver', 'connect()', msg)
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             #dbcontext = self.ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')
             #path = getDataSourceUrl(self.ctx, dbcontext, 'Template', g_identifier, False)
             #path1 = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
@@ -233,7 +232,6 @@ class Driver(unohelper.Base,
             info.Value = value
         info.Choices = ()
         return info
-
 
     # XServiceInfo
     def supportsService(self, service):
