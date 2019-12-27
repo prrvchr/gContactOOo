@@ -15,8 +15,17 @@ try:
     from .configuration import g_url
 
     from .dbinit import getDataSourceUrl
+
     from .dbtools import getDataSourceConnection
     from .dbtools import getDataBaseInfo
+
+    from .logger import getLogger
+    from .logger import getLoggerSetting
+    from .logger import getLoggerUrl
+    from .logger import setLoggerSetting
+    from .logger import clearLogger
+    from .logger import logMessage
+
 except Exception as e:
     print("cloudcontact.__init__() ERROR: %s - %s" % (e, traceback.print_exc()))
 
