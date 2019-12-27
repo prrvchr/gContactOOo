@@ -52,8 +52,8 @@ from com.sun.star.sdbc.ResultSetConcurrency import UPDATABLE
 from com.sun.star.beans.PropertyAttribute import BOUND
 from com.sun.star.beans.PropertyAttribute import READONLY
 
-from oauth2 import PropertySet
-from oauth2 import getProperty
+from unolib import PropertySet
+from unolib import getProperty
 
 import traceback
 

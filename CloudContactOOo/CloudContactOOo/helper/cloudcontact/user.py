@@ -11,8 +11,8 @@ from com.sun.star.ucb.ConnectionMode import OFFLINE
 from com.sun.star.ucb.ConnectionMode import ONLINE
 from com.sun.star.sdbc import XRestUser
 
-from oauth2 import g_oauth2
-from oauth2 import KeyMap
+from unolib import KeyMap
+from unolib import g_oauth2
 
 import traceback
 

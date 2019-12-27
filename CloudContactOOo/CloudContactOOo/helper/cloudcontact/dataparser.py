@@ -6,8 +6,8 @@ import unohelper
 
 from com.sun.star.auth import XRestDataParser
 
-from oauth2 import getNamedValue
-from oauth2 import KeyMap
+from unolib import getNamedValue
+from unolib import KeyMap
 
 
 class DataParser(unohelper.Base,

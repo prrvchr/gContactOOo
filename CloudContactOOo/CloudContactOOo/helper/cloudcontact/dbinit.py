@@ -2,9 +2,9 @@
 # -*- coding: utf_8 -*-
 
 
-from oauth2 import KeyMap
-from oauth2 import getResourceLocation
-from oauth2 import getSimpleFile
+from unolib import KeyMap
+from unolib import getResourceLocation
+from unolib import getSimpleFile
 
 from .dbconfig import g_path
 from .dbqueries import getSqlQuery
@@ -14,33 +14,27 @@ from .dbtools import getSequenceFromResult
 from .dbtools import getKeyMapFromResult
 from .dbtools import registerDataSource
 from .dbtools import executeQueries
-from .dbtools import getDataSourceLocation
-from .dbtools import getDataSourceInfo
-from .dbtools import getDataSourceJavaInfo
+from .dbtools import executeSqlQueries
 from .dbtools import getDataSourceConnection
+from .dbtools import createDataSource
 from .dbtools import checkDataBase
+from .dbtools import createStaticTable
 
 import traceback
 
 
-def getDataSourceUrl(ctx, dbctx, dbname, plugin, register):
+def getDataSourceUrl(ctx, dbcontext, dbname, plugin, register):
     error = None
     location = getResourceLocation(ctx, plugin, g_path)
     url = '%s/%s.odb' % (location, dbname)
     if not getSimpleFile(ctx).exists(url):
-        error = _createDataSource(ctx, dbctx, url, location, dbname)
-        if error is None and register:
-            registerDataSource(dbctx, dbname, url)
+        datasource = createDataSource(dbcontext, location, dbname)
+        error = _createDataBase(ctx, datasource)
+        if error is None:
+            datasource.DatabaseDocument.storeAsURL(url, ())
+            if register:
+                registerDataSource(dbcontext, dbname, url)
     return url, error
-
-def _createDataSource(ctx, dbcontext, url, location, dbname):
-    datasource = dbcontext.createInstance()
-    datasource.URL = getDataSourceLocation(location, dbname, False)
-    datasource.Info = getDataSourceInfo() + getDataSourceJavaInfo(location)
-    datasource.DatabaseDocument.storeAsURL(url, ())
-    error = _createDataBase(ctx, datasource)
-    datasource.DatabaseDocument.store()
-    return error
 
 def _createDataBase(ctx, datasource):
     connection, error = getDataSourceConnection(datasource)
@@ -50,9 +44,9 @@ def _createDataBase(ctx, datasource):
     if error is None:
         print("dbinit._createDataBase()")
         statement = connection.createStatement()
-        _createStaticTable(statement, _getStaticTables())
+        createStaticTable(statement, _getStaticTables())
         tables, statements = getTablesAndStatements(statement)
-        _executeQueries(statement, tables)
+        executeSqlQueries(statement, tables)
         _createPreparedStatement(ctx, datasource, statements)
         executeQueries(statement, _getQueries())
         _createDynamicView(statement)
@@ -78,19 +72,6 @@ def _getColumns(metadata, table):
         columns.append(column)
     return columns
 
-def _createStaticTable(statement, tables):
-    for table in tables:
-        query = getSqlQuery('createTable' + table)
-        print("dbtool._createStaticTable(): %s" % query)
-        statement.executeQuery(query)
-    columns = _getTableColumns(statement.getConnection(), tables)
-    for table in tables:
-        statement.executeQuery(getSqlQuery('setTableSource', table))
-        #format = (table, '|'.join(columns[table]))
-        #print("dbtool._createStaticTable(): %s - %s" % format)
-        #statement.executeQuery(getSqlQuery('setTableHeader', format))
-        #statement.executeQuery(getSqlQuery('setTableReadOnly', table))
-
 def _createPreparedStatement(ctx, datasource, statements):
     queries = datasource.getQueryDefinitions()
     for name, sql in statements.items():
@@ -104,7 +85,7 @@ def _createPreparedStatement(ctx, datasource, statements):
 
 def _createDynamicView(statement):
     queries = _getCreateViewQueries(statement)
-    _executeQueries(statement, queries)
+    executeSqlQueries(statement, queries)
 
 def _getCreateViewQueries(statement):
     c1 = []
@@ -159,10 +140,6 @@ def _getCreateViewQueries(statement):
         queries.append( getSqlQuery('grantRole'))
         print("dbtool._getCreateViewQueries(): 5 %s" % query)
     return queries
-
-def _executeQueries(statement, queries):
-    for query in queries:
-        statement.executeQuery(query)
 
 def _getStaticTables():
     tables = ('Tables',

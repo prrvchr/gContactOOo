@@ -15,14 +15,13 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 
 from com.sun.star.sdbc import XRestProvider
 
-from oauth2 import getLogger
-
 from .configuration import g_host
 from .configuration import g_url
 from .configuration import g_timestamp
 from .configuration import g_IdentifierRange
 from .configuration import g_userfields
 from .configuration import g_peoplefields
+from .logger import getLogger
 
 import json
 

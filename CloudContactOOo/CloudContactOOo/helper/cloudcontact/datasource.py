@@ -15,10 +15,10 @@ from com.sun.star.ucb.ConnectionMode import ONLINE
 
 from com.sun.star.sdbc import XRestDataSource
 
-from oauth2 import KeyMap
-from oauth2 import getResourceLocation
-from oauth2 import getPropertyValue
-from oauth2 import parseDateTime
+from unolib import KeyMap
+from unolib import getResourceLocation
+from unolib import getPropertyValue
+from unolib import parseDateTime
 
 from .configuration import g_identifier
 from .provider import Provider
