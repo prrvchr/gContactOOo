@@ -1,1 +1,1 @@
-../../../CloudContactOOo/CloudContactOOo/pythonpath/cloudcontact/dbtools.py
+../../../CloudContactOOo/CloudContactOOo/helper/cloudcontact/dbtools.py

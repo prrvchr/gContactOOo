@@ -2,7 +2,8 @@
 # -*- coding: utf_8 -*-
 
 # General configuration
-g_identifier = 'com.gmail.prrvchr.extensions.gContactOOo'
+g_extension = 'gContactOOo'
+g_identifier = 'com.gmail.prrvchr.extensions.%s' % g_extension
 g_host = 'people.googleapis.com'
 g_version = 'v1'
 g_url = 'https://%s/%s' % (g_host, g_version)

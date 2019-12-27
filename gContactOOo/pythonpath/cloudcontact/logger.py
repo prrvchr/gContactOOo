@@ -1,0 +1,1 @@
+../../../CloudContactOOo/CloudContactOOo/helper/cloudcontact/logger.py
