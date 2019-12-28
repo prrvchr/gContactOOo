@@ -14,6 +14,10 @@ from unolib import getFileSequence
 from unolib import getStringResource
 from unolib import getResourceLocation
 from unolib import getDialog
+from unolib import createService
+
+from cloudcontact import getDataSourceLocation
+from cloudcontact import getDataSourceJavaInfo
 
 from cloudcontact import getLoggerUrl
 from cloudcontact import getLoggerSetting
@@ -23,6 +27,7 @@ from cloudcontact import logMessage
 
 from cloudcontact import g_extension
 from cloudcontact import g_identifier
+from cloudcontact import g_path
 
 import traceback
 
@@ -143,7 +148,19 @@ class OptionsDialog(unohelper.Base,
         setLoggerSetting(self.ctx, enabled, index, handler)
 
     def _viewData(self, dialog):
-        pass
+        location = getResourceLocation(self.ctx, g_identifier, g_path)
+        print("OptionDialog._viewData() %s" % location)
+        url = getDataSourceLocation(location, 'Test', True)
+        print("OptionDialog._viewData() %s" % url)
+        drvmgr = createService(self.ctx, 'com.sun.star.sdbc.DriverManager')
+        info = getDataSourceJavaInfo(location)
+        try:
+            connection = drvmgr.getConnectionWithInfo(url, info)
+        except exception as e:
+            print("OptionDialog._viewData() ERROR: %s" % e)
+        print("OptionDialog._viewData() isconnected %s" % connection.iClosed())
+
+
 
     # XServiceInfo
     def supportsService(self, service):
