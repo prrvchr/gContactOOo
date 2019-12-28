@@ -79,7 +79,7 @@ def _createPreparedStatement(ctx, datasource, statements):
             query = ctx.ServiceManager.createInstance("com.sun.star.sdb.QueryDefinition")
             query.Command = sql
             queries.insertByName(name, query)
-    datasource.DatabaseDocument.store()
+    #datasource.DatabaseDocument.store()
     #mri = ctx.ServiceManager.createInstance('mytools.Mri')
     #mri.inspect(datasource)
 

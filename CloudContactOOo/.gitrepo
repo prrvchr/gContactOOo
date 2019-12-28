@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/prrvchr/CloudContactOOo.git
 	branch = master
-	commit = 77af0743750e82db0cbcf17e0e0eb47e3ed4ba04
-	parent = 28a5cf080738752fcb65b606941122f33a0b8a29
+	commit = afb8b5d87db46a983d87a4d71be4f0a59257c349
+	parent = 0102edd94589987d0d1fe37e562fb2740fe88f06
 	method = merge
 	cmdver = 0.4.0
