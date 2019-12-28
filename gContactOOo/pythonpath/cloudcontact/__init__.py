@@ -16,6 +16,8 @@ try:
 
     from .dbinit import getDataSourceUrl
 
+    from .dbconfig import g_path
+
     from .dbtools import getDataSourceConnection
     from .dbtools import getDataBaseInfo
     from .dbtools import getDataSourceLocation
