@@ -68,10 +68,13 @@ class OptionsDialog(unohelper.Base,
         elif method == 'ClearLog':
             self._clearLog(dialog)
             handled = True
+        elif method == 'ViewData':
+            self._viewData(dialog)
+            handled = True
         return handled
     def getSupportedMethodNames(self):
         return ('external_event', 'ToggleLogger', 'EnableViewer', 'DisableViewer',
-                'ViewLog', 'ClearLog')
+                'ViewLog', 'ClearLog', 'ViewData')
 
     def _loadSetting(self, dialog):
         self._loadLoggerSetting(dialog)
@@ -138,6 +141,9 @@ class OptionsDialog(unohelper.Base,
         index = self._getLoggerLevel(dialog.getControl('ComboBox1'))
         handler = dialog.getControl('OptionButton1').State
         setLoggerSetting(self.ctx, enabled, index, handler)
+
+    def _viewData(self, dialog):
+        pass
 
     # XServiceInfo
     def supportsService(self, service):

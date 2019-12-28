@@ -30,7 +30,6 @@ from .dbtools import getDataBaseConnection
 from .dbtools import getKeyMapFromResult
 from .dbtools import getDataSourceCall
 
-
 import binascii
 import traceback
 
