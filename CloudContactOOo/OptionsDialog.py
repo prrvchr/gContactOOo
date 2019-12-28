@@ -43,6 +43,7 @@ class OptionsDialog(unohelper.Base,
     def __init__(self, ctx):
         self.ctx = ctx
         self.stringResource = getStringResource(self.ctx, g_identifier, g_extension, 'OptionsDialog')
+        logMessage(self.ctx, INFO, "Loading ... Done", 'OptionsDialog', '__init__()')
 
     # XContainerWindowEventHandler, XDialogEventHandler
     def callHandlerMethod(self, dialog, event, method):
@@ -150,20 +151,19 @@ class OptionsDialog(unohelper.Base,
     def _viewData(self, dialog):
         try:
             location = getResourceLocation(self.ctx, g_identifier, g_path)
-            print("OptionDialog._viewData() %s" % location)
+            logMessage(self.ctx, INFO, location, 'OptionsDialog', '_viewData()')
             url = getDataSourceLocation(location, 'Test', True)
-            print("OptionDialog._viewData() %s" % url)
+            logMessage(self.ctx, INFO, url, 'OptionsDialog', '_viewData()')
             drvmgr = createService(self.ctx, 'com.sun.star.sdbc.DriverManager')
             info = getDataSourceJavaInfo(location)
-            print("OptionDialog._viewData() %s" % (info,))
             connection = drvmgr.getConnectionWithInfo(url, info)
             version = connection.getMetaData().getDriverVersion()
-            print("OptionDialog._viewData() isconnected %s - %s" % (connection.isClosed(), version))
+            msg = "Connection.isClosed: %s - %s" % (connection.isClosed(), version)
+            logMessage(self.ctx, INFO, msg, 'OptionsDialog', '_viewData()')
         except exception as e:
-            print("OptionDialog._viewData() ERROR: %s" % e)
-        print("OptionDialog._viewData() **********")
-
-
+            msg = "ERROR: %s" % e
+            logMessage(self.ctx, SEVERE, msg, 'OptionsDialog', '_viewData()')
+        logMessage(self.ctx, INFO, "**********************", 'OptionsDialog', '_viewData()')
 
     # XServiceInfo
     def supportsService(self, service):
