@@ -18,6 +18,8 @@ try:
 
     from .dbtools import getDataSourceConnection
     from .dbtools import getDataBaseInfo
+    from .dbtools import getDataSourceLocation
+    from .dbtools import getDataSourceJavaInfo
 
     from .logger import getLogger
     from .logger import getLoggerSetting
