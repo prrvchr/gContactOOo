@@ -148,17 +148,20 @@ class OptionsDialog(unohelper.Base,
         setLoggerSetting(self.ctx, enabled, index, handler)
 
     def _viewData(self, dialog):
-        location = getResourceLocation(self.ctx, g_identifier, g_path)
-        print("OptionDialog._viewData() %s" % location)
-        url = getDataSourceLocation(location, 'Test', True)
-        print("OptionDialog._viewData() %s" % url)
-        drvmgr = createService(self.ctx, 'com.sun.star.sdbc.DriverManager')
-        info = getDataSourceJavaInfo(location)
         try:
+            location = getResourceLocation(self.ctx, g_identifier, g_path)
+            print("OptionDialog._viewData() %s" % location)
+            url = getDataSourceLocation(location, 'Test', True)
+            print("OptionDialog._viewData() %s" % url)
+            drvmgr = createService(self.ctx, 'com.sun.star.sdbc.DriverManager')
+            info = getDataSourceJavaInfo(location)
+            print("OptionDialog._viewData() %s" % (info,))
             connection = drvmgr.getConnectionWithInfo(url, info)
+            version = connection.getMetaData().getDriverVersion()
+            print("OptionDialog._viewData() isconnected %s - %s" % (connection.isClosed(), version))
         except exception as e:
             print("OptionDialog._viewData() ERROR: %s" % e)
-        print("OptionDialog._viewData() isconnected %s" % connection.iClosed())
+        print("OptionDialog._viewData() **********")
 
 
 

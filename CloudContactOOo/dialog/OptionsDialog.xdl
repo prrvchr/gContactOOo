@@ -35,7 +35,7 @@
   <dlg:button dlg:id="CommandButton1" dlg:tab-index="6" dlg:disabled="true" dlg:left="205" dlg:top="12" dlg:width="45" dlg:height="15" dlg:help-text="&amp;OptionsDialog.CommandButton1.HelpText" dlg:value="&amp;OptionsDialog.CommandButton1.Label">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.UNO:ViewLog" script:language="UNO"/>
   </dlg:button>
-  <dlg:button dlg:id="CommandButton2" dlg:tab-index="7" dlg:left="10" dlg:top="32" dlg:width="45" dlg:height="15" dlg:help-text="&amp;OptionsDialog.CommandButton2.HelpText" dlg:value="&amp;OptionsDialog.CommandButton2.Label">
+  <dlg:button dlg:id="CommandButton2" dlg:tab-index="7" dlg:disabled="false" dlg:left="80" dlg:top="50" dlg:width="100" dlg:height="15" dlg:help-text="&amp;OptionsDialog.CommandButton2.HelpText" dlg:value="&amp;OptionsDialog.CommandButton2.Label">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.UNO:ViewData" script:language="UNO"/>
   </dlg:button>
  </dlg:bulletinboard>
