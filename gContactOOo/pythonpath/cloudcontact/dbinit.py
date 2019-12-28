@@ -1,1 +1,1 @@
-../../../CloudContactOOo/CloudContactOOo/helper/cloudcontact/dbinit.py
+../../../CloudContactOOo/python/cloudcontact/dbinit.py

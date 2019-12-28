@@ -1,1 +1,1 @@
-../CloudContactOOo/CloudContactOOo/OptionsDialog.py
+../CloudContactOOo/OptionsDialog.py

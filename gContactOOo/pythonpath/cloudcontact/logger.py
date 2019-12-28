@@ -1,1 +1,1 @@
-../../../CloudContactOOo/CloudContactOOo/helper/cloudcontact/logger.py
+../../../CloudContactOOo/OAuth2OOo/python/logger.py

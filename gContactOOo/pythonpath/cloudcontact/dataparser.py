@@ -1,1 +1,1 @@
-../../../CloudContactOOo/CloudContactOOo/helper/cloudcontact/dataparser.py
+../../../CloudContactOOo/python/cloudcontact/dataparser.py
