@@ -132,7 +132,7 @@ def _getViewsAndTriggers(statement):
             query = getSqlQuery('createView', format)
             print("dbtool._getCreateViewQueries(): 4 %s" % query)
             queries.append(query)
-            triggers.append(getSqlQuery('createTriggerInsteadOfUpdate', data))
+            triggers.append(getSqlQuery('createTriggerUpdateAddressBook', data))
     call.close()
     if queries:
         c1.insert(0, '"%s"' % pcolumn)
