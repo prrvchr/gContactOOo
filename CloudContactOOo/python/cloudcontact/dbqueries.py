@@ -131,12 +131,16 @@ def getSqlQuery(name, format=None):
         query = 'CREATE VIEW "%s"(%s) AS SELECT %s FROM %s' % format
 
 # Create Trigger Query
-    elif name == 'createTriggerTableColumn':
-        query = '''\
-CREATE TRIGGER "TableColumnTrigger" AFTER INSERT ON "TableColumn"
-   REFERENCING NEW ROW AS "newrow"
-   FOR EACH ROW
-       CREATE TABLE "(SELECT "Name" FROM "Tables" WHERE "Table"="newrow"."Table")" ()'''
+    elif name == 'createTriggerUpdateAddressBook':
+        q = 'CREATE TRIGGER "InsteadOfUpdateAddressBook%(View)s" '
+        q += 'INSTEAD OF UPDATE OF "%(View)s" ON "AddressBook" '
+        q += 'REFERENCING NEW AS "new" OLD AS "old" FOR EACH ROW '
+        q += 'BEGIN ATOMIC UPDATE "%(Table)s" SET "Value"="new"."%(View)s" WHERE '
+        q += '"People"="new"."People" AND "Label"=%(LabelId)s '
+        if format['TypeId']:
+            q += 'AND "Type"=%(TypeId)s '
+        q += 'END'
+        query = q % format
 
 # Create Role Query
     elif name == 'createRole':

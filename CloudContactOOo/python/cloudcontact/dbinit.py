@@ -11,6 +11,7 @@ from .dbqueries import getSqlQuery
 from .dbtools import getTablesAndStatements
 from .dbtools import getDataSourceCall
 from .dbtools import getSequenceFromResult
+from .dbtools import getDataFromResult
 from .dbtools import getKeyMapFromResult
 from .dbtools import registerDataSource
 from .dbtools import executeQueries
@@ -84,14 +85,17 @@ def _createPreparedStatement(ctx, datasource, statements):
     #mri.inspect(datasource)
 
 def _createDynamicView(statement):
-    queries = _getCreateViewQueries(statement)
-    executeSqlQueries(statement, queries)
+    views, triggers = _getViewsAndTriggers(statement)
+    executeSqlQueries(statement, views)
+    for trigger in triggers:
+        print("dbinit._createDynamicView(): %s" % trigger)
 
-def _getCreateViewQueries(statement):
+def _getViewsAndTriggers(statement):
     c1 = []
     s1 = []
     f1 = []
     queries = []
+    triggers = []
     call = getDataSourceCall(statement.getConnection(), 'getViews')
     tables = getSequenceFromResult(statement.executeQuery(getSqlQuery('getViewName')))
     for table in tables:
@@ -101,14 +105,15 @@ def _getCreateViewQueries(statement):
             c2 = []
             s2 = []
             f2 = []
-            data = getKeyMapFromResult(result, KeyMap())
-            view = data.getValue('View')
-            ptable = data.getValue('PrimaryTable')
-            pcolumn = data.getValue('PrimaryColumn')
-            ftable = data.getValue('ForeignTable')
-            fcolumn = data.getValue('ForeignColumn')
-            labelid = data.getValue('LabelId')
-            typeid = data.getValue('TypeId')
+            trigger = {}
+            data = getDataFromResult(result)
+            view = data['View']
+            ptable = data['PrimaryTable']
+            pcolumn = data['PrimaryColumn']
+            ftable = data['ForeignTable']
+            fcolumn = data['ForeignColumn']
+            labelid = data['LabelId']
+            typeid = data['TypeId']
             c1.append('"%s"' % view)
             c2.append('"%s"' % pcolumn)
             c2.append('"Value"')
@@ -127,6 +132,7 @@ def _getCreateViewQueries(statement):
             query = getSqlQuery('createView', format)
             print("dbtool._getCreateViewQueries(): 4 %s" % query)
             queries.append(query)
+            triggers.append(getSqlQuery('createTriggerInsteadOfUpdate', data))
     call.close()
     if queries:
         c1.insert(0, '"%s"' % pcolumn)
@@ -139,7 +145,7 @@ def _getCreateViewQueries(statement):
         queries.append(query)
         queries.append( getSqlQuery('grantRole'))
         print("dbtool._getCreateViewQueries(): 5 %s" % query)
-    return queries
+    return queries, triggers
 
 def _getStaticTables():
     tables = ('Tables',
