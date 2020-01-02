@@ -25,11 +25,9 @@ from .configuration import g_identifier
 from .provider import Provider
 from .dataparser import DataParser
 
-from .cloudcontact import g_identifier
 from .dbconfig import g_path
 from .dbqueries import getSqlQuery
 from .dbinit import getDataSourceUrl
-
 from .dbtools import getDataSourceJavaInfo
 from .dbtools import getDataSourceLocation
 from .dbtools import getDataBaseConnection
