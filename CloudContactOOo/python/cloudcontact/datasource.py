@@ -17,6 +17,7 @@ from com.sun.star.sdbc import XRestDataSource
 
 from unolib import KeyMap
 from unolib import getResourceLocation
+from unolib import getPropertyValueSet
 from unolib import getPropertyValue
 from unolib import parseDateTime
 
@@ -24,8 +25,13 @@ from .configuration import g_identifier
 from .provider import Provider
 from .dataparser import DataParser
 
+from .cloudcontact import g_identifier
+from .dbconfig import g_path
 from .dbqueries import getSqlQuery
 from .dbinit import getDataSourceUrl
+
+from .dbtools import getDataSourceJavaInfo
+from .dbtools import getDataSourceLocation
 from .dbtools import getDataBaseConnection
 from .dbtools import getKeyMapFromResult
 from .dbtools import getDataSourceCall
@@ -113,7 +119,7 @@ class DataSource(unohelper.Base,
             self.synchronize(user)
         return user
 
-    def setUser(self, user, scheme, key, password):
+    def setUser1(self, user, scheme, key, password):
         dbcontext = self.ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')
         path, error = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
         credential = user.getCredential(password)
@@ -123,6 +129,30 @@ class DataSource(unohelper.Base,
             print("DataSource.setUser %s" % error)
             self._Warnings.append(error)
             return False
+        user.setConnection(connection)
+        self._UsersPool[key] = user
+        self.synchronize(user)
+        return True
+
+    def setUser(self, user, scheme, key, password):
+        location = getResourceLocation(self.ctx, g_identifier, g_path)
+        url = getDataSourceLocation(location, scheme, True)
+        info = getDataSourceJavaInfo(location)
+        name, password = user.getCredential(password)
+        if name:
+            info += getPropertyValueSet({'user', name})
+        if password:
+            info += getPropertyValueSet({'password', password})
+        print("DataSource.setUser() 1 %s" % url)
+        manager = self.ctx.ServiceManager.createInstance('com.sun.star.sdbc.DriverManager')
+        try:
+            connection = manager.getConnectionWithInfo(url, info)
+        except as e:
+            print("DataSource.setUser() ERROR: %s" % e)
+            self._Warnings.append(e)
+            return False
+        version = connection.getMetaData().getDriverVersion()
+        print("DataSource.setUser() 2 %s" % version)
         user.setConnection(connection)
         self._UsersPool[key] = user
         self.synchronize(user)
