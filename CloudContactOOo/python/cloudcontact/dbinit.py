@@ -55,8 +55,8 @@ def _createDataBase(ctx, datasource, url, dbname):
         _createDynamicView(statement)
         #mri = ctx.ServiceManager.createInstance('mytools.Mri')
         #mri.inspect(connection)
-    connection.close()
-    connection.dispose()
+    #connection.close()
+    #connection.dispose()
     return error
 
 def _getTableColumns(connection, tables):
