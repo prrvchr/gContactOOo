@@ -24,21 +24,23 @@ from .dbtools import createStaticTable
 import traceback
 
 
-def getDataSourceUrl(ctx, dbcontext, dbname, plugin, register):
+def getDataSourceUrl(ctx, dbname, plugin, register):
     error = None
-    location = getResourceLocation(ctx, plugin, g_path)
-    url = '%s/%s.odb' % (location, dbname)
-    if not getSimpleFile(ctx).exists(url):
-        datasource = createDataSource(dbcontext, location, dbname)
-        error = _createDataBase(ctx, datasource)
+    url = getResourceLocation(ctx, plugin, g_path)
+    odb = '%s/%s.odb' % (url, dbname)
+    if not getSimpleFile(ctx).exists(odb):
+        dbcontext = ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')
+        datasource = createDataSource(dbcontext, url, dbname)
+        error = _createDataBase(ctx, datasource, url, dbname)
         if error is None:
-            datasource.DatabaseDocument.storeAsURL(url, ())
+            datasource.DatabaseDocument.storeAsURL(odb, ())
             if register:
-                registerDataSource(dbcontext, dbname, url)
+                registerDataSource(dbcontext, dbname, odb)
     return url, error
 
-def _createDataBase(ctx, datasource):
-    connection, error = getDataSourceConnection(datasource)
+def _createDataBase(ctx, datasource, url, dbname):
+    connection, error = getDataSourceConnection(ctx, url, dbname)
+    #connection, error = getDataSourceConnection(datasource)
     if error is not None:
         return error
     error = checkDataBase(connection)

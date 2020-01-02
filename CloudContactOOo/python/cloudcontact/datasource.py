@@ -84,8 +84,8 @@ class DataSource(unohelper.Base,
         if self.Connection:
             return not self.Connection.isClosed()
         return False
-    def connect(self, dbcontext, url):
-        connection, error = getDataBaseConnection(dbcontext, url)
+    def connect(self, url):
+        connection, error = getDataBaseConnection(self.ctx, url, self.Provider.Host)
         if error:
             self._Warnings.append(error)
             return False
