@@ -31,6 +31,7 @@ from .dbinit import getDataSourceUrl
 from .dbtools import getDataSourceJavaInfo
 from .dbtools import getDataSourceLocation
 from .dbtools import getDataBaseConnection
+from .dbtools import getDataSourceConnection
 from .dbtools import getKeyMapFromResult
 from .dbtools import getDataSourceCall
 
@@ -85,7 +86,7 @@ class DataSource(unohelper.Base,
             return not self.Connection.isClosed()
         return False
     def connect(self, url):
-        connection, error = getDataBaseConnection(self.ctx, url, self.Provider.Host)
+        connection, error = getDataSourceConnection(self.ctx, url, self.Provider.Host)
         if error:
             self._Warnings.append(error)
             return False
@@ -117,37 +118,18 @@ class DataSource(unohelper.Base,
             self.synchronize(user)
         return user
 
-    def setUser1(self, user, scheme, key, password):
-        dbcontext = self.ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')
-        path, error = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
-        credential = user.getCredential(password)
-        print("DataSource.setUser() %s - %s" % credential)
-        connection, error = getDataBaseConnection(dbcontext, path, *credential)
+    def setUser(self, user, scheme, key, password):
+        url, error = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
         if error is not None:
             print("DataSource.setUser %s" % error)
             self._Warnings.append(error)
             return False
-        user.setConnection(connection)
-        self._UsersPool[key] = user
-        self.synchronize(user)
-        return True
-
-    def setUser(self, user, scheme, key, password):
-        location = getResourceLocation(self.ctx, g_identifier, g_path)
-        url = getDataSourceLocation(location, scheme, True)
-        info = getDataSourceJavaInfo(location)
-        name, password = user.getCredential(password)
-        if name:
-            info += getPropertyValueSet({'user', name})
-        if password:
-            info += getPropertyValueSet({'password', password})
-        print("DataSource.setUser() 1 %s" % url)
-        manager = self.ctx.ServiceManager.createInstance('com.sun.star.sdbc.DriverManager')
-        try:
-            connection = manager.getConnectionWithInfo(url, info)
-        except SQLException as e:
-            print("DataSource.setUser() ERROR: %s" % e)
-            self._Warnings.append(e)
+        credential = user.getCredential(password)
+        print("DataSource.setUser() 1 %s - %s" % credential)
+        connection, error = getDataSourceConnection(self.ctx, scheme, url, *credential)
+        if error is not None:
+            print("DataSource.setUser %s" % error)
+            self._Warnings.append(error)
             return False
         version = connection.getMetaData().getDriverVersion()
         print("DataSource.setUser() 2 %s" % version)
