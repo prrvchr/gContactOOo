@@ -7,7 +7,7 @@
     <node oor:name="Installed">
         <node oor:name="sdbc:google:*" oor:op="replace">
             <prop oor:name="Driver">
-                <value>com.gmail.prrvchr.extensions.CloudContactOOo.Driver</value>
+                <value>com.gmail.prrvchr.extensions.gContactOOo.Driver</value>
             </prop>
             <prop oor:name="DriverTypeDisplayName" oor:type="xs:string">
                 <value xml:lang="en-US">Google REST API</value>
