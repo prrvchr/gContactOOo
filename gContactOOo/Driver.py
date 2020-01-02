@@ -138,7 +138,7 @@ class Driver(unohelper.Base,
             print("Driver.connect() 5 %s" % user.Connection.isClosed())
             #return self.DataSource.Connection
             #con = self.DataSource.Connection
-            connection = Connection(self.ctx, self.DataSource, user, protocols)
+            #connection = Connection(self.ctx, self.DataSource, user, protocols)
             #getDataBaseVersion(connection)
             #connection = Connection(self.DataSource.Connection, protocols, user.Account)
             #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
@@ -148,7 +148,7 @@ class Driver(unohelper.Base,
             #settype = con.MetaData.supportsResultSetType(SCROLL_INSENSITIVE)
             #setcon = con.MetaData.supportsResultSetConcurrency(SCROLL_INSENSITIVE, READ_ONLY)
             #print("Connection support %s - %s - %s - %s" % (settype, SCROLL_SENSITIVE, setcon, READ_ONLY))
-            return connection
+            return user.getConnection(scheme, password)
         except SQLException as e:
             raise e
         except Exception as e:
