@@ -135,7 +135,8 @@ class Driver(unohelper.Base,
             #path1 = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
             #datasource = dbcontext.getByName(path)
             #datasource1 = dbcontext.getByName(path1)
-            print("Driver.connect() 5 %s" % user.Connection.isClosed())
+            connection = user.getConnection(scheme, password)
+            print("Driver.connect() 5 %s" % connection.isClosed())
             #return self.DataSource.Connection
             #con = self.DataSource.Connection
             #connection = Connection(self.ctx, self.DataSource, user, protocols)
@@ -148,7 +149,7 @@ class Driver(unohelper.Base,
             #settype = con.MetaData.supportsResultSetType(SCROLL_INSENSITIVE)
             #setcon = con.MetaData.supportsResultSetConcurrency(SCROLL_INSENSITIVE, READ_ONLY)
             #print("Connection support %s - %s - %s - %s" % (settype, SCROLL_SENSITIVE, setcon, READ_ONLY))
-            return user.getConnection(scheme, password)
+            return connection
         except SQLException as e:
             raise e
         except Exception as e:
