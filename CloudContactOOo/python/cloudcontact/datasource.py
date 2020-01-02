@@ -147,7 +147,7 @@ class DataSource(unohelper.Base,
         manager = self.ctx.ServiceManager.createInstance('com.sun.star.sdbc.DriverManager')
         try:
             connection = manager.getConnectionWithInfo(url, info)
-        except as e:
+        except SQLException as e:
             print("DataSource.setUser() ERROR: %s" % e)
             self._Warnings.append(e)
             return False
