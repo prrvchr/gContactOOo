@@ -90,12 +90,11 @@ class Driver(unohelper.Base,
             print("Driver.connect() 2 *****************")
             if not self.DataSource.isConnected():
                 print("Driver.connect() 3 *****************")
-                dbcontext = self.ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')
-                path, error = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
+                path, error = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
                 if error:
                     msg = "DataBase Error: Could not initialize DataBase at URL: %s" % path
                     raise self._getException('DataBase ERROR', 1003, msg, self, error)
-                if not self.DataSource.connect(dbcontext, path):
+                if not self.DataSource.connect(path):
                     warning = self.DataSource.getWarnings()
                     self._getSupplierWarnings(self.DataSource, warning)
                     msg = "Could not connect to DataSource at URL: %s" % path
