@@ -13,6 +13,11 @@ from com.sun.star.sdbc import XRestUser
 
 from unolib import KeyMap
 from unolib import g_oauth2
+from unolib import createService
+
+from .configuration import g_identifier
+from .dbinit import getDataSourceUrl
+from .dbtools import getDataSourceConnection
 
 import traceback
 
@@ -38,11 +43,6 @@ class User(unohelper.Base,
     @property
     def Token(self):
         return self.MetaData.getDefaultValue('Token', None)
-    @property
-    def Connection(self):
-        if self._Statement:
-            return self._Statement.getConnection()
-        return None
 
     def getWarnings(self):
         if self._Warnings:
@@ -52,7 +52,7 @@ class User(unohelper.Base,
         self._Warnings = []
 
     def _getRequest(self, url, name):
-        request = self.ctx.ServiceManager.createInstanceWithContext(g_oauth2, self.ctx)
+        request = createService(self.ctx, g_oauth2)
         if request:
             request.initializeSession(url, name)
         else:
@@ -94,9 +94,20 @@ class User(unohelper.Base,
     def setMetaData(self, metadata):
         self.MetaData = metadata
 
-    def setConnection(self, connection):
-        # Piggyback DataBase Connections (easy and clean ShutDown ;-) )
-        self._Statement = connection.createStatement()
+    def getConnection(self, scheme, password):
+        url, error = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
+        if error is not None:
+            print("User.getConnection %s" % error)
+            self._Warnings.append(error)
+            return False
+        credential = self.getCredential(password)
+        print("User.getConnection() 1 %s - %s" % credential)
+        connection, error = getDataSourceConnection(self.ctx, url, scheme, *credential)
+        if error is not None:
+            print("User.getConnection %s" % error)
+            self._Warnings.append(error)
+            return False
+        return connection
 
     def getCredential(self, password):
         return self.People, password
