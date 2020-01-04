@@ -7,6 +7,8 @@ import unohelper
 from com.sun.star.lang import XServiceInfo
 from com.sun.star.sdbc import XDriver
 from com.sun.star.sdbcx import XDataDefinitionSupplier
+from com.sun.star.sdbcx import XCreateCatalog
+from com.sun.star.sdbcx import XDropCatalog
 from com.sun.star.sdbc import SQLException
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
