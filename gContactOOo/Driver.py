@@ -40,6 +40,8 @@ g_ImplementationName = '%s.Driver' % g_identifier
 class Driver(unohelper.Base,
              XServiceInfo,
              XDataDefinitionSupplier,
+             XCreateCatalog,
+             XDropCatalog,
              XDriver):
 
     __dataSource = None
@@ -66,6 +68,14 @@ class Driver(unohelper.Base,
     def getDataDefinitionByURL(self, url, infos):
         connection = self.connect(url, infos)
         return self.getDataDefinitionByConnection(connection)
+
+    # XCreateCatalog
+    def createCatalog(self, info):
+        print("Driver.createCatalog()")
+
+    # XDropCatalog
+    def dropCatalog(self, name, info):
+        print("Driver.dropCatalog()")
 
     # XDriver
     def connect(self, url, infos):
