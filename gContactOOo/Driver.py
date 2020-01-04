@@ -149,6 +149,8 @@ class Driver(unohelper.Base,
             #datasource1 = dbcontext.getByName(path1)
             connection = user.getConnection(scheme, password)
             print("Driver.connect() 5 %s" % connection.isClosed())
+            version = connection.getMetaData().getDriverVersion()
+            print("Driver.connect() 6 %s" % version)
             #return self.DataSource.Connection
             #con = self.DataSource.Connection
             #connection = Connection(self.ctx, self.DataSource, user, protocols)
