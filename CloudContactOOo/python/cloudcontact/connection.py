@@ -74,10 +74,9 @@ class Connection(unohelper.Base,
                  XGroupsSupplier,
                  XTableUIProvider,
                  XConnectionTools):
-    def __init__(self, ctx, datasource, user, protocols):
+    def __init__(self, ctx, user, scheme, password, protocols):
         self.ctx = ctx
-        self.datasource = datasource
-        self.connection = user.Connection
+        self.connection = user.getConnection(scheme, password)
         self.protocols = protocols
         self.userid = user.People
         self.username = user.Resource
@@ -553,7 +552,6 @@ class PreparedStatement(BaseStatement,
         self.connection = connection
         self.sql = sql
         self.statement = connection.connection.prepareStatement(sql)
-        self.datasource = connection.datasource
         #self.statement.ResultSetConcurrency = READ_ONLY
         #self.statement.ResultSetType = SCROLL_INSENSITIVE
 
