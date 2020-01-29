@@ -96,74 +96,29 @@ class Driver(unohelper.Base,
                 msg = "You must provide a UserName!"
                 raise self._getException('Authentication ERROR', 1003, msg, self)
             level = INFO
-            #scheme = '%s-%s' % (protocols[1], self._supportedSubProtocols[1])
             scheme = self.DataSource.Provider.Host
             msg = "Driver for Scheme: %s loading ... " % scheme
             print("Driver.connect() 2 *****************")
             if not self.DataSource.isConnected():
                 print("Driver.connect() 3 *****************")
-                path, error = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
-                if error:
-                    msg = "DataBase Error: Could not initialize DataBase at URL: %s" % path
-                    raise self._getException('DataBase ERROR', 1003, msg, self, error)
-                if not self.DataSource.connect(path):
-                    warning = self.DataSource.getWarnings()
-                    self._getSupplierWarnings(self.DataSource, warning)
-                    msg = "Could not connect to DataSource at URL: %s" % path
-                    raise self._getException('DataBase ERROR', 1003, msg, self, warning)
-                #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
-                #mri.inspect(self.DataSource.Connection)
-            user = self.DataSource.getUser(username)
-            if user is None:
-                user = User(self.ctx, self.DataSource, username)
                 warning = self.DataSource.getWarnings()
-                if warning:
-                    self._getSupplierWarnings(self.DataSource, warning)
-                    msg = "Could not retrive user: %s from DataSource: %s" % (username, scheme)
-                    raise self._getException('DataBase ERROR', 1003, msg, self, warning)
-                warning = user.getWarnings()
-                if warning:
-                    self._getSupplierWarnings(user, warning)
-                    msg = "Setup Error: Could not initialize user: %s" % username
-                    raise self._getException('Setup ERROR', 1003, msg, self, warning)
-                if not user.Retrieved:
-                    if not user.initialize(self.DataSource, username, password):
-                        warning = user.getWarnings()
-                        self._getSupplierWarnings(user, warning)
-                        msg = "Could not retreive user %s from provider" % username
-                        raise self._getException('Connection ERROR', 1003, msg, self, warning)
-                if not self.DataSource.setUser(user, scheme, username, password):
-                    self._getSupplierWarnings(self.DataSource, warning)
-                    msg = "Could not connect user: %s to DataBase" % username
-                    raise self._getException('DataBase ERROR', 1003, msg, self, warning)
-                #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
-                #config = getConfiguration(self.ctx, 'org.openoffice.Office.DataAccess')
-                #mri.inspect(config)
+                self._getSupplierWarnings(self.DataSource, warning)
+                msg = "Could not connect to DataSource at URL:"
+                raise self._getException('DataBase ERROR', 1003, msg, self, warning)
+            user = self.DataSource.getUser(username, password)
+            if user is None:
+                warning = self.DataSource.getWarnings()
+                self._getSupplierWarnings(self.DataSource, warning)
+                msg = "Could not retrive user: %s from DataSource: %s" % (username, scheme)
+                raise self._getException('DataBase ERROR', 1003, msg, self, warning)
                 print("Driver.connect() 4 *****************")
             msg += "Done"
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
-            #dbcontext = self.ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')
-            #path = getDataSourceUrl(self.ctx, dbcontext, 'Template', g_identifier, False)
-            #path1 = getDataSourceUrl(self.ctx, dbcontext, scheme, g_identifier, False)
-            #datasource = dbcontext.getByName(path)
-            #datasource1 = dbcontext.getByName(path1)
             #connection = user.getConnection(scheme, password)
             connection = Connection(self.ctx, user, scheme, password, protocols)
             print("Driver.connect() 5 %s" % connection.isClosed())
             version = connection.getMetaData().getDriverVersion()
             print("Driver.connect() 6 %s" % version)
-            #return self.DataSource.Connection
-            #con = self.DataSource.Connection
-            #connection = Connection(self.ctx, self.DataSource, user, protocols)
-            #getDataBaseVersion(connection)
-            #connection = Connection(self.DataSource.Connection, protocols, user.Account)
-            #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
-            #mri.inspect(datasource)
-            #mri.inspect(datasource1)
-            #mri.inspect(con)
-            #settype = con.MetaData.supportsResultSetType(SCROLL_INSENSITIVE)
-            #setcon = con.MetaData.supportsResultSetConcurrency(SCROLL_INSENSITIVE, READ_ONLY)
-            #print("Connection support %s - %s - %s - %s" % (settype, SCROLL_SENSITIVE, setcon, READ_ONLY))
             return connection
         except SQLException as e:
             raise e

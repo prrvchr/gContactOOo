@@ -11,11 +11,6 @@ module com { module sun { module star { module sdbc {
 interface XRestUser: com::sun::star::uno::XInterface
 {
 
-    boolean initialize([in] ::com::sun::star::sdbc::XConnection Connection,
-                       [in] ::com::sun::star::sdbc::XRestDataSource DataSource,
-                       [in] string Name,
-                       [in] string Password);
-
     void setMetaData([in] ::com::sun::star::auth::XRestKeyMap MetaData);
 
     ::com::sun::star::sdbc::XConnection getConnection([in] string Scheme,
@@ -32,7 +27,6 @@ interface XRestUser: com::sun::star::uno::XInterface
     [attribute, readonly] string Resource;
     [attribute, readonly] string Account;
     [attribute, readonly] string Token;
-    [attribute, readonly] boolean Retrieved;
 
 };
 

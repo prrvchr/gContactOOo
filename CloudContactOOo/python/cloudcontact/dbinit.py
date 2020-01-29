@@ -47,12 +47,12 @@ def _createDataBase(ctx, datasource, url, dbname):
         error = e
     if error is not None:
         return error
-    error = checkDataBase(connection)
+    version, error = checkDataBase(connection)
     if error is None:
         print("dbinit._createDataBase()")
         statement = connection.createStatement()
         createStaticTable(statement, _getStaticTables())
-        tables, statements = getTablesAndStatements(statement)
+        tables, statements = getTablesAndStatements(statement, version)
         executeSqlQueries(statement, tables)
         _createPreparedStatement(ctx, datasource, statements)
         executeQueries(statement, _getQueries())
@@ -145,9 +145,9 @@ def _getViewsAndTriggers(statement):
     if queries:
         c1.insert(0, '"%s"' % pcolumn)
         s1.insert(0, '"%s"."%s"' % (ftable, fcolumn))
-        f1.insert(0, 'JOIN "%s" ON "%s"."%s"="%s"."%s"' % (ftable, ptable, pcolumn, ftable, pcolumn))
-        f1.insert(0, '"%s"' % ptable)
-        f1.append('WHERE "%s"."%s"=CURRENT_USER' % (ptable, pcolumn))
+        f1.insert(0, 'ON "%s"."%s"="%s"."%s"' % (ptable, pcolumn, ftable, pcolumn))
+        f1.insert(0, '"%s" JOIN "%s"' % (ptable, ftable))
+        f1.append('WHERE "%s"."Resource" = CURRENT_USER' % ptable)
         format = ('AddressBook', ','.join(c1), ','.join(s1), ' '.join(f1))
         query = getSqlQuery('createView', format)
         queries.append(query)

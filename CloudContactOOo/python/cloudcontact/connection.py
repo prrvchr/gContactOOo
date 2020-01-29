@@ -78,18 +78,16 @@ class Connection(unohelper.Base,
         self.ctx = ctx
         self.connection = user.getConnection(scheme, password)
         self.protocols = protocols
-        self.userid = user.People
-        self.username = user.Resource
+        self.username = user.Account
         self.listeners = []
-        event = uno.createUnoStruct('com.sun.star.lang.EventObject')
-        event.Source = self
-        self.event = event
 
     # XComponent
     def dispose(self):
         print("Connection.dispose()")
+        event = uno.createUnoStruct('com.sun.star.lang.EventObject')
+        event.Source = self
         for listener in self.listeners:
-            litener.disposing(self.event)
+            litener.disposing(event)
     def addEventListener(self, listener):
         print("Connection.addEventListener()")
         self.listeners.append(listener)
@@ -128,7 +126,7 @@ class Connection(unohelper.Base,
     # XCloseable
     def close(self):
         print("Connection.close()********* 1")
-        #self.datasource.closeConnection(self.connection, self.userid)
+        self.connection.close()
         print("Connection.close()********* 2")
 
     # XCommandPreparation
@@ -218,8 +216,7 @@ class Connection(unohelper.Base,
         return self.connection.isClosed()
     def getMetaData(self):
         print("Connection.getMetaData()")
-        metadata = self.connection.getMetaData()
-        dbdata = DatabaseMetaData(self, metadata, self.protocols, self.username)
+        dbdata = DatabaseMetaData(self, self.protocols, self.username)
         #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
         #mri.inspect(dbdata)
         return dbdata
@@ -439,10 +436,8 @@ class BaseStatement(unohelper.Base,
 
     @property
     def UseBookmarks(self):
-        return self.statement.UseBookmarks
-    @UseBookmarks.setter
-    def UseBookmarks(self, state):
-        self.statement.UseBookmarks = state
+        print("BaseStatement.UseBookmarks(): 1")
+        return False
 
     # XCloseable
     def close(self):
@@ -494,7 +489,7 @@ class BaseStatement(unohelper.Base,
         properties['ResultSetType'] = getProperty('ResultSetType', 'long', BOUND)
         properties['FetchDirection'] = getProperty('FetchDirection', 'long', BOUND)
         properties['FetchSize'] = getProperty('FetchSize', 'long', BOUND)
-        properties['UseBookmarks'] = getProperty('UseBookmarks', 'boolean', BOUND)
+        properties['UseBookmarks'] = getProperty('UseBookmarks', 'boolean', BOUND + READONLY)
         return properties
 
 
@@ -564,11 +559,11 @@ class PreparedStatement(BaseStatement,
         # TODO: cannot use: result = self.statement.executeQuery()
         # TODO: it trow a: java.lang.IncompatibleClassChangeError
         # TODO: fallback to: self.statement.execute()
-        print("Connection.PreparedStatement.executeQuery() hack")
         if self.statement.execute():
             print("Connection.PreparedStatement.executeQuery() hack")
             return self.statement.getResultSet()
-        raise SQLException()
+        else:
+            raise SQLException()
     def executeUpdate(self):
         return self.statement.executeUpdate()
     def execute(self):
@@ -867,9 +862,9 @@ class ResultSet(unohelper.Base,
 
 class DatabaseMetaData(unohelper.Base,
                        XDatabaseMetaData2):
-    def __init__(self, connection, metadata, protocols, username):
+    def __init__(self, connection, protocols, username):
         self.connection = connection
-        self.metadata = metadata
+        self.metadata = connection.connection.getMetaData()
         self.protocols = protocols
         self.username = username
 

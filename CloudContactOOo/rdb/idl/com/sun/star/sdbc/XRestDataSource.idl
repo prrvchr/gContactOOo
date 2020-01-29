@@ -18,23 +18,12 @@ interface XRestDataSource: com::sun::star::uno::XInterface
     void clearWarnings();
 
     boolean isConnected();
-    boolean connect([in] string Url);
 
-    ::com::sun::star::uno::XInterface getUser([in] string Key);
-    boolean setUser([in] ::com::sun::star::uno::XInterface User,
-                    [in] string Scheme,
-                    [in] string Key,
-                    [in] string Password);
-
-    ::com::sun::star::auth::XRestKeyMap selectUser([in] string Name,
-                                                   [out] boolean Retrieved);
-    ::com::sun::star::auth::XRestKeyMap inserUser([in] ::com::sun::star::auth::XRestKeyMap User,
-                                                  [in] string Name);
-    boolean createUser([in] ::com::sun::star::uno::XInterface User,
-                       [in] string Password);
-
+    ::com::sun::star::uno::XInterface getRequest([in] string Name);
+    ::com::sun::star::uno::XInterface getUser([in] string Name,
+                                              [in] string Password);
+    ::com::sun::star::auth::XRestKeyMap selectUser([in] string Name);
     ::com::sun::star::auth::XRestKeyMap getFieldsMap([in] boolean Reverse);
-    boolean synchronize([in] ::com::sun::star::uno::XInterface User);
 
     [attribute, readonly] ::com::sun::star::sdbc::XRestProvider Provider;
     [attribute, readonly] ::com::sun::star::uno::XInterface Connection;

@@ -5,11 +5,11 @@ Table|Name|Identity|View|Versioned
 3|Types|||false
 4|Peoples|0|false|true
 5|Connections|5|false|true
-6|Locales||true|true
+6|Locales||false|true
 7|Names||true|true
 8|Addresses||true|true
 9|Emails||true|true
 10|Phones||true|true
 11|Organisations||true|true
 12|Sips||true|true
-13|Defineds||true|true
+13|Defineds||false|true

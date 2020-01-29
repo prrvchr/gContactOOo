@@ -8,6 +8,7 @@ try:
     from .dataparser import DataParser
     from .connection import Connection
     from .provider import Provider
+    from .replicator import Replicator
 
     from .configuration import g_extension
     from .configuration import g_identifier
