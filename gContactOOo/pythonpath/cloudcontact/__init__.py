@@ -23,6 +23,7 @@ try:
     from .dbtools import getDataBaseInfo
     from .dbtools import getDataSourceLocation
     from .dbtools import getDataSourceJavaInfo
+    from .dbtools import getSqlException
 
     from .logger import getLogger
     from .logger import getLoggerSetting
@@ -30,6 +31,7 @@ try:
     from .logger import setLoggerSetting
     from .logger import clearLogger
     from .logger import logMessage
+    from .logger import getMessage
 
 except Exception as e:
     print("cloudcontact.__init__() ERROR: %s - %s" % (e, traceback.print_exc()))

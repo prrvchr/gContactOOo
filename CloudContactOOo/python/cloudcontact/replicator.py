@@ -16,6 +16,7 @@ from unolib import parseDateTime
 from .dataparser import DataParser
 from .dbtools import getDataSourceCall
 from .logger import logMessage
+from .logger import getMessage
 
 from threading import Thread
 import traceback
@@ -53,28 +54,34 @@ class Replicator(unohelper.Base,
                     self._synchronize(user)
 
     def _synchronize(self, user) :
+        level = INFO
+        status = False
+        msg = getMessage(self.ctx, 110)
         try:
-            print("Replicator._synchronize() 1")
             if user.Request.isOffLine(self.datasource.Provider.Host):
-                print("Replicator._synchronize() 2 OffLine")
-                return True
-            status = False
-            timestamp = parseDateTime()
-            parameter = self.datasource.Provider.getRequestParameter('getPeople', user.MetaData)
-            parser = DataParser(self.datasource)
-            map = self.datasource.getFieldsMap(False)
-            pattern = self.getPrimaryField()
-            enumerator = user.Request.getEnumeration(parameter, parser)
-            while self.running and enumerator.hasMoreElements():
-                response = enumerator.nextElement()
-                status = response.IsPresent
-                if status:
-                    self._syncResponse(user, map, pattern, response.Value, timestamp)
-            self._closeDataSourceCall()
-            print("Replicator._synchronize() 3")
-            return status
+                msg += getMessage(self.ctx, 111)
+                status = True
+            else:
+                i = 0
+                timestamp = parseDateTime()
+                parameter = self.datasource.Provider.getRequestParameter('getPeople', user.MetaData)
+                parser = DataParser(self.datasource)
+                map = self.datasource.getFieldsMap(False)
+                pattern = self.getPrimaryField()
+                enumerator = user.Request.getEnumeration(parameter, parser)
+                while self.running and enumerator.hasMoreElements():
+                    i += 1
+                    response = enumerator.nextElement()
+                    status = response.IsPresent
+                    if status:
+                        self._syncResponse(user, map, pattern, response.Value, timestamp)
+                self._closeDataSourceCall()
+                msg += getMessage(self.ctx, 112, i)
         except Exception as e:
-            print("Replicator._synchronize() ERROR: %s - %s" % (e, traceback.print_exc()))
+            level = SEVERE
+            msg += getMessage(self.ctx, 113, (e, traceback.print_exc()))
+        logMessage(self.ctx, level, msg, 'Replicator', '_synchronize()')
+        return status
 
     def _syncResponse(self, user, map, pattern, data, timestamp):
         if data.hasValue(pattern):
@@ -86,7 +93,6 @@ class Replicator(unohelper.Base,
                 self._mergeResponse(user, map, pattern, key, d, timestamp, m)
 
     def _mergeResponse(self, user, map, pattern, key, data, timestamp, method):
-        print("DataSource._mergeResponse: %s" % (method, ))
         if method == 'Sequence':
             m = map.getValue(key).getValue('Table')
             for d in data:
@@ -109,10 +115,9 @@ class Replicator(unohelper.Base,
                 if k == 'Type':
                     continue
                 d = data.getValue(k)
-                print("DataSource._mergeData: 1 %s - %s - %s - %s" % (key, t, k, d))
                 self._mergeField(key, index, t, k, d, timestamp)
         elif method == 'Field':
-            print("DataSource._mergeData: 2 %s - %s" % (key, data))
+            pass
 
     def _mergeResource(self, user, map, pattern, data, timestamp):
         index = self.getPeopleIndex(user, data.getValue(pattern))
@@ -122,11 +127,9 @@ class Replicator(unohelper.Base,
             d = data.getValue(key)
             method = map.getValue(key).getValue('Type')
             self._mergeData(map, index, key, data.getValue(key), timestamp, method)
-        print("DataSource._mergeResource: %s" % (data.getValue(pattern), ))
 
     def _mergeField(self, table, index, typ, field, value, timestamp):
         label = self.getLabelIndex(field)
-        print("DataSource._mergeField: 1: %s - %s - %s - %s" % (value, index, label, typ))
         if label is None:
             return
         call = self._getPreparedCall('update' + table)
@@ -145,10 +148,8 @@ class Replicator(unohelper.Base,
             if typ is not None:
                 call.setLong(4, typ)
             row = call.executeUpdate()
-            print("DataSource._mergeField: 2: %s - %s - %s" % (value, field, label))
 
     def _updateField(self, user, key, value, timestamp):
-        print("DataSource._updateField: %s - %s" % (key, value))
         call = self._getDataSourceCall('update' + key)
         call.setString(1, value)
         call.setTimestamp(2, timestamp)
@@ -157,7 +158,6 @@ class Replicator(unohelper.Base,
         if row and user.MetaData.hasValue(key):
             oldvalue = user.MetaData.getValue(key)
             user.MetaData.setValue(key, value)
-            print("DataSource._updateField: %s - %s" % (oldvalue, user.MetaData.getValue(key)))
 
     def getPeopleIndex(self, user, resource):
         if self._PeopleIndex is None:
@@ -200,17 +200,14 @@ class Replicator(unohelper.Base,
             self._Types = self._getTypes()
         if not data.hasValue('Type'):
             if key in self._Types['Default']:
-                print("DataSource.getTypeIndex() %s - %s **********************" % (key, self._Types['Default'][key]))
                 return self._Types['Default'][key]
             return None
         value = data.getValue('Type')
         if value in self._Types['Index']:
             return self._Types['Index'][value]
-        print("DataSource.getTypeIndex() %s ******************************" % value)
         idx = self._insertType(value)
         if idx is not None:
             self._Types['Index'][value] = idx
-        print("DataSource.getTypeIndex() %s ******************************" % idx)
         return idx
 
     def _getTypes(self):
@@ -242,7 +239,6 @@ class Replicator(unohelper.Base,
             self._LabelIndex = self._getLabelIndex()
         if value in self._LabelIndex:
             return self._LabelIndex[value]
-        print("DataSource.getLabelIndex() %s ******************************" % value)
         return None
 
     def _getLabelIndex(self):

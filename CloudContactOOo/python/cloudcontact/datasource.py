@@ -38,7 +38,9 @@ from .dbtools import getDataBaseConnection
 from .dbtools import getDataSourceConnection
 from .dbtools import getKeyMapFromResult
 from .dbtools import getDataSourceCall
-from .dbtools import getWarning
+from .dbtools import getSqlException
+from .logger import logMessage
+from .logger import getMessage
 
 from threading import Condition
 import traceback
@@ -50,14 +52,12 @@ class DataSource(unohelper.Base,
     def __init__(self, ctx):
         self.ctx = ctx
         self.Provider = Provider(self.ctx)
-        self._Warnings = []
+        self._Warnings = None
         self._Statement = None
         self._FieldsMap = None
         self._UsersPool = {}
         self.lock = Condition()
         self.replicator = Replicator(self.ctx, self, self.lock)
-        msg = "DataSource for Scheme: %s loading ... Done" % self.Provider.Host
-        print(msg)
 
     @property
     def Connection(self):
@@ -65,28 +65,28 @@ class DataSource(unohelper.Base,
             return self._Statement.getConnection()
         return None
     @property
-    def Logger(self):
-        return self.Provider.Logger
+    def Warnings(self):
+        return self._Warnings
+    @Warnings.setter
+    def Warnings(self, warning):
+        if warning is not None:
+            warning.NextException = self._Warnings
+            self._Warnings = warning
 
     def getWarnings(self):
-        if self._Warnings:
-            return self._Warnings.pop(0)
-        return None
+        return self._Warnings
     def clearWarnings(self):
-        self._Warnings = []
+        self._Warnings = None
 
     def isConnected(self):
-        if self.Connection is not None:
-            if not self.Connection.isClosed():
-                return True
+        if self.Connection is not None and not self.Connection.isClosed():
+            return True
         scheme = self.Provider.Host
-        url, error = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
-        if error is not None:
-            self._Warnings.append(error)
+        url, self.Warning = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
+        if self.Warning is not None:
             return False
-        connection, error = getDataSourceConnection(self.ctx, url, scheme)
-        if error is not None:
-            self._Warnings.append(error)
+        connection, self.Warning = getDataSourceConnection(self.ctx, url, scheme)
+        if self.Warning is not None:
             return False
         # Piggyback DataBase Connections (easy and clean ShutDown ;-) )
         self._Statement = connection.createStatement()
@@ -97,16 +97,18 @@ class DataSource(unohelper.Base,
 
     # XTerminateListener
     def queryTermination(self, event):
-        print("DataSource.queryTermination()")
-        msg = "DataSource queryTermination: Scheme: %s ... " % self.Provider.Host
+        level = INFO
+        msg = getMessage(self.ctx, 101, self.Provider.Host)
         if self._Statement is None:
-            msg += "ERROR: database connection already dropped..."
+            level = SEVERE
+            msg += getMessage(self.ctx, 103)
         else:
             self.replicator.cancel()
             self.replicator.join()
             query = getSqlQuery('shutdown')
             self._Statement.execute(query)
-            msg += "Done"
+            msg += getMessage(self.ctx, 102)
+        logMessage(self.ctx, level, msg, 'DataSource', 'queryTermination()')
         print("DataSource.queryTermination() %s" % msg)
     def notifyTermination(self, event):
         pass
@@ -129,9 +131,9 @@ class DataSource(unohelper.Base,
         if request:
             request.initializeSession(self.Provider.Host, name)
         else:
-            msg = "Service: %s is not available... Check your installed extensions!!!" % g_oauth2
-            warning = getWarning('Setup ERROR', 1013, msg, self, None)
-            self._Warnings.append(warning)
+            state = getMessage(self.ctx, 1003)
+            msg = getMessage(self.ctx, 1105, g_oauth2)
+            self.Warnings = getSqlException(state, 1105, msg, self)
         return request
 
     def selectUser(self, account):
@@ -146,7 +148,7 @@ class DataSource(unohelper.Base,
             call.close()
             print("DataSource.selectUser() %s - %s" % (account, user))
         except SQLException as e:
-            self._Warnings.append(e)
+            self.Warnings = e
         return user
 
     def getFieldsMap(self, reverse):
@@ -169,7 +171,7 @@ class DataSource(unohelper.Base,
 
     def _initializeUser(self, user, name, password):
         if user.Request is None:
-           return False
+            return False
         if user.MetaData is not None:
             return True
         if not user.Request.isOffLine(self.Provider.Host):
@@ -179,19 +181,18 @@ class DataSource(unohelper.Base,
                 if self._createUser(user, password):
                     return True
                 else:
-                    state = "DataBase ERROR"
-                    code = 1014
-                    msg = "ERROR: Can't insert User: %s in DataBase" % name
+                    state = getMessage(self.ctx, 1005)
+                    code = 1106
+                    msg = getMessage(self.ctx, code, name)
             else:
-                state = "Provider ERROR"
-                code = 1015
-                msg = "ERROR: User: %s does not exist at this Provider" % name
+                state = getMessage(self.ctx, 1006)
+                code = 1107
+                msg = getMessage(self.ctx, code, name)
         else:
-            state = "OffLine ERROR"
-            code = 1013
-            msg = "ERROR: Can't retrieve User: %s from provider: network is OffLine" % name
-        warning = getWarning(state, code, msg, self, None)
-        self._Warnings.append(warning)
+            state = getMessage(self.ctx, 1004)
+            code = 1108
+            msg = getMessage(self.ctx, code, name)
+        self.Warnings = getSqlException(state, code, msg, self)
         return False
 
     def _insertUser(self, user, account):

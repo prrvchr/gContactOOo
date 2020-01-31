@@ -74,11 +74,11 @@ class Connection(unohelper.Base,
                  XGroupsSupplier,
                  XTableUIProvider,
                  XConnectionTools):
-    def __init__(self, ctx, user, scheme, password, protocols):
+    def __init__(self, ctx, connection, protocols, username):
         self.ctx = ctx
-        self.connection = user.getConnection(scheme, password)
+        self.connection = connection
         self.protocols = protocols
-        self.username = user.Account
+        self.username = username
         self.listeners = []
 
     # XComponent
@@ -559,11 +559,25 @@ class PreparedStatement(BaseStatement,
         # TODO: cannot use: result = self.statement.executeQuery()
         # TODO: it trow a: java.lang.IncompatibleClassChangeError
         # TODO: fallback to: self.statement.execute()
-        if self.statement.execute():
-            print("Connection.PreparedStatement.executeQuery() hack")
-            return self.statement.getResultSet()
-        else:
-            raise SQLException()
+        try:
+            print("Connection.PreparedStatement.executeQuery() hack 1")
+            return self.statement.executeQuery()
+        except:
+            pass
+        try:
+            print("Connection.PreparedStatement.executeQuery() hack 2")
+            if self.statement.execute():
+                return self.statement.getResultSet()
+        except:
+            pass
+        try:
+            print("Connection.PreparedStatement.executeQuery() hack 3")
+            statement = self.connection.connection.createStatement()
+            return statement.executeQuery(self.sql)
+        except:
+            pass
+        print("Connection.PreparedStatement.executeQuery() hack 4")
+        raise SQLException()
     def executeUpdate(self):
         return self.statement.executeUpdate()
     def execute(self):

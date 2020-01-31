@@ -14,7 +14,6 @@ from .configuration import g_identifier
 from .dbinit import getDataSourceUrl
 from .dbtools import getDataSourceConnection
 from .dbtools import getDataBaseConnection
-from .dbtools import getWarning
 
 import traceback
 
@@ -24,7 +23,7 @@ class User(unohelper.Base,
     def __init__(self, ctx, datasource, name):
         self.ctx = ctx
         self._Statement = None
-        self._Warnings = []
+        self._Warnings = None
         self.Request = datasource.getRequest(name)
         self.MetaData = datasource.selectUser(name)
 
@@ -40,36 +39,31 @@ class User(unohelper.Base,
     @property
     def Token(self):
         return self.MetaData.getDefaultValue('Token', None)
+    @property
+    def Warnings(self):
+        return self._Warnings
+    @Warnings.setter
+    def Warnings(self, warning):
+        if warning is not None:
+            warning.NextException = self._Warnings
+            self._Warnings = warning
 
     def getWarnings(self):
-        if self._Warnings:
-            return self._Warnings.pop(0)
-        return None
+        return self._Warnings
     def clearWarnings(self):
-        self._Warnings = []
+        self._Warnings = None
 
     def setMetaData(self, metadata):
         self.MetaData = metadata
 
     def getConnection(self, scheme, password):
-        url, error = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
-        if error is None:
+        url, self.Warning = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
+        if self.Warning is None:
             credential = self.getCredential(password)
-            print("User.getConnection() 1 %s - %s" % credential)
-            connection, error = getDataBaseConnection(self.ctx, url, scheme, *credential)
-            if error is None:
+            connection, self.Warning = getDataBaseConnection(self.ctx, url, scheme, *credential)
+            if self.Warning is None:
                 return connection
-            else:
-                state = "DataBase ERROR"
-                code = 1017
-                msg = "ERROR: Can't connect to new DataBase: %s" % scheme
-        else:
-            state = "DataBase ERROR"
-            code = 1016
-            msg = "ERROR: Can't create new DataBase: %s" % scheme
-        warning = getWarning(state, code, msg, self, error)
-        self._Warnings.append(warning)
-        return False
+        return None
 
     def getCredential(self, password):
         return self.Resource, password

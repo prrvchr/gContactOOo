@@ -30,7 +30,9 @@ from cloudcontact import Connection
 from cloudcontact import getDataSourceUrl
 from cloudcontact import getDataSourceConnection
 from cloudcontact import getDataBaseInfo
+from cloudcontact import getSqlException
 from cloudcontact import logMessage
+from cloudcontact import getMessage
 
 import traceback
 
@@ -54,9 +56,6 @@ class Driver(unohelper.Base,
         self._supportedProtocol = 'sdbc:google:'
         self._supportedSubProtocols = ('people', 'peoples')
         print("Driver.__init__()")
-
-    def __del__(self):
-        print("Driver.__del__()")
 
     @property
     def DataSource(self):
@@ -84,42 +83,36 @@ class Driver(unohelper.Base,
         try:
             protocols = url.strip().split(':')
             username, password = self._getUserCredential(infos)
-            print("Driver.connect() 1 %s - %s - %s" % (username, password, url))
             if len(protocols) != 3 or not all(protocols):
-                msg = "Invalide protocol: '%s'" % url
-                raise self._getException('Protocol ERROR', 1001, msg, self)
+                state = getMessage(self.ctx, 1001)
+                msg = getMessage(self.ctx, 1101, url)
+                raise getSqlException(state, 1101, msg, self)
             elif not self._isSupportedSubProtocols(protocols):
-                msg = "Invalide subprotocol: '%s' are not supported\n" % protocols[2]
-                msg += "Supported subprotocols are: %s" % self._getSupportedSubProtocols()
-                raise self._getException('Protocol ERROR', 1002, msg, self)
+                state = getMessage(self.ctx, 1001)
+                msg = getMessage(self.ctx, 1102, self._getSubProtocols(protocols))
+                msg += getMessage(self.ctx, 1103, self._getSupportedSubProtocols())
+                raise getSqlException(state, 1103, msg, self)
             elif not username:
-                msg = "You must provide a UserName!"
-                raise self._getException('Authentication ERROR', 1003, msg, self)
+                state = getMessage(self.ctx, 1002)
+                msg = getMessage(self.ctx, 1104)
+                raise getSqlException(state, 1104, msg, self)
             level = INFO
             scheme = self.DataSource.Provider.Host
-            msg = "Driver for Scheme: %s loading ... " % scheme
-            print("Driver.connect() 2 *****************")
+            msg = getMessage(self.ctx, 100, scheme)
             if not self.DataSource.isConnected():
-                print("Driver.connect() 3 *****************")
-                warning = self.DataSource.getWarnings()
-                self._getSupplierWarnings(self.DataSource, warning)
-                msg = "Could not connect to DataSource at URL:"
-                raise self._getException('DataBase ERROR', 1003, msg, self, warning)
+                raise self.DataSource.getWarnings()
             user = self.DataSource.getUser(username, password)
             if user is None:
-                warning = self.DataSource.getWarnings()
-                self._getSupplierWarnings(self.DataSource, warning)
-                msg = "Could not retrive user: %s from DataSource: %s" % (username, scheme)
-                raise self._getException('DataBase ERROR', 1003, msg, self, warning)
-                print("Driver.connect() 4 *****************")
-            msg += "Done"
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
-            #connection = user.getConnection(scheme, password)
-            connection = Connection(self.ctx, user, scheme, password, protocols)
+                raise self.DataSource.getWarnings()
+            connection = user.getConnection(scheme, password)
+            if connection is None:
+                raise user.getWarnings()
             print("Driver.connect() 5 %s" % connection.isClosed())
             version = connection.getMetaData().getDriverVersion()
             print("Driver.connect() 6 %s" % version)
-            return connection
+            msg += getMessage(self.ctx, 102)
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            return Connection(self.ctx, connection, protocols, user.Account)
         except SQLException as e:
             raise e
         except Exception as e:
@@ -166,6 +159,9 @@ class Driver(unohelper.Base,
             if username and password:
                 break
         return username, password
+
+    def _getSubProtocols(self, protocols):
+        return protocols[2]
 
     def _getSupportedSubProtocols(self):
         return ', '.join(self._supportedSubProtocols).title()
