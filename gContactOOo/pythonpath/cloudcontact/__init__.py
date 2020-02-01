@@ -25,7 +25,6 @@ try:
     from .dbtools import getDataSourceJavaInfo
     from .dbtools import getSqlException
 
-    from .logger import getLogger
     from .logger import getLoggerSetting
     from .logger import getLoggerUrl
     from .logger import setLoggerSetting
