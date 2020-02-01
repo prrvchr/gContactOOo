@@ -32,10 +32,10 @@ class Replicator(unohelper.Base,
         self.lock = lock
         self.running = True
         self._Calls = {}
-        self._PrimaryField = None
-        self._PeopleIndex = None
+        self._Fields = None
+        self._Peoples = None
         self._Types = None
-        self._LabelIndex = None
+        self._Labels = None
         self.start()
 
     # XCancellable
@@ -56,53 +56,67 @@ class Replicator(unohelper.Base,
     def _synchronize(self, user) :
         level = INFO
         status = False
-        msg = getMessage(self.ctx, 110)
+        msg = getMessage(self.ctx, 110, user.Account)
+        logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
         try:
             if user.Request.isOffLine(self.datasource.Provider.Host):
-                msg += getMessage(self.ctx, 111)
+                msg = getMessage(self.ctx, 111)
                 status = True
             else:
-                i = 0
+                pages = insert = update = 0
                 timestamp = parseDateTime()
                 parameter = self.datasource.Provider.getRequestParameter('getPeople', user.MetaData)
                 parser = DataParser(self.datasource)
                 map = self.datasource.getFieldsMap(False)
-                pattern = self.getPrimaryField()
+                pattern = self._getFields()
                 enumerator = user.Request.getEnumeration(parameter, parser)
                 while self.running and enumerator.hasMoreElements():
-                    i += 1
                     response = enumerator.nextElement()
                     status = response.IsPresent
                     if status:
-                        self._syncResponse(user, map, pattern, response.Value, timestamp)
+                        pages += 1
+                        i, u = self._syncResponse(user, map, pattern, response.Value, timestamp)
+                        insert += i
+                        update += u
                 self._closeDataSourceCall()
-                msg += getMessage(self.ctx, 112, i)
+                format = (pages, insert, update)
+                msg = getMessage(self.ctx, 112, format)
+                logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
         except Exception as e:
-            level = SEVERE
-            msg += getMessage(self.ctx, 113, (e, traceback.print_exc()))
-        logMessage(self.ctx, level, msg, 'Replicator', '_synchronize()')
+            msg = getMessage(self.ctx, 113, (e, traceback.print_exc()))
+            logMessage(self.ctx, SEVERE, msg, 'Replicator', '_synchronize()')
+        msg = getMessage(self.ctx, 114, user.Account)
+        logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
         return status
 
     def _syncResponse(self, user, map, pattern, data, timestamp):
+        insert = update = 0
         if data.hasValue(pattern):
-            self._mergeResource(user, map, pattern, data, timestamp)
+            insert, update = self._mergeResource(user, map, pattern, data, timestamp)
         else:
             for key in data.getKeys():
                 d = data.getValue(key)
                 m = map.getValue(key).getValue('Type')
-                self._mergeResponse(user, map, pattern, key, d, timestamp, m)
+                i, u = self._mergeResponse(user, map, pattern, key, d, timestamp, m)
+                insert += i
+                update += u
+        return insert, update
 
     def _mergeResponse(self, user, map, pattern, key, data, timestamp, method):
+        insert = update = 0
         if method == 'Sequence':
             m = map.getValue(key).getValue('Table')
             for d in data:
-                self._mergeResponse(user, map, pattern, key, d, timestamp, m)
+                i, u = self._mergeResponse(user, map, pattern, key, d, timestamp, m)
+                insert += i
+                update += u
         elif method == 'Field':
             self._updateField(user, key, data, timestamp)
         elif method == 'Header':
             pass
         elif data.hasValue(pattern):
-            self._mergeResource(user, map, pattern, data, timestamp)
+            insert, update = self._mergeResource(user, map, pattern, data, timestamp)
+        return insert, update
 
     def _mergeData(self, map, index, key, data, timestamp, method):
         if method == 'Sequence':
@@ -110,7 +124,7 @@ class Replicator(unohelper.Base,
             for d in data:
                 self._mergeData(map, index, key, d, timestamp, m)
         elif method == 'Tables':
-            t = self.getTypeIndex(key, data)
+            t = self._getTypes(key, data)
             for k in data.getKeys():
                 if k == 'Type':
                     continue
@@ -120,16 +134,17 @@ class Replicator(unohelper.Base,
             pass
 
     def _mergeResource(self, user, map, pattern, data, timestamp):
-        index = self.getPeopleIndex(user, data.getValue(pattern))
+        index, insert, update = self._getPeoples(user, data.getValue(pattern))
         for key in data.getKeys():
             if key == pattern:
                 continue
             d = data.getValue(key)
             method = map.getValue(key).getValue('Type')
             self._mergeData(map, index, key, data.getValue(key), timestamp, method)
+        return insert, update
 
     def _mergeField(self, table, index, typ, field, value, timestamp):
-        label = self.getLabelIndex(field)
+        label = self._getLabels(field)
         if label is None:
             return
         call = self._getPreparedCall('update' + table)
@@ -159,16 +174,19 @@ class Replicator(unohelper.Base,
             oldvalue = user.MetaData.getValue(key)
             user.MetaData.setValue(key, value)
 
-    def getPeopleIndex(self, user, resource):
-        if self._PeopleIndex is None:
-            self._PeopleIndex = self._getPeopleIndex()
-        if resource not in self._PeopleIndex:
+    def _getPeoples(self, user, resource):
+        insert = update = 0
+        if self._Peoples is None:
+            self._Peoples = self._getPeopleIndex()
+        if resource not in self._Peoples:
             people = self._insertResource(user, resource)
             if people is not None:
-                self._PeopleIndex[resource] = people
+                self._Peoples[resource] = people
+                insert = 1
         else:
-            people = self._PeopleIndex[resource]
-        return people
+            people = self._Peoples[resource]
+            update = 1
+        return people, insert, update
 
     def _getPeopleIndex(self):
         map = {}
@@ -195,9 +213,9 @@ class Replicator(unohelper.Base,
                 row = call.executeUpdate()
         return people
 
-    def getTypeIndex(self, key, data):
+    def _getTypes(self, key, data):
         if self._Types is None:
-            self._Types = self._getTypes()
+            self._Types = self._getTypeIndex()
         if not data.hasValue('Type'):
             if key in self._Types['Default']:
                 return self._Types['Default'][key]
@@ -210,11 +228,11 @@ class Replicator(unohelper.Base,
             self._Types['Index'][value] = idx
         return idx
 
-    def _getTypes(self):
+    def _getTypeIndex(self):
         map = {}
         for method in ('Index','Default'):
             map[method] = {}
-            call = getDataSourceCall(self.datasource.Connection, 'getTypes' + method)
+            call = getDataSourceCall(self.datasource.Connection, 'getType' + method)
             result = call.executeQuery()
             while result.next():
                map[method][result.getString(1)] = result.getLong(2)
@@ -234,11 +252,11 @@ class Replicator(unohelper.Base,
                 identity = result.getLong(1)
         return identity
 
-    def getLabelIndex(self, value):
-        if self._LabelIndex is None:
-            self._LabelIndex = self._getLabelIndex()
-        if value in self._LabelIndex:
-            return self._LabelIndex[value]
+    def _getLabels(self, value):
+        if self._Labels is None:
+            self._Labels = self._getLabelIndex()
+        if value in self._Labels:
+            return self._Labels[value]
         return None
 
     def _getLabelIndex(self):
@@ -250,14 +268,14 @@ class Replicator(unohelper.Base,
         call.close()
         return map
 
-    def getPrimaryField(self):
-        if self._PrimaryField is None:
-            self._PrimaryField = self._getPrimaryField()
-        return self._PrimaryField
+    def _getFields(self):
+        if self._Fields is None:
+            self._Fields = self._getFieldIndex()
+        return self._Fields
 
-    def _getPrimaryField(self):
+    def _getFieldIndex(self):
         primary = ''
-        call = getDataSourceCall(self.datasource.Connection, 'getPrimaryField')
+        call = getDataSourceCall(self.datasource.Connection, 'getFieldIndex')
         r = call.executeQuery()
         while r.next():
             primary = r.getString(1)

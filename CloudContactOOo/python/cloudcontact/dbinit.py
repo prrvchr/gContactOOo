@@ -45,22 +45,18 @@ def _createDataBase(ctx, datasource, url, dbname):
         connection = datasource.getConnection('', '')
     except SQLException as e:
         error = e
-    if error is not None:
-        return error
-    version, error = checkDataBase(connection)
-    if error is None:
-        print("dbinit._createDataBase()")
-        statement = connection.createStatement()
-        createStaticTable(statement, _getStaticTables())
-        tables, statements = getTablesAndStatements(statement, version)
-        executeSqlQueries(statement, tables)
-        _createPreparedStatement(ctx, datasource, statements)
-        executeQueries(statement, _getQueries())
-        _createDynamicView(statement)
-        #mri = ctx.ServiceManager.createInstance('mytools.Mri')
-        #mri.inspect(connection)
-    connection.close()
-    connection.dispose()
+    else:
+        version, error = checkDataBase(ctx, connection)
+        if error is None:
+            statement = connection.createStatement()
+            createStaticTable(statement, _getStaticTables())
+            tables, statements = getTablesAndStatements(statement, version)
+            executeSqlQueries(statement, tables)
+            _createPreparedStatement(ctx, datasource, statements)
+            executeQueries(statement, _getQueries())
+            _createDynamicView(statement)
+        connection.close()
+        connection.dispose()
     return error
 
 def _getTableColumns(connection, tables):
@@ -75,7 +71,6 @@ def _getColumns(metadata, table):
     result = metadata.getColumns("", "", table, "%")
     while result.next():
         column = '"%s"' % result.getString(4)
-        print("DbTools._getColumns() %s - %s" % (table, column))
         columns.append(column)
     return columns
 
@@ -86,15 +81,10 @@ def _createPreparedStatement(ctx, datasource, statements):
             query = ctx.ServiceManager.createInstance("com.sun.star.sdb.QueryDefinition")
             query.Command = sql
             queries.insertByName(name, query)
-    #datasource.DatabaseDocument.store()
-    #mri = ctx.ServiceManager.createInstance('mytools.Mri')
-    #mri.inspect(datasource)
 
 def _createDynamicView(statement):
     views, triggers = _getViewsAndTriggers(statement)
     executeSqlQueries(statement, views)
-    for trigger in triggers:
-        print("dbinit._createDynamicView(): %s" % trigger)
     executeSqlQueries(statement, triggers)
 
 def _getViewsAndTriggers(statement):
@@ -138,7 +128,6 @@ def _getViewsAndTriggers(statement):
                 f2.append(f % (table, typeid))
             format = (view, ','.join(c2), ','.join(s2), ' '.join(f2))
             query = getSqlQuery('createView', format)
-            print("dbtool._getCreateViewQueries(): 4 %s" % query)
             queries.append(query)
             triggercore.append(getSqlQuery('createTriggerUpdateAddressBookCore', data))
     call.close()
@@ -152,7 +141,6 @@ def _getViewsAndTriggers(statement):
         query = getSqlQuery('createView', format)
         queries.append(query)
         queries.append( getSqlQuery('grantRole'))
-        print("dbtool._getCreateViewQueries(): 5 %s" % query)
         trigger = getSqlQuery('createTriggerUpdateAddressBook', ' '.join(triggercore))
         triggers.append(trigger)
     return queries, triggers

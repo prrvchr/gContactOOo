@@ -69,9 +69,10 @@ class DataSource(unohelper.Base,
         return self._Warnings
     @Warnings.setter
     def Warnings(self, warning):
-        if warning is not None:
-            warning.NextException = self._Warnings
-            self._Warnings = warning
+        if warning is None:
+            return
+        warning.NextException = self._Warnings
+        self._Warnings = warning
 
     def getWarnings(self):
         return self._Warnings
@@ -81,12 +82,12 @@ class DataSource(unohelper.Base,
     def isConnected(self):
         if self.Connection is not None and not self.Connection.isClosed():
             return True
-        scheme = self.Provider.Host
-        url, self.Warning = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
-        if self.Warning is not None:
+        dbname = self.Provider.Host
+        url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, False)
+        if self.Warnings is not None:
             return False
-        connection, self.Warning = getDataSourceConnection(self.ctx, url, scheme)
-        if self.Warning is not None:
+        connection, self.Warnings = getDataSourceConnection(self.ctx, url, dbname)
+        if self.Warnings is not None:
             return False
         # Piggyback DataBase Connections (easy and clean ShutDown ;-) )
         self._Statement = connection.createStatement()

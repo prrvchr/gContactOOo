@@ -44,9 +44,10 @@ class User(unohelper.Base,
         return self._Warnings
     @Warnings.setter
     def Warnings(self, warning):
-        if warning is not None:
-            warning.NextException = self._Warnings
-            self._Warnings = warning
+        if warning is None:
+            return
+        warning.NextException = self._Warnings
+        self._Warnings = warning
 
     def getWarnings(self):
         return self._Warnings
@@ -56,12 +57,12 @@ class User(unohelper.Base,
     def setMetaData(self, metadata):
         self.MetaData = metadata
 
-    def getConnection(self, scheme, password):
-        url, self.Warning = getDataSourceUrl(self.ctx, scheme, g_identifier, False)
-        if self.Warning is None:
+    def getConnection(self, dbname, password):
+        url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, False)
+        if self.Warnings is None:
             credential = self.getCredential(password)
-            connection, self.Warning = getDataBaseConnection(self.ctx, url, scheme, *credential)
-            if self.Warning is None:
+            connection, self.Warnings = getDataBaseConnection(self.ctx, url, dbname, *credential)
+            if self.Warnings is None:
                 return connection
         return None
 

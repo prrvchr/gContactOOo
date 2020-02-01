@@ -234,9 +234,9 @@ def getSqlQuery(name, format=None):
         p = (','.join(s), ' '.join(f))
         query = 'SELECT %s FROM %s  ORDER BY "F"."Field"' % p
 
-    elif name == 'getTypesIndex':
+    elif name == 'getTypeIndex':
         query = 'SELECT "Value","Type" FROM "Types" ORDER BY "Type"'
-    elif name == 'getTypesDefault':
+    elif name == 'getTypeDefault':
         c1 = '"T2"."Name"'
         c2 = '"T1"."Type"'
         f1 = '"TableType" AS "T1"'
@@ -248,7 +248,7 @@ def getSqlQuery(name, format=None):
     elif name == 'getLabelIndex':
         query = 'SELECT "Name","Label" FROM "Labels" ORDER BY "Label"'
 
-    elif name == 'getPrimaryField':
+    elif name == 'getFieldIndex':
         s = 'COALESCE("Tables"."Name","Columns"."Name","Labels"."Name","Fields"."Name") AS "Name"'
         f1 = '"Fields" AS "F"'
         f2 = 'LEFT JOIN "Tables" ON "F"."Table"=%s AND "F"."Column"="Tables"."Table"'

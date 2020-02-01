@@ -97,14 +97,14 @@ class Driver(unohelper.Base,
                 msg = getMessage(self.ctx, 1104)
                 raise getSqlException(state, 1104, msg, self)
             level = INFO
-            scheme = self.DataSource.Provider.Host
-            msg = getMessage(self.ctx, 100, scheme)
+            dbname = self.DataSource.Provider.Host
+            msg = getMessage(self.ctx, 100, dbname)
             if not self.DataSource.isConnected():
                 raise self.DataSource.getWarnings()
             user = self.DataSource.getUser(username, password)
             if user is None:
                 raise self.DataSource.getWarnings()
-            connection = user.getConnection(scheme, password)
+            connection = user.getConnection(dbname, password)
             if connection is None:
                 raise user.getWarnings()
             print("Driver.connect() 5 %s" % connection.isClosed())
