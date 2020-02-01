@@ -136,7 +136,7 @@ def _getViewsAndTriggers(statement):
         s1.insert(0, '"%s"."%s"' % (ftable, fcolumn))
         f1.insert(0, 'ON "%s"."%s"="%s"."%s"' % (ptable, pcolumn, ftable, pcolumn))
         f1.insert(0, '"%s" JOIN "%s"' % (ptable, ftable))
-        f1.append('WHERE "%s"."Resource" = CURRENT_USER' % ptable)
+        f1.append('WHERE "%s"."Resource" = CURRENT_USER XOR CURRENT_USER = \'AD\'' % ptable)
         format = ('AddressBook', ','.join(c1), ','.join(s1), ' '.join(f1))
         query = getSqlQuery('createView', format)
         queries.append(query)
