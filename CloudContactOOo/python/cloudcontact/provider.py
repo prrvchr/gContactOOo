@@ -21,7 +21,8 @@ from .configuration import g_timestamp
 from .configuration import g_IdentifierRange
 from .configuration import g_userfields
 from .configuration import g_peoplefields
-from .logger import getLogger
+from .logger import logMessage
+from .logger import getMessage
 
 import json
 
@@ -32,7 +33,6 @@ class Provider(unohelper.Base,
         self.ctx = ctx
         self.SessionMode = OFFLINE
         self._Error = ''
-        self.Logger = getLogger(self.ctx)
 
     @property
     def Host(self):
