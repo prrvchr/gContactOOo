@@ -5,16 +5,15 @@
     <identifier value="com.gmail.prrvchr.extensions.CloudContactOOo" />
     <version value="0.0.3" />
     <update-download>
-        <src xlink:href="https://prrvchr.github.io/CloudContactOOo/CloudContactOOo.oxt" />
+        <src xlink:href="https://github.com/prrvchr/gContactOOo/releases/download/v0.0.3/gContactOOo.oxt" />
     </update-download>
     <dependencies xmlns:dep="http://openoffice.org/extensions/description/2006">
         <dep:OpenOffice.org-minimal-version value="4.0" dep:name="OpenOffice.org 4.0"/>
     </dependencies>
     <publisher>
-        <name xlink:href="https://prrvchr.github.io/CloudContactOOo" lang="en">CloudContactOOo</name>
-        <name xlink:href="https://prrvchr.github.io/CloudContactOOo/ReadMe_fr" lang="fr">CloudContactOOo</name>
+        <name xlink:href="https://github.com/prrvchr/gContactOOo" lang="en">CloudContactOOo</name>
     </publisher>
     <release-notes>
-        <src xlink:href="https://prrvchr.github.io/CloudContactOOo" lang="en" />
+        <src xlink:href="https://github.com/prrvchr/gContactOOo/blob/master/README.md" lang="en" />
     </release-notes>
 </description>

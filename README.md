@@ -2,19 +2,22 @@
 
 ## gContactOOo v0.0.3
 
+
 ### Integration of your Google Contacts in LibreOffice / OpenOffice.
+
 
 ### Use:
 
-#### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extention v 0.0.4.
+#### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/releases/download/v0.0.4/OAuth2OOo.oxt) extention v 0.0.4.
 
 You must install this extention first!!!
 
 Restart LibreOffice / OpenOffice after installation.
 
-#### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extention v 0.0.3.
+#### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/releases/download/v0.0.3/gContactOOo.oxt) extention v 0.0.3.
 
 Restart LibreOffice / OpenOffice after installation.
+
 
 ### Requirement:
 
@@ -25,6 +28,7 @@ of a **JRE version 1.8 minimum** (ie: Java version 8)
 Sometimes it may be necessary for LibreOffice users must have no Hsqldb driver installed with LibreOffice  
 (check your Installed Application under Windows or your Packet Manager under Linux)  
 OpenOffice doesn't seem to need this workaround.
+
 
 ### Configuration:
 
@@ -63,10 +67,12 @@ Go back and normally you can test the connection. It must operate...
 
 Have fun...
 
+
 ### Has been tested with:
 
 * LibreOffice 6.3.2.2 - Lubuntu 18.04 -  LxQt 0.12.0.4
 
-I encourage you in case of problem to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)
-I will try to solve it :-)
+I encourage you in case of problem :-(  
+to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)  
+I will try to solve it ;-)
 
