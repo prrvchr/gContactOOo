@@ -26,7 +26,8 @@ interface XRestUser: com::sun::star::uno::XInterface
     [attribute, readonly] long People;
     [attribute, readonly] string Resource;
     [attribute, readonly] string Account;
-    [attribute, readonly] string Token;
+    [attribute, readonly] string PeopleSync;
+    [attribute, readonly] string GroupSync;
 
 };
 

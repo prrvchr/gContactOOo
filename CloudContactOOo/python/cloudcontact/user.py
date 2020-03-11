@@ -37,8 +37,11 @@ class User(unohelper.Base,
     def Account(self):
         return self.MetaData.getDefaultValue('Account', None)
     @property
-    def Token(self):
-        return self.MetaData.getDefaultValue('Token', None)
+    def PeopleSync(self):
+        return self.MetaData.getDefaultValue('PeopleSync', None)
+    @property
+    def GroupSync(self):
+        return self.MetaData.getDefaultValue('GroupSync ', None)
     @property
     def Warnings(self):
         return self._Warnings
@@ -61,8 +64,11 @@ class User(unohelper.Base,
         url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, False)
         if self.Warnings is None:
             credential = self.getCredential(password)
-            connection, self.Warnings = getDataBaseConnection(self.ctx, url, dbname, *credential)
+            connection, self.Warnings = getDataSourceConnection(self.ctx, url, dbname, *credential)
+            #connection, self.Warnings = getDataBaseConnection(self.ctx, url, dbname, *credential)
             if self.Warnings is None:
+                #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
+                #mri.inspect(connection)
                 return connection
         return None
 

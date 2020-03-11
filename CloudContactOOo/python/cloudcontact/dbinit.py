@@ -54,7 +54,9 @@ def _createDataBase(ctx, datasource, url, dbname):
             executeSqlQueries(statement, tables)
             _createPreparedStatement(ctx, datasource, statements)
             executeQueries(statement, _getQueries())
-            _createDynamicView(statement)
+            views, triggers = _getViewsAndTriggers(statement)
+            executeSqlQueries(statement, views)
+            executeSqlQueries(statement, triggers)
         connection.close()
         connection.dispose()
     return error
@@ -81,11 +83,6 @@ def _createPreparedStatement(ctx, datasource, statements):
             query = ctx.ServiceManager.createInstance("com.sun.star.sdb.QueryDefinition")
             query.Command = sql
             queries.insertByName(name, query)
-
-def _createDynamicView(statement):
-    views, triggers = _getViewsAndTriggers(statement)
-    executeSqlQueries(statement, views)
-    executeSqlQueries(statement, triggers)
 
 def _getViewsAndTriggers(statement):
     c1 = []

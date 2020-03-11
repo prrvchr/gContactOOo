@@ -54,7 +54,7 @@ class DataSource(unohelper.Base,
         self.Provider = Provider(self.ctx)
         self._Warnings = None
         self._Statement = None
-        self._FieldsMap = None
+        self._FieldsMap = {}
         self._UsersPool = {}
         self.lock = Condition()
         self.replicator = Replicator(self.ctx, self, self.lock)
@@ -94,6 +94,8 @@ class DataSource(unohelper.Base,
         desktop = 'com.sun.star.frame.Desktop'
         self.ctx.ServiceManager.createInstance(desktop).addTerminateListener(self)
         print("DataSource.connect() OK")
+        #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
+        #mri.inspect(connection)
         return True
 
     # XTerminateListener
@@ -106,7 +108,7 @@ class DataSource(unohelper.Base,
         else:
             self.replicator.cancel()
             self.replicator.join()
-            query = getSqlQuery('shutdown')
+            query = getSqlQuery('shutdownCompact')
             self._Statement.execute(query)
             msg += getMessage(self.ctx, 102)
         logMessage(self.ctx, level, msg, 'DataSource', 'queryTermination()')
@@ -152,18 +154,40 @@ class DataSource(unohelper.Base,
             self.Warnings = e
         return user
 
-    def getFieldsMap(self, reverse):
-        if self._FieldsMap is None:
-            self._FieldsMap = self._getFieldsMap()
+    def getFieldsMap(self, method, reverse):
+        if method not in self._FieldsMap:
+            self._FieldsMap[method] = self._getFieldsMap(method)
         if reverse:
-            map = KeyMap(**{i: {'Map': j, 'Type': k, 'Table': l} for i, j, k, l in self._FieldsMap})
+            map = KeyMap(**{i: {'Map': j, 'Type': k, 'Table': l} for i, j, k, l in self._FieldsMap[method]})
         else:
-            map = KeyMap(**{j: {'Map': i, 'Type': k, 'Table': l} for i, j, k, l in self._FieldsMap})
+            map = KeyMap(**{j: {'Map': i, 'Type': k, 'Table': l} for i, j, k, l in self._FieldsMap[method]})
         return map
 
-    def _getFieldsMap(self):
+    def getIdentity(self):
+        identity = -1
+        call = getDataSourceCall(self.Connection, 'getIdentity')
+        result = call.executeQuery()
+        if result.next():
+            identity = result.getLong(1)
+        call.close()
+        return identity
+
+    def getUpdatedGroups(self, user, timestamp, prefix):
+        groups = []
+        call = getDataSourceCall(self.Connection, 'getUpdatedGroups')
+        #call.setString(1, prefix)
+        call.setLong(1, user.People)
+        call.setTimestamp(2, timestamp)
+        result = call.executeQuery()
+        while result.next():
+            groups.append(result.getString(1))
+        call.close()
+        return tuple(groups)
+
+    def _getFieldsMap(self, method):
         map = []
         call = getDataSourceCall(self.Connection, 'getFieldsMap')
+        call.setString(1, method)
         r = call.executeQuery()
         while r.next():
             map.append((r.getString(1), r.getString(2), r.getString(3), r.getString(4)))
@@ -205,17 +229,14 @@ class DataSource(unohelper.Base,
         row = call.executeUpdate()
         call.close()
         if row == 1:
-            call = getDataSourceCall(self.Connection, 'getIdentity')
-            result = call.executeQuery()
-            if result.next():
-                key = result.getLong(1)
-                print("DataSource.insertUser(): %s" % key)
-                data.insertValue('People', key)
-                data.insertValue('Resource', resource)
-                data.insertValue('Account', account)
-                data.insertValue('Token', '')
-                print("DataSource.insertUser() %s" % data.getValue('People'))
-            call.close()
+            key = self.getIdentity()
+            print("DataSource.insertUser(): %s" % key)
+            data.insertValue('People', key)
+            data.insertValue('Resource', resource)
+            data.insertValue('Account', account)
+            data.insertValue('PeopleSync', '')
+            data.insertValue('GroupSync', '')
+            print("DataSource.insertUser() %s" % data.getValue('People'))
         return data
 
     def _createUser(self, user, password):
