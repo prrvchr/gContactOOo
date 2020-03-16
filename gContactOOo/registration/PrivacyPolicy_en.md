@@ -39,7 +39,7 @@ Use of the `Supplier` services through `gContactOOo`, may submit you to the Data
 
 Since the data collected by `gContactOOo` is located on the user's computer, only the `User` is responsible for the security of the data collected.
 
-Use of the `Supplier` services via `gContactOOo` may subject you to the data protection Policy of `Supplier`. It is the responsibility of the `User` to review this Policy from the `Supplier` website.
+Use of the `Supplier` services via `gContactOOo` may subject you to the Data Protection Policy of `Supplier`. It is the responsibility of the `User` to review this Policy from the `Supplier` website.
 
 `Supplier` is solely responsible for the security of the data it collects as described in its Policy.
 
@@ -52,6 +52,6 @@ Updating the data collected locally is done each time `gContactOOo` is used.
 
 It is the responsibility of the `User` to uninstall `gContactOOo` in order to delete the collected data.
 
-Use of the `Supplier` services via `gContactOOo` may subject you to the data protection Policy of `Supplier`. It is the responsibility of the `User` to review this Policy from the `Supplier` website.
+Use of the `Supplier` services via `gContactOOo` may subject you to the Data Protection Policy of `Supplier`. It is the responsibility of the `User` to review this Policy from the `Supplier` website.
 
 `Supplier` is solely responsible for the expiration of the data it collects as described in its Policy.

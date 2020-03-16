@@ -11,7 +11,7 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 - `Utilisateur`: l'utilisateur du logiciel gContactOOo.
 - `Fournisseur`: fournisseur de services Internet fournissant des services Internet à `gContactOOo`.
 
-L'utilisation de ce logiciel vous soumet à nos **Conditions d'utilisation** comme décrites dans [ce document:](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr)
+L'utilisation de ce logiciel vous soumet à nos **Conditions d'Utilisation** comme décrites dans [ce document:](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr)
 
 ### Contact:
 
@@ -32,7 +32,7 @@ La suppression des données collectées par `gContactOOo` est garantie par la d�
 
 L'utilisation des services du `Fournisseur` au travers de `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
-Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa politique de protection des données.
+Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
 
 ### Sécurité de vos informations personnelles:
@@ -41,7 +41,7 @@ Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collec
 
 L'utilisation des services du `Fournisseur` via `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
-Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa politique de protection des données.
+Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
 
 ### Expiration des données collectées:
@@ -54,4 +54,4 @@ Il est de la responsabilité de l'`Utilisateur` de désinstaller `gContactOOo` a
 
 L'utilisation des services du `Fournisseur` via `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
-Le `Fournisseur` est seul responsable de l'expiration des données qu'il collecte comme décrit dans sa politique de protection des données.
+Le `Fournisseur` est seul responsable de l'expiration des données qu'il collecte comme décrit dans sa Politique de Protection des Données.
