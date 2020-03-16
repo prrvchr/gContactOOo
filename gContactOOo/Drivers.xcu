@@ -10,7 +10,7 @@
                 <value>com.gmail.prrvchr.extensions.gContactOOo.Driver</value>
             </prop>
             <prop oor:name="DriverTypeDisplayName" oor:type="xs:string">
-                <value xml:lang="en-US">Google REST API</value>
+                <value xml:lang="en-US">Google People API</value>
             </prop>
             <node oor:name="Features">
                 <node oor:name="EscapeDateTime" oor:op="replace">

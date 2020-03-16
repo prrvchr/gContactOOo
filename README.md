@@ -1,6 +1,6 @@
 **The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
-## gContactOOo v0.0.3
+## gContactOOo v0.0.4
 
 
 ### Integration of your Google Contacts in LibreOffice / OpenOffice.
@@ -48,13 +48,13 @@ In step: 2. Connection Settings:
 ![gContactOOo screenshot 3](gContactOOo-3.png)
 
 In Database type list:
-- select: Google REST API
+- select: Google People API
 - click: Next(Button)
 
 ![gContactOOo screenshot 4](gContactOOo-4.png)
 
 In General: Datasource Url:
-- put: peoples (or people))
+- put: people
 
 In User Authentication: user name:
 - put: your Google account (ie: your_account@gmail.com)

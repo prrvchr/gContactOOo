@@ -59,15 +59,17 @@ class Provider(unohelper.Base,
             parameter.Method = 'GET'
             parameter.Url += '/people/me'
             parameter.Query = '{"personFields": "%s"}' % g_userfields
-        elif method == 'getPeople':
+        elif method == 'People':
             parameter.Method = 'GET'
             parameter.Url += '/people/me/connections'
+            fields = '"personFields": "%s"' % g_peoplefields
+            page = '"pageSize": %s' % g_page
             sync = data.getValue('PeopleSync')
             if sync:
                 token = '"syncToken": "%s"' % sync
             else:
                 token = '"requestSyncToken": true'
-            parameter.Query = '{%s, "personFields": "%s"}' % (token, g_peoplefields)
+            parameter.Query = '{%s, %s, %s}' % (fields, page, token)
             token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
             token.Type = TOKEN_QUERY | TOKEN_SYNC
             token.Field = 'nextPageToken'
@@ -77,12 +79,15 @@ class Provider(unohelper.Base,
             enumerator.Field = 'connections'
             enumerator.Token = token
             parameter.Enumerator = enumerator
-        elif method == 'getGroup':
+        elif method == 'Group':
             parameter.Method = 'GET'
             parameter.Url += '/contactGroups'
+            page = '"pageSize": %s' % g_page
+            query = [page]
             sync = data.getValue('GroupSync')
             if sync:
-                parameter.Query = '{"syncToken": "%s"}' % sync
+                query.append('"syncToken": "%s"' % sync)
+            parameter.Query = '{%s}' % ','.join(query)
             token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
             token.Type = TOKEN_QUERY | TOKEN_SYNC
             token.Field = 'nextPageToken'
@@ -92,11 +97,11 @@ class Provider(unohelper.Base,
             enumerator.Field = 'contactGroups'
             enumerator.Token = token
             parameter.Enumerator = enumerator
-        elif method == 'getMember':
+        elif method == 'Connection':
             parameter.Method = 'GET'
             parameter.Url += '/contactGroups:batchGet'
             resources = '","'.join(data.getValue('Resources'))
-            parameter.Query = '{"maxMembers": %s", resourceNames": ["%s"]}' % (g_member, resources)
+            parameter.Query = '{"maxMembers": %s, "resourceNames": ["%s"]}' % (g_member, resources)
         return parameter
 
     def transcode(self, name, value):
@@ -106,7 +111,7 @@ class Provider(unohelper.Base,
             value = self._getResource('contactGroups', value)
         return value
     def transform(self, name, value):
-        if name == 'Resource':
+        if name == 'Resource' and value.startswith('people'):
             value = value.split('/').pop()
         return value
 

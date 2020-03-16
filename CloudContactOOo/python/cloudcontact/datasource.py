@@ -24,6 +24,7 @@ from unolib import getPropertyValue
 from unolib import parseDateTime
 
 from .configuration import g_identifier
+from .configuration import g_admin
 from .provider import Provider
 from .dataparser import DataParser
 from .user import User
@@ -174,10 +175,10 @@ class DataSource(unohelper.Base,
 
     def getUpdatedGroups(self, user, timestamp, prefix):
         groups = []
-        call = getDataSourceCall(self.Connection, 'getUpdatedGroups')
-        #call.setString(1, prefix)
-        call.setLong(1, user.People)
-        call.setTimestamp(2, timestamp)
+        call = getDataSourceCall(self.Connection, 'selectGroup')
+        call.setString(1, prefix)
+        call.setLong(2, user.People)
+        call.setTimestamp(3, timestamp)
         result = call.executeQuery()
         while result.next():
             groups.append(result.getString(1))
@@ -202,8 +203,9 @@ class DataSource(unohelper.Base,
         if not user.Request.isOffLine(self.Provider.Host):
             data = self.Provider.getUser(user.Request, name)
             if data.IsPresent:
-                user.setMetaData(self._insertUser(data.Value, name))
-                if self._createUser(user, password):
+                resource = self.Provider.getUserId(data.Value)
+                if self._createUser(resource, password):
+                    user.setMetaData(self._insertUser(resource, name))
                     return True
                 else:
                     state = getMessage(self.ctx, 1005)
@@ -220,37 +222,27 @@ class DataSource(unohelper.Base,
         self.Warnings = getSqlException(state, code, msg, self)
         return False
 
-    def _insertUser(self, user, account):
+    def _insertUser(self, resource, account):
         data = KeyMap()
-        resource = self.Provider.getUserId(user)
-        call = getDataSourceCall(self.Connection, 'insertPerson')
+        call = getDataSourceCall(self.Connection, 'insertUser')
         call.setString(1, resource)
         call.setString(2, account)
-        row = call.executeUpdate()
+        result = call.executeQuery()
+        if result.next():
+            data = getKeyMapFromResult(result)
+        group = call.getLong(3)
         call.close()
-        if row == 1:
-            key = self.getIdentity()
-            print("DataSource.insertUser(): %s" % key)
-            data.insertValue('People', key)
-            data.insertValue('Resource', resource)
-            data.insertValue('Account', account)
-            data.insertValue('PeopleSync', '')
-            data.insertValue('GroupSync', '')
-            print("DataSource.insertUser() %s" % data.getValue('People'))
+        query = getSqlQuery('createGroupView',(data.getValue('Resource'), 'All', group))
+        self._Statement.execute(query)
+        print("DataSource.insertUser() %s - %s" % (data.getValue('People'), group))
         return data
 
-    def _createUser(self, user, password):
-        try:
-            print("createUser 1")
-            credential = user.getCredential(password)
-            print("createUser 2 %s - %s" % credential)
-            sql = getSqlQuery('createUser', credential)
-            print("createUser 3 %s " % sql)
-            created = self._Statement.executeUpdate(sql)
-            sql = getSqlQuery('grantUser', credential[0])
-            print("createUser 4 %s " % sql)
-            created += self._Statement.executeUpdate(sql)
-            print("createUser 5 %s" % created)
-            return created == 0
-        except Exception as e:
-            print("DataSource.createUser() ERROR: %s - %s" % (e, traceback.print_exc()))
+    def _createUser(self, name, password):
+        credential = {'UserName': name, 'Password': password, 'Admin': g_admin}
+        sql = getSqlQuery('createUser', credential)
+        status = self._Statement.executeUpdate(sql)
+        sql = getSqlQuery('createSchema', credential)
+        status += self._Statement.executeUpdate(sql)
+        sql = getSqlQuery('setUserSchema', credential)
+        status += self._Statement.executeUpdate(sql)
+        return status == 0

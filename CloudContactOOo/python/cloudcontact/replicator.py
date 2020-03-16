@@ -15,6 +15,7 @@ from unolib import parseDateTime
 
 from .dataparser import DataParser
 from .dbtools import getDataSourceCall
+from .dbqueries import getSqlQuery
 from .logger import logMessage
 from .logger import getMessage
 
@@ -70,7 +71,7 @@ class Replicator(unohelper.Base,
                 timestamp = parseDateTime()
                 self._syncPeople(user, timestamp)
                 self._syncGroup(user, timestamp)
-                self._syncMember(user, timestamp)
+                self._syncConnection(user, timestamp)
         except Exception as e:
             msg = getMessage(self.ctx, 113, (e, traceback.print_exc()))
             logMessage(self.ctx, SEVERE, msg, 'Replicator', '_synchronize()')
@@ -79,7 +80,7 @@ class Replicator(unohelper.Base,
         return status
 
     def _syncPeople(self, user, timestamp):
-        method = 'getPeople'
+        method = 'People'
         pages = insert = update = 0
         parameter = self.datasource.Provider.getRequestParameter(method, user.MetaData)
         parser = DataParser(self.datasource, method)
@@ -101,7 +102,7 @@ class Replicator(unohelper.Base,
         print("replicator._syncPeople() 1 %s" % pkey)
 
     def _syncGroup(self, user, timestamp):
-        method = 'getGroup'
+        method = 'Group'
         pages = insert = update = 0
         parameter = self.datasource.Provider.getRequestParameter(method, user.MetaData)
         parser = DataParser(self.datasource, method)
@@ -121,25 +122,26 @@ class Replicator(unohelper.Base,
         msg = getMessage(self.ctx, 112, format)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncGroup()')
 
-    def _syncMember(self, user, timestamp):
-        method = 'getMember'
+    def _syncConnection(self, user, timestamp):
+        method = 'Connection'
         pages = insert = update = 0
         groups = self.datasource.getUpdatedGroups(user, timestamp, 'contactGroups/')
-        print("replicator._syncMember() %s" % ','.join(groups))
-        data = KeyMap(**{'Resources': groups})
-        parameter = self.datasource.Provider.getRequestParameter(method, data)
-        parser = DataParser(self.datasource, method)
-        pkey = 'Resource'
-        enumerator = user.Request.getEnumeration(parameter, parser)
-        while self.running and enumerator.hasMoreElements():
-            response = enumerator.nextElement()
-            status = response.IsPresent
-            if status:
+        if len(groups):
+            print("replicator._syncMember() %s" % ','.join(groups))
+            data = KeyMap(**{'Resources': groups})
+            parameter = self.datasource.Provider.getRequestParameter(method, data)
+            parser = DataParser(self.datasource, method)
+            map = self.datasource.getFieldsMap(method, False)
+            pkey = 'Group'
+            request = user.Request.getRequest(parameter, parser)
+            response = request.execute()
+            if response.IsPresent:
+                print("replicator._syncMember() *******************************")
                 pages += 1
                 i, u = self._syncResponse(method, user, map, pkey, response.Value, timestamp)
-        #format = (pages, insert, update)
-        #msg = getMessage(self.ctx, 112, format)
-        #logMessage(self.ctx, INFO, msg, 'Replicator', '_syncGroup()')
+        format = (pages, insert, update)
+        msg = getMessage(self.ctx, 112, format)
+        logMessage(self.ctx, INFO, msg, 'Replicator', '_syncMember()')
 
     def _syncResponse(self, method, user, map, pkey, data, timestamp):
         insert = update = 0
@@ -184,14 +186,14 @@ class Replicator(unohelper.Base,
 
     def _mergeResource(self, method, user, map, pkey, data, timestamp):
         insert = update = 0
-        if method == 'getPeople':
+        if method == 'People':
             insert, update = self._mergePeople(method, user, map, pkey, data, timestamp)
-        elif method == 'getGroup':
+        elif method == 'Group':
             name = data.getValue('Name')
             resource = data.getValue('Resource')
             insert, update = self._mergeGroup(user, name, resource, timestamp)
-        elif method == 'getMember':
-            print("replicator._mergeResource() *******************************")
+        elif method == 'Connection':
+            insert, update = self._mergeConnection(user, data.getValue('Group'), timestamp)
         return insert, update
 
     def _mergePeople(self, method, user, map, pkey, data, timestamp):
@@ -206,30 +208,45 @@ class Replicator(unohelper.Base,
 
     def _mergeGroup(self, user, name, resource, timestamp):
         i = u = 0
-        update = self._getDataSourceCall('updateGroups')
-        update.setString(1, name)
-        update.setTimestamp(2, timestamp)
-        update.setLong(3, user.People)
-        update.setString(4, resource)
-        u = update.executeUpdate()
-        if u != 1:
-            insert = self._getDataSourceCall('insertGroups')
-            insert.setLong(1, user.People)
-            insert.setString(2, resource)
-            insert.setString(3, name)
-            insert.setTimestamp(4, timestamp)
-            i = insert.executeUpdate()
-            if i == 1:
-                self._setGroup(user, resource, self.datasource.getIdentity())
-        print("replicator._mergeGroup() %s - %s" % (resource, name))
+        call = self._getDataSourceCall('mergeGroup')
+        call.setString(1, 'contactGroups/')
+        call.setLong(2, user.People)
+        call.setString(3, resource)
+        call.setString(4, name)
+        call.setTimestamp(5, timestamp)
+        i = call.execute()
+        group = call.getLong(6)
+        schema = user.Resource
+        view = name.title()
+        statement = call.getConnection().createStatement()
+        query = getSqlQuery('dropGroupView',(schema, view))
+        statement.executeQuery(query)
+        query = getSqlQuery('createGroupView',(schema, view, group))
+        print("replicator._mergeGroup() %s - %s - %s - %s\n%s" % (resource, group, name, view, query))
+        statement.executeQuery(query)
+        return i, u
+
+    def _mergeConnection(self, user, data, timestamp):
+        i = u = 0
+        separator = ','
+        call = self._getDataSourceCall('mergeConnection')
+        call.setString(1, 'contactGroups/')
+        call.setString(2, 'people/')
+        call.setString(3, data.getValue('Resource'))
+        call.setTimestamp(4, timestamp)
+        call.setString(5, separator)
+        members = data.getDefaultValue('Connections', ())
+        call.setString(6, separator.join(members))
+        row = call.execute()
+        print("replicator._mergeConnection() %s\n%s" % (data.getValue('Resource'), separator.join(members)))
         return i, u
 
     def _mergeField(self, method, table, index, typ, field, value, timestamp):
-        if method == 'getPeople':
+        if method == 'People':
             self._mergePeopleField(table, index, typ, field, value, timestamp)
-        elif method == 'getGroup':
+        elif method == 'Group':
             self._mergeGroupField(table, index, typ, field, value, timestamp)
-        elif method == 'getMember':
+        elif method == 'Connection':
             print("replicator._mergeField() *******************************")
 
     def _mergePeopleField(self, table, index, typ, field, value, timestamp):
@@ -252,9 +269,10 @@ class Replicator(unohelper.Base,
             if typ is not None:
                 call.setLong(4, typ)
             row = call.executeUpdate()
+        #print("replicator._mergePeopleField() %s - %s - %s - %s - %s" % (table, index, typ, field, value))
 
     def _mergeGroupField(self, table, index, typ, field, value, timestamp):
-        print("replicator._mergeGroupField() %s - %s - %s - %s - %s" (table, index, typ, field, value))
+        print("replicator._mergeGroupField() %s - %s - %s - %s - %s" % (table, index, typ, field, value))
 
     def _updateField(self, user, key, value, timestamp):
         call = self._getDataSourceCall('update' + key)
@@ -290,28 +308,6 @@ class Replicator(unohelper.Base,
         call.close()
         return map
 
-    def _getGroups(self, user):
-        key = user.Account
-        if key not in self._Groups:
-            self._Groups[key] = self._getGroupIndex(user)
-        return self._Groups[key]
-
-    def _setGroup(self, user, resource, group):
-        key = user.Account
-        if key not in self._Groups:
-            self._Groups[key] = self._getGroupIndex(user)
-        self._Groups[key][resource] = group
-
-    def _getGroupIndex(self, user):
-        map = {}
-        call = getDataSourceCall(self.datasource.Connection, 'getGroupIndex')
-        call.setLong(1, user.People)
-        result = call.executeQuery()
-        while result.next():
-            map[result.getString(1)] = result.getLong(2)
-        call.close()
-        return map
-
     def _insertResource(self, user, resource):
         people = None
         call = self._getDataSourceCall('insertPeople')
@@ -319,10 +315,10 @@ class Replicator(unohelper.Base,
         row = call.executeUpdate()
         if row == 1:
             people = self.datasource.getIdentity()
-            call = self._getDataSourceCall('insertConnection')
-            call.setLong(1, user.People)
-            call.setLong(2, people)
-            row = call.executeUpdate()
+            #call = self._getDataSourceCall('insertConnection')
+            #call.setLong(1, user.People)
+            #call.setLong(2, people)
+            #row = call.executeUpdate()
         return people
 
     def _getTypes(self, key, data):

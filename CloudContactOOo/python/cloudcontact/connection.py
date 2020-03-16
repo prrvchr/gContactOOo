@@ -562,22 +562,22 @@ class PreparedStatement(BaseStatement,
         try:
             print("Connection.PreparedStatement.executeQuery() hack 1")
             return self.statement.executeQuery()
-        except:
-            pass
+        except Exception as e:
+            print("PreparedStatement.executeQuery() ERROR: %s - %s" % (e, traceback.print_exc()))
         try:
             print("Connection.PreparedStatement.executeQuery() hack 2")
             if self.statement.execute():
                 return self.statement.getResultSet()
-        except:
-            pass
+        except Exception as e:
+            print("PreparedStatement.executeQuery() ERROR: %s - %s" % (e, traceback.print_exc()))
         try:
             print("Connection.PreparedStatement.executeQuery() hack 3")
             statement = self.connection.connection.createStatement()
             return statement.executeQuery(self.sql)
-        except:
-            pass
+        except Exception as e:
+            print("PreparedStatement.executeQuery() ERROR: %s - %s" % (e, traceback.print_exc()))
         print("Connection.PreparedStatement.executeQuery() hack 4")
-        raise SQLException()
+        raise e
     def executeUpdate(self):
         return self.statement.executeUpdate()
     def execute(self):

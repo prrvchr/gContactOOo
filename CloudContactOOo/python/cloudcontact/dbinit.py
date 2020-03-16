@@ -54,9 +54,10 @@ def _createDataBase(ctx, datasource, url, dbname):
             executeSqlQueries(statement, tables)
             _createPreparedStatement(ctx, datasource, statements)
             executeQueries(statement, _getQueries())
+            print("dbinit._createDataBase()")
             views, triggers = _getViewsAndTriggers(statement)
             executeSqlQueries(statement, views)
-            executeSqlQueries(statement, triggers)
+            #executeSqlQueries(statement, triggers)
         connection.close()
         connection.dispose()
     return error
@@ -105,8 +106,6 @@ def _getViewsAndTriggers(statement):
             view = data['View']
             ptable = data['PrimaryTable']
             pcolumn = data['PrimaryColumn']
-            ftable = data['ForeignTable']
-            fcolumn = data['ForeignColumn']
             labelid = data['LabelId']
             typeid = data['TypeId']
             c1.append('"%s"' % view)
@@ -115,7 +114,7 @@ def _getViewsAndTriggers(statement):
             s1.append('"%s"."Value"' % view)
             s2.append('"%s"."%s"' % (table, pcolumn))
             s2.append('"%s"."Value"' % table)
-            f = 'LEFT JOIN "%s" ON "%s"."%s"="%s"."%s"' % (view, ftable, fcolumn, view, pcolumn)
+            f = 'LEFT JOIN "%s" ON "%s"."%s"="%s"."%s"' % (view, ptable, pcolumn, view, pcolumn)
             f1.append(f)
             f2.append('"%s"' % table)
             f = 'JOIN "Labels" ON "%s"."Label"="Labels"."Label" AND "Labels"."Label"=%s'
@@ -130,14 +129,13 @@ def _getViewsAndTriggers(statement):
     call.close()
     if queries:
         c1.insert(0, '"%s"' % pcolumn)
-        s1.insert(0, '"%s"."%s"' % (ftable, fcolumn))
-        f1.insert(0, 'ON "%s"."%s"="%s"."%s"' % (ptable, pcolumn, ftable, pcolumn))
-        f1.insert(0, '"%s" JOIN "%s"' % (ptable, ftable))
-        f1.append('WHERE "%s"."Resource" = CURRENT_USER OR CURRENT_USER = \'AD\'' % ptable)
+        s1.insert(0, '"%s"."%s"' % (ptable, pcolumn))
+        f1.insert(0, '"%s"' % ptable)
+        f1.append('ORDER BY "%s"."%s"' % (ptable, pcolumn))
         format = ('AddressBook', ','.join(c1), ','.join(s1), ' '.join(f1))
         query = getSqlQuery('createView', format)
+        #print("dbinit._getViewsAndTriggers() %s"  % query)
         queries.append(query)
-        queries.append( getSqlQuery('grantRole'))
         trigger = getSqlQuery('createTriggerUpdateAddressBook', ' '.join(triggercore))
         triggers.append(trigger)
     return queries, triggers
@@ -155,4 +153,7 @@ def _getStaticTables():
     return tables
 
 def _getQueries():
-    return ('createRole', )
+    return ('createInsertUser',
+            'createSelectGroup',
+            'createMergeGroup',
+            'createMergeConnection')

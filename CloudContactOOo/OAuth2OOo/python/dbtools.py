@@ -310,10 +310,17 @@ def getTablesAndStatements(statement, version=g_version):
             names = ['"Value"']
             values = ['?']
             where = []
+            i = 1
             for format in constraint:
+                i =+ 1
                 names.append('"%s"' % format['Column'])
                 values.append('?')
                 where.append('"%s"=?' % format['Column'])
+            vals = list(map(chr, range(123 - i, 123)))
+            format = {'Table': table, 'Names': ','.join(names), 'Values': ','.join(values), 'Vals': ','.join(vals)}
+            merge = 'MERGE INTO "%(Table)s" USING (VALUES(%(Values)s)) AS vals(%(Vals)s) ON "Resource"=vals.x \
+WHEN MATCHED THEN UPDATE SET "People"=vals.w, "Name"=vals.y, "TimeStamp"=vals.z \
+WHEN NOT MATCHED THEN INSERT (%(Names)s) VALUES DEFAULT, vals.w, vals.x, vals.y, vals.z' % format
             insert = 'INSERT INTO "%s" (%s) VALUES (%s)' % (table, ','.join(names), ','.join(values))
             update = 'UPDATE "%s" SET "Value"=?,"TimeStamp"=? WHERE %s' % (table, ' AND '.join(where))
             statements['insert%s' % table] = insert
