@@ -22,7 +22,7 @@ interface XRestUser: com::sun::star::uno::XInterface
     void clearWarnings();
 
     [attribute, readonly] ::com::sun::star::uno::XInterface Request;
-    [attribute, readonly] ::com::sun::star::auth::XRestKeyMap MetaData;
+    [attribute] ::com::sun::star::auth::XRestKeyMap MetaData;
     [attribute, readonly] long People;
     [attribute, readonly] string Resource;
     [attribute, readonly] string Account;

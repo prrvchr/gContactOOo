@@ -38,8 +38,11 @@ Field|Method|Name|Type|Table|Column
 36|Group|contactGroups|Sequence|Tables|5
 37|Group|resourceName|Primary|Columns|2
 38|Group|name|Field|Columns|9
-39|Group|nextSyncToken|Field|Columns|5
-40|Connection|responses|Sequence|Tables|5
-41|Connection|contactGroup|Field|Columns|0
-42|Connection|resourceName|Primary|Columns|2
-43|Connection|memberResourceNames|Sequence|Tables|6
+39|Group|metadata|Field|loop|0
+40|Group|updateTime|Field|loop|0
+41|Group|deleted|Field|loop|0
+42|Group|nextSyncToken|Field|Columns|5
+43|Connection|responses|Sequence|Tables|5
+44|Connection|contactGroup|Field|Columns|0
+45|Connection|resourceName|Primary|Columns|2
+46|Connection|memberResourceNames|Sequence|Tables|6

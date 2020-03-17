@@ -156,4 +156,5 @@ def _getQueries():
     return ('createInsertUser',
             'createSelectGroup',
             'createMergeGroup',
+            'createDeleteGroup',
             'createMergeConnection')

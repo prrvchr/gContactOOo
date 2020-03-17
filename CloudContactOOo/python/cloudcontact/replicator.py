@@ -11,7 +11,7 @@ from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
 from unolib import KeyMap
-from unolib import parseDateTime
+from unolib import getDateTime
 
 from .configuration import g_sync
 from .dataparser import DataParser
@@ -68,7 +68,7 @@ class Replicator(unohelper.Base,
             if user.Request.isOffLine(self.datasource.Provider.Host):
                 msg = getMessage(self.ctx, 111)
             else:
-                timestamp = parseDateTime()
+                timestamp = getDateTime(True)
                 self._syncPeople(user, timestamp)
                 self._syncGroup(user, timestamp)
                 self._syncConnection(user, timestamp)
@@ -122,10 +122,11 @@ class Replicator(unohelper.Base,
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncGroup()')
 
     def _syncConnection(self, user, timestamp):
-        groups = self.datasource.getUpdatedGroups(user, timestamp, 'contactGroups/')
+        groups = self.datasource.getUpdatedGroups(user, 'contactGroups/')
         if len(groups) == 0:
+            print("replicator._syncConnection(): nothing to sync")
             return
-        print("replicator._syncMember(): %s" % ','.join(groups))
+        print("replicator._syncConnection(): %s" % ','.join(groups))
         method = 'Connection'
         pages = insert = update = 0
         data = KeyMap(**{'Resources': groups})
@@ -188,9 +189,13 @@ class Replicator(unohelper.Base,
         if method == 'People':
             insert, update = self._mergePeople(method, user, map, pkey, data, timestamp)
         elif method == 'Group':
-            name = data.getValue('Name')
             resource = data.getValue('Resource')
-            insert, update = self._mergeGroup(user, name, resource, timestamp)
+            name = data.getDefaultValue('Name', None)
+            if name is None:
+                insert, update = self._deleteGroup(user, resource)
+            else:
+                #timestamp = data.getValue('metadata').getValue('updateTime')
+                insert, update = self._mergeGroup(user, name, resource, timestamp)
         elif method == 'Connection':
             insert, update = self._mergeConnection(user, data.getValue('Group'), timestamp)
         return insert, update
@@ -205,8 +210,17 @@ class Replicator(unohelper.Base,
             self._mergeData(method, map, index, key, data.getValue(key), timestamp, f)
         return insert, update
 
+    def _deleteGroup(self, user, resource):
+        call = self._getDataSourceCall('deleteGroup')
+        call.setString(1, 'contactGroups/')
+        call.setLong(2, user.People)
+        call.setString(3, resource)
+        i = call.execute()
+        name = call.getString(4)
+        self.datasource.dropGroupView(user, call.getString(4))
+        return 0, i
+
     def _mergeGroup(self, user, name, resource, timestamp):
-        i = u = 0
         call = self._getDataSourceCall('mergeGroup')
         call.setString(1, 'contactGroups/')
         call.setLong(2, user.People)
@@ -214,16 +228,8 @@ class Replicator(unohelper.Base,
         call.setString(4, name)
         call.setTimestamp(5, timestamp)
         i = call.execute()
-        group = call.getLong(6)
-        schema = user.Resource
-        view = name.title()
-        statement = call.getConnection().createStatement()
-        query = getSqlQuery('dropGroupView',(schema, view))
-        statement.executeQuery(query)
-        query = getSqlQuery('createGroupView',(schema, view, group))
-        print("replicator._mergeGroup() %s\n%s" % (view, query))
-        statement.executeQuery(query)
-        return i, u
+        self.datasource.createGroupView(user, name, call.getLong(6))
+        return i, 0
 
     def _mergeConnection(self, user, data, timestamp):
         i = u = 0

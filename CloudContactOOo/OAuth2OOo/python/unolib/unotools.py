@@ -158,6 +158,14 @@ def getInteractionHandler(ctx):
     interaction = ctx.ServiceManager.createInstanceWithArguments(service, args)
     return interaction
 
+def getDateTime(utc=False):
+    if utc:
+        t = datetime.datetime.utcnow()
+    else:
+        t = datetime.datetime.now()
+    return _getDateTime(t.microsecond, t.second, t.minute, t.hour, t.day, t.month, t.year)
+
+
 def parseDateTime(timestr='', format='%Y-%m-%dT%H:%M:%S.%fZ'):
     if not timestr:
         t = datetime.datetime.now()

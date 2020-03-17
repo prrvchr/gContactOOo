@@ -173,17 +173,30 @@ class DataSource(unohelper.Base,
         call.close()
         return identity
 
-    def getUpdatedGroups(self, user, timestamp, prefix):
+    def getUpdatedGroups(self, user, prefix):
         groups = []
         call = getDataSourceCall(self.Connection, 'selectGroup')
         call.setString(1, prefix)
         call.setLong(2, user.People)
-        call.setTimestamp(3, timestamp)
         result = call.executeQuery()
         while result.next():
             groups.append(result.getString(1))
         call.close()
         return tuple(groups)
+
+    def createGroupView(self, user, name, group):
+        self.dropGroupView(user, name)
+        query = self._getGroupView(user, name, 'create', group)
+        self._Statement.execute(query)
+
+    def dropGroupView(self, user, name):
+        query = self._getGroupView(user, name, 'drop')
+        self._Statement.execute(query)
+
+    def _getGroupView(self, user, name, method, group=0):
+        query = '%sGroupView' % method
+        format = {'Schema': user.Resource, 'View': name.title(), 'Group': group}
+        return getSqlQuery(query, format)
 
     def _getFieldsMap(self, method):
         map = []
@@ -205,7 +218,8 @@ class DataSource(unohelper.Base,
             if data.IsPresent:
                 resource = self.Provider.getUserId(data.Value)
                 if self._createUser(resource, password):
-                    user.setMetaData(self._insertUser(resource, name))
+                    user.MetaData, group = self._insertUser(resource, name)
+                    self.createGroupView(user, 'All', group)
                     return True
                 else:
                     state = getMessage(self.ctx, 1005)
@@ -232,10 +246,7 @@ class DataSource(unohelper.Base,
             data = getKeyMapFromResult(result)
         group = call.getLong(3)
         call.close()
-        query = getSqlQuery('createGroupView',(data.getValue('Resource'), 'All', group))
-        self._Statement.execute(query)
-        print("DataSource.insertUser() %s - %s" % (data.getValue('People'), group))
-        return data
+        return data, group
 
     def _createUser(self, name, password):
         credential = {'UserName': name, 'Password': password, 'Admin': g_admin}
