@@ -58,6 +58,7 @@ class DataSource(unohelper.Base,
         self._Statement = None
         self._FieldsMap = {}
         self._UsersPool = {}
+        self._CallsPool = {}
         self.lock = Condition()
         self.replicator = Replicator(self.ctx, self, self.lock)
 
@@ -185,13 +186,12 @@ class DataSource(unohelper.Base,
 
     def getUpdatedGroups(self, user, prefix):
         groups = []
-        call = getDataSourceCall(self.Connection, 'selectGroup')
+        call = self.getDataSourceCall('selectGroup')
         call.setString(1, prefix)
         call.setLong(2, user.People)
         result = call.executeQuery()
         while result.next():
             groups.append(result.getString(1))
-        call.close()
         return tuple(groups)
 
     def createGroupView(self, user, name, group):
@@ -202,6 +202,15 @@ class DataSource(unohelper.Base,
     def dropGroupView(self, user, name):
         query = self._getGroupView(user, name, 'drop')
         self._Statement.execute(query)
+
+    def updateSyncToken(self, user, token, value, timestamp):
+        call = self.getDataSourceCall('update%s' % token)
+        call.setString(1, value)
+        call.setTimestamp(2, timestamp)
+        call.setLong(3, user.People)
+        if call.executeUpdate():
+            user.MetaData.setValue(token, value)
+        print("datasource.updateSyncToken(): %s - %s" % (token, value))
 
     def _getGroupView(self, user, name, method, group=0):
         query = '%sGroupView' % method
@@ -267,3 +276,23 @@ class DataSource(unohelper.Base,
         sql = getSqlQuery('setUserSchema', credential)
         status += self._Statement.executeUpdate(sql)
         return status == 0
+
+    def getDataSourceCall(self, name):
+        if name  not in self._CallsPool:
+            self._CallsPool[name] = getDataSourceCall(self.Connection, name)
+        return self._CallsPool[name]
+
+    def getPreparedCall(self, name):
+        if name not in self._CallsPool:
+            # TODO: cannot use: call = self.Connection.prepareCommand(name, QUERY)
+            # TODO: it trow a: java.lang.IncompatibleClassChangeError
+            query = self.Connection.getQueries().getByName(name).Command
+            call = self.Connection.prepareCall(query)
+            self._CallsPool[name] = call
+        return self._CallsPool[name]
+
+    def closeDataSourceCall(self):
+        for name in self._CallsPool:
+            call = self._CallsPool[name]
+            call.close()
+        self._CallsPool = {}

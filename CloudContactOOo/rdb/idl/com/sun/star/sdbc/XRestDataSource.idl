@@ -36,6 +36,15 @@ interface XRestDataSource: com::sun::star::uno::XInterface
     void dropGroupView([in] ::com::sun::star::uno::XInterface User,
                        [in] string Name);
 
+    void updateSyncToken([in] ::com::sun::star::uno::XInterface User,
+                         [in] string Token,
+                         [in] string Value,
+                         [in] ::com::sun::star::util::DateTime TimeStamp);
+
+    ::com::sun::star::sdbc::XPreparedStatement getDataSourceCall([in] string Name);
+    ::com::sun::star::sdbc::XPreparedStatement getPreparedCall([in] string Name);
+    void closeDataSourceCall();
+
     [attribute, readonly] ::com::sun::star::sdbc::XRestProvider Provider;
     [attribute, readonly] ::com::sun::star::uno::XInterface Connection;
 

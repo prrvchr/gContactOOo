@@ -15,8 +15,6 @@ from unolib import getDateTime
 
 from .configuration import g_sync
 from .dataparser import DataParser
-from .dbtools import getDataSourceCall
-from .dbqueries import getSqlQuery
 from .logger import logMessage
 from .logger import getMessage
 
@@ -59,7 +57,7 @@ class Replicator(unohelper.Base,
         for user in self.datasource._UsersPool.values():
             if self.running:
                 self._syncUser(user)
-        self._closeDataSourceCall()
+        self.datasource.closeDataSourceCall()
 
     def _syncUser(self, user):
         msg = getMessage(self.ctx, 110, user.Account)
@@ -167,7 +165,7 @@ class Replicator(unohelper.Base,
                 insert += i
                 update += u
         elif field == 'Field':
-            self._updateField(user, key, data, timestamp)
+            self.datasource.updateSyncToken(user, key, data, timestamp)
         elif field == 'Header':
             pass
         elif data.hasValue(rules['PrimaryKey']):
@@ -226,7 +224,7 @@ class Replicator(unohelper.Base,
                     self._mergePeopleField(key, index, t, k, data.getValue(k), timestamp)
 
     def _deleteGroup(self, user, resource):
-        call = self._getDataSourceCall('deleteGroup')
+        call = self.datasource.getDataSourceCall('deleteGroup')
         call.setString(1, 'contactGroups/')
         call.setLong(2, user.People)
         call.setString(3, resource)
@@ -236,7 +234,7 @@ class Replicator(unohelper.Base,
         return 0, i
 
     def _mergeGroup(self, user, name, resource, timestamp):
-        call = self._getDataSourceCall('mergeGroup')
+        call = self.datasource.getDataSourceCall('mergeGroup')
         call.setString(1, 'contactGroups/')
         call.setLong(2, user.People)
         call.setString(3, resource)
@@ -249,7 +247,7 @@ class Replicator(unohelper.Base,
     def _mergeConnection(self, user, data, timestamp):
         i = u = 0
         separator = ','
-        call = self._getDataSourceCall('mergeConnection')
+        call = self.datasource.getDataSourceCall('mergeConnection')
         call.setString(1, 'contactGroups/')
         call.setString(2, 'people/')
         call.setString(3, data.getValue('Resource'))
@@ -265,7 +263,7 @@ class Replicator(unohelper.Base,
         label = self._getLabels(field)
         if label is None:
             return
-        call = self._getPreparedCall('update' + table)
+        call = self.datasource.getPreparedCall('update%s' % table)
         call.setString(1, value)
         call.setTimestamp(2, timestamp)
         call.setLong(3, index)
@@ -274,7 +272,7 @@ class Replicator(unohelper.Base,
             call.setLong(5, typ)
         row = call.executeUpdate()
         if row != 1:
-            call = self._getPreparedCall('insert' + table)
+            call = self.datasource.getPreparedCall('insert%s' % table)
             call.setString(1, value)
             call.setLong(2, index)
             call.setLong(3, label)
@@ -282,18 +280,6 @@ class Replicator(unohelper.Base,
                 call.setLong(4, typ)
             row = call.executeUpdate()
         #print("replicator._mergePeopleField() %s - %s - %s - %s - %s" % (table, index, typ, field, value))
-
-    def _updateField(self, user, key, value, timestamp):
-        call = self._getDataSourceCall('update' + key)
-        call.setString(1, value)
-        call.setTimestamp(2, timestamp)
-        call.setLong(3, user.People)
-        row = call.executeUpdate()
-        if row and user.MetaData.hasValue(key):
-            oldvalue = user.MetaData.getValue(key)
-            user.MetaData.setValue(key, value)
-            print("replicator._updateField() 1 %s - %s" % (key, value))
-        print("replicator._updateField() 2 %s - %s" % (key, value))
 
     def _getPeoples(self, user, resource):
         insert = update = 0
@@ -311,21 +297,20 @@ class Replicator(unohelper.Base,
 
     def _getPeopleIndex(self):
         map = {}
-        call = getDataSourceCall(self.datasource.Connection, 'getPeopleIndex')
+        call = self.datasource.getDataSourceCall('getPeopleIndex')
         result = call.executeQuery()
         while result.next():
             map[result.getString(1)] = result.getLong(2)
-        call.close()
         return map
 
     def _insertResource(self, user, resource):
         people = None
-        call = self._getDataSourceCall('insertPeople')
+        call = self.datasource.getDataSourceCall('insertPeople')
         call.setString(1, resource)
         row = call.executeUpdate()
         if row == 1:
             people = self.datasource.getIdentity()
-            #call = self._getDataSourceCall('insertConnection')
+            #call = self.datasource.getDataSourceCall('insertConnection')
             #call.setLong(1, user.People)
             #call.setLong(2, people)
             #row = call.executeUpdate()
@@ -350,16 +335,15 @@ class Replicator(unohelper.Base,
         map = {}
         for m in ('Index','Default'):
             map[m] = {}
-            call = getDataSourceCall(self.datasource.Connection, 'getType' + m)
+            call = self.datasource.getDataSourceCall('getType%s' % m)
             result = call.executeQuery()
             while result.next():
                map[m][result.getString(1)] = result.getLong(2)
-            call.close()
         return map
 
     def _insertType(self, value):
         identity = None
-        call = self._getDataSourceCall('insertTypes')
+        call = self.datasource.getDataSourceCall('insertTypes')
         call.setString(1, value)
         call.setString(2, value)
         row = call.executeUpdate()
@@ -376,11 +360,10 @@ class Replicator(unohelper.Base,
 
     def _getLabelIndex(self):
         map = {}
-        call = getDataSourceCall(self.datasource.Connection, 'getLabelIndex')
+        call = self.datasource.getDataSourceCall('getLabelIndex')
         result = call.executeQuery()
         while result.next():
             map[result.getString(1)] = result.getLong(2)
-        call.close()
         return map
 
     def _getFields(self, method):
@@ -390,32 +373,9 @@ class Replicator(unohelper.Base,
 
     def _getFieldIndex(self, method):
         primary = ''
-        call = getDataSourceCall(self.datasource.Connection, 'getFieldIndex')
+        call = self.datasource.getDataSourceCall('getFieldIndex')
         call.setString(1, method)
         r = call.executeQuery()
         while r.next():
             primary = r.getString(1)
-        call.close()
         return primary
-
-    def _closeDataSourceCall(self):
-        for call in self._Calls.values():
-            call.close()
-        self._Calls = {}
-
-    def _getPreparedCall(self, name):
-        if name in self._Calls:
-            return self._Calls[name]
-        # TODO: cannot use: call = self.Connection.prepareCommand(name, QUERY)
-        # TODO: it trow a: java.lang.IncompatibleClassChangeError
-        query = self.datasource.Connection.getQueries().getByName(name).Command
-        call = self.datasource.Connection.prepareCall(query)
-        self._Calls[name] = call
-        return call
-
-    def _getDataSourceCall(self, name):
-        if name in self._Calls:
-            return self._Calls[name]
-        call = getDataSourceCall(self.datasource.Connection, name)
-        self._Calls[name] = call
-        return call
