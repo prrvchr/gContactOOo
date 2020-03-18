@@ -16,7 +16,13 @@ class DataParser(unohelper.Base,
         self.provider = datasource.Provider
         self.map = datasource.getFieldsMap(method, True)
         self.keys = self.map.getKeys()
-        print("dbpaser.DataParser(): %s" % (self.keys, ))
+        #map = {}
+        #for key in self.keys:
+        #    map[key] = {}
+        #    km = self.map.getValue(key)
+        #    for k in km.getKeys():
+        #        map[key][k]= km.getValue(k)
+        #print("dbpaser.DataParser(): %s\n%s" % (self.keys, map))
 
     def jsonParser(self, pairs):
         data = KeyMap()

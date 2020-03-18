@@ -20,7 +20,7 @@ interface XRestProvider: com::sun::star::uno::XInterface
     boolean isOffLine();
 
     ::com::sun::star::auth::RestRequestParameter getRequestParameter([in] string Method,
-                                                                     [in] ::com::sun::star::auth::XRestKeyMap Data);
+                                                                     [in] com::sun::star::uno::XInterface Data);
 
     any transcode([in] string Name,
                   [in] any Value);
@@ -28,13 +28,12 @@ interface XRestProvider: com::sun::star::uno::XInterface
                   [in] any Value);
 
     ::com::sun::star::beans::Optional<::com::sun::star::auth::XRestKeyMap> getUser([in] ::com::sun::star::uno::XInterface Request,
-                                                                                   [in] string Name);
+                                                                                   [in] ::com::sun::star::uno::XInterface User);
     string getUserId([in] ::com::sun::star::auth::XRestKeyMap User);
     string getItemId([in] ::com::sun::star::auth::XRestKeyMap Item);
 
     [attribute, readonly] string Host;
     [attribute, readonly] string BaseUrl;
-    [attribute, readonly] ::com::sun::star::auth::XRestKeyMap PeopleFields;
 
 };
 

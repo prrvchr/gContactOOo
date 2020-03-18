@@ -26,6 +26,7 @@ class User(unohelper.Base,
         self._Warnings = None
         self.Request = datasource.getRequest(name)
         self.MetaData = datasource.selectUser(name)
+        self.Fields = datasource.getUserFields()
 
     @property
     def People(self):
@@ -41,7 +42,7 @@ class User(unohelper.Base,
         return self.MetaData.getDefaultValue('PeopleSync', None)
     @property
     def GroupSync(self):
-        return self.MetaData.getDefaultValue('GroupSync ', None)
+        return self.MetaData.getDefaultValue('GroupSync', None)
     @property
     def Warnings(self):
         return self._Warnings

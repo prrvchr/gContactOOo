@@ -23,6 +23,7 @@ interface XRestUser: com::sun::star::uno::XInterface
 
     [attribute, readonly] ::com::sun::star::uno::XInterface Request;
     [attribute] ::com::sun::star::auth::XRestKeyMap MetaData;
+    [attribute, readonly] sequence<string> Fields;
     [attribute, readonly] long People;
     [attribute, readonly] string Resource;
     [attribute, readonly] string Account;

@@ -252,6 +252,15 @@ CREATE VIEW IF NOT EXISTS "%(Schema)s"."%(View)s" AS
         p = (','.join(s), ' '.join(f), w)
         query = 'SELECT %s FROM %s WHERE %s ORDER BY "TableId","LabelId","TypeId"' % p
 
+    elif name == 'getFieldNames':
+        s = '"Fields"."Name"'
+        f1 = '"Fields"'
+        f2 = 'JOIN "Tables" ON "Fields"."Table"=%s AND "Fields"."Column"="Tables"."Table"'
+        f = (f1, f2 % "'Tables'")
+        w = '"Tables"."View"=TRUE'
+        p = (s, ' '.join(f), w)
+        query = 'SELECT %s FROM %s WHERE %s' % p
+
     elif name == 'getFieldsMap':
         s1 = '"F"."Name" AS "Value"'
         s2 = 'COALESCE("Tables"."Name","Columns"."Name","Labels"."Name","Fields"."Name") AS "Name"'

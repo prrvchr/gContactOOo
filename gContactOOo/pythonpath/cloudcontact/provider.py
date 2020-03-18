@@ -19,10 +19,6 @@ from .configuration import g_host
 from .configuration import g_url
 from .configuration import g_page
 from .configuration import g_member
-from .configuration import g_timestamp
-from .configuration import g_IdentifierRange
-from .configuration import g_userfields
-from .configuration import g_peoplefields
 from .logger import logMessage
 from .logger import getMessage
 
@@ -42,9 +38,6 @@ class Provider(unohelper.Base,
     @property
     def BaseUrl(self):
         return g_url
-    @property
-    def PeopleFields(self):
-        return KeyMap(g_peoplefields)
 
     def isOnLine(self):
         return self.SessionMode != OFFLINE
@@ -58,13 +51,13 @@ class Provider(unohelper.Base,
         if method == 'getUser':
             parameter.Method = 'GET'
             parameter.Url += '/people/me'
-            parameter.Query = '{"personFields": "%s"}' % g_userfields
+            parameter.Query = '{"personFields": "%s"}' % ','.join(data.Fields)
         elif method == 'People':
             parameter.Method = 'GET'
             parameter.Url += '/people/me/connections'
-            fields = '"personFields": "%s"' % g_peoplefields
+            fields = '"personFields": "%s"' % ','.join(data.Fields)
             page = '"pageSize": %s' % g_page
-            sync = data.getValue('PeopleSync')
+            sync = data.PeopleSync
             if sync:
                 token = '"syncToken": "%s"' % sync
             else:
@@ -84,7 +77,7 @@ class Provider(unohelper.Base,
             parameter.Url += '/contactGroups'
             page = '"pageSize": %s' % g_page
             query = [page]
-            sync = data.getValue('GroupSync')
+            sync = data.GroupSync
             if sync:
                 query.append('"syncToken": "%s"' % sync)
             parameter.Query = '{%s}' % ','.join(query)
@@ -115,8 +108,8 @@ class Provider(unohelper.Base,
             value = value.split('/').pop()
         return value
 
-    def getUser(self, request, name):
-        parameter = self.getRequestParameter('getUser')
+    def getUser(self, request, user):
+        parameter = self.getRequestParameter('getUser', user)
         return request.execute(parameter)
     def getUserId(self, user):
         return user.getValue('resourceName').split('/').pop()

@@ -38,6 +38,7 @@ from .dbtools import getDataSourceLocation
 from .dbtools import getDataBaseConnection
 from .dbtools import getDataSourceConnection
 from .dbtools import getKeyMapFromResult
+from .dbtools import getSequenceFromResult
 from .dbtools import getDataSourceCall
 from .dbtools import getSqlException
 from .logger import logMessage
@@ -130,6 +131,15 @@ class DataSource(unohelper.Base,
             self.lock.notify()
         return user
 
+    def getUserFields(self):
+        fields = []
+        call = getDataSourceCall(self.Connection, 'getFieldNames')
+        result = call.executeQuery()
+        fields = getSequenceFromResult(result)
+        call.close()
+        print("DataSource.getUserFields() %s" % (fields, ))
+        return tuple(fields)
+
     def getRequest(self, name):
         request = createService(self.ctx, g_oauth2)
         if request:
@@ -214,7 +224,7 @@ class DataSource(unohelper.Base,
         if user.MetaData is not None:
             return True
         if not user.Request.isOffLine(self.Provider.Host):
-            data = self.Provider.getUser(user.Request, name)
+            data = self.Provider.getUser(user.Request, user)
             if data.IsPresent:
                 resource = self.Provider.getUserId(data.Value)
                 if self._createUser(resource, password):

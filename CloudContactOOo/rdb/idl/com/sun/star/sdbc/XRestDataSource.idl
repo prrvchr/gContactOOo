@@ -21,6 +21,7 @@ interface XRestDataSource: com::sun::star::uno::XInterface
     long getIdentity();
 
     ::com::sun::star::uno::XInterface getRequest([in] string Name);
+    sequence<string> getUserFields();
     ::com::sun::star::uno::XInterface getUser([in] string Name,
                                               [in] string Password);
     ::com::sun::star::auth::XRestKeyMap selectUser([in] string Name);

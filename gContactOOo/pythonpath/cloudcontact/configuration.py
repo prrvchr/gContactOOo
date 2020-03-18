@@ -15,6 +15,3 @@ g_admin = False
 g_sync = 600
 
 g_timestamp = '%Y-%m-%dT%H:%M:%S.00'
-g_IdentifierRange = (10, 50)
-g_userfields = 'userDefined'
-g_peoplefields = 'addresses,emailAddresses,names,organizations,phoneNumbers,sipAddresses,userDefined'
