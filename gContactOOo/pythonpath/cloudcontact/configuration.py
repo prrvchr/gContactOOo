@@ -14,4 +14,6 @@ g_member = 1000
 g_admin = False
 g_sync = 600
 
+g_group = 'all'
+g_filter = 'USER_CONTACT_GROUP'
 g_timestamp = '%Y-%m-%dT%H:%M:%S.00'

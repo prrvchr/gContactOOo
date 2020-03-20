@@ -32,6 +32,9 @@ class User(unohelper.Base,
     def People(self):
         return self.MetaData.getDefaultValue('People', None)
     @property
+    def Group(self):
+        return self.MetaData.getDefaultValue('Group', None)
+    @property
     def Resource(self):
         return self.MetaData.getDefaultValue('Resource', None)
     @property

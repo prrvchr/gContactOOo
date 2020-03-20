@@ -153,7 +153,9 @@ def _getStaticTables():
     return tables
 
 def _getQueries():
-    return ('createInsertUser',
+    return ('createInsertType',
+            'createInsertUser',
+            'createInsertPeople',
             'createSelectGroup',
             'createMergeGroup',
             'createDeleteGroup',

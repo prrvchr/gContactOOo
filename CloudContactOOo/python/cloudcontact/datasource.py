@@ -25,6 +25,7 @@ from unolib import parseDateTime
 
 from .configuration import g_identifier
 from .configuration import g_admin
+from .configuration import g_group
 from .provider import Provider
 from .dataparser import DataParser
 from .user import User
@@ -157,6 +158,7 @@ class DataSource(unohelper.Base,
         try:
             call = getDataSourceCall(self.Connection, 'getPerson')
             call.setString(1, account)
+            call.setString(2, g_group)
             result = call.executeQuery()
             if result.next():
                 user = getKeyMapFromResult(result)
@@ -212,6 +214,88 @@ class DataSource(unohelper.Base,
             user.MetaData.setValue(token, value)
         print("datasource.updateSyncToken(): %s - %s" % (token, value))
 
+    def getTableIndex(self, table):
+        map = {}
+        call = self.getDataSourceCall('get%sIndex' % table)
+        result = call.executeQuery()
+        while result.next():
+            map[result.getString(1)] = result.getLong(2)
+        return map
+
+    def insertType(self, value):
+        identity = None
+        call = self.getDataSourceCall('insertType')
+        call.setString(1, value)
+        row = call.executeUpdate()
+        identity = call.getLong(2)
+        return identity
+
+    def insertPeople(self, user, resource, timestamp):
+        identity = None
+        call = self.getDataSourceCall('insertPeople')
+        call.setString(1, resource)
+        call.setLong(2, user.Group)
+        call.setTimestamp(3, timestamp)
+        row = call.executeUpdate()
+        identity = call.getLong(4)
+        return identity
+
+    def mergePeople(self, table, index, typ, label, field, value, timestamp):
+        call = self.getPreparedCall('update%s' % table)
+        call.setString(1, value)
+        call.setTimestamp(2, timestamp)
+        call.setLong(3, index)
+        call.setLong(4, label)
+        if typ is not None:
+            call.setLong(5, typ)
+        row = call.executeUpdate()
+        if row != 1:
+            call = self.getPreparedCall('insert%s' % table)
+            call.setString(1, value)
+            call.setLong(2, index)
+            call.setLong(3, label)
+            if typ is not None:
+                call.setLong(4, typ)
+            row = call.executeUpdate()
+
+    def deleteGroup(self, user, resource):
+        call = self.getDataSourceCall('deleteGroup')
+        call.setString(1, 'contactGroups/')
+        call.setLong(2, user.People)
+        call.setString(3, resource)
+        i = call.execute()
+        name = call.getString(4)
+        self.dropGroupView(user, call.getString(4))
+        return 0, i
+
+    def mergeGroup(self, user, name, resource, timestamp):
+        call = self.getDataSourceCall('mergeGroup')
+        call.setString(1, 'contactGroups/')
+        call.setLong(2, user.People)
+        call.setString(3, resource)
+        call.setTimestamp(4, timestamp)
+        call.setString(5, name)
+        i = call.execute()
+        oldname = call.getString(5)
+        if oldname != '' and oldname != name:
+            self.dropGroupView(user, oldname)
+        self.createGroupView(user, name, call.getLong(6))
+        return i, 0
+
+    def mergeConnection(self, user, data, timestamp):
+        separator = ','
+        call = self.getDataSourceCall('mergeConnection')
+        call.setString(1, 'contactGroups/')
+        call.setString(2, 'people/')
+        call.setString(3, data.getValue('Resource'))
+        call.setTimestamp(4, timestamp)
+        call.setString(5, separator)
+        members = data.getDefaultValue('Connections', ())
+        call.setString(6, separator.join(members))
+        row = call.execute()
+        print("datasource._mergeConnection() %s - %s" % (data.getValue('Resource'), len(members)))
+        return 1, len(members)
+
     def _getGroupView(self, user, name, method, group=0):
         query = '%sGroupView' % method
         format = {'Schema': user.Resource, 'View': name.title(), 'Group': group}
@@ -237,8 +321,8 @@ class DataSource(unohelper.Base,
             if data.IsPresent:
                 resource = self.Provider.getUserId(data.Value)
                 if self._createUser(resource, password):
-                    user.MetaData, group = self._insertUser(resource, name)
-                    self.createGroupView(user, 'All', group)
+                    user.MetaData = self._insertUser(resource, name)
+                    self.createGroupView(user, g_group, user.Group)
                     return True
                 else:
                     state = getMessage(self.ctx, 1005)
@@ -260,12 +344,12 @@ class DataSource(unohelper.Base,
         call = getDataSourceCall(self.Connection, 'insertUser')
         call.setString(1, resource)
         call.setString(2, account)
+        call.setString(3, g_group)
         result = call.executeQuery()
         if result.next():
             data = getKeyMapFromResult(result)
-        group = call.getLong(3)
         call.close()
-        return data, group
+        return data
 
     def _createUser(self, name, password):
         credential = {'UserName': name, 'Password': password, 'Admin': g_admin}
