@@ -29,6 +29,7 @@ from .configuration import g_identifier
 from .configuration import g_admin
 from .configuration import g_group
 from .configuration import g_db_timestamp
+from .configuration import g_compact
 from .provider import Provider
 from .dataparser import DataParser
 from .user import User
@@ -66,6 +67,7 @@ class DataSource(unohelper.Base,
         self._CallsPool = {}
         self.event = event
         self.replicator = None
+        self.count = 0
 
     @property
     def Connection(self):
@@ -122,7 +124,8 @@ class DataSource(unohelper.Base,
             level = SEVERE
             msg += getMessage(self.ctx, 103)
         else:
-            query = getSqlQuery('shutdown', self.replicator.Compact)
+            compact = self.count >= g_compact
+            query = getSqlQuery('shutdown', compact)
             print("DataSource.queryTermination() 3")
             self._Statement.execute(query)
             msg += getMessage(self.ctx, 102)
