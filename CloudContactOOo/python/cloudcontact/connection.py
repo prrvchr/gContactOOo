@@ -90,7 +90,7 @@ class Connection(unohelper.Base,
         for listener in self.listeners:
             litener.disposing(event)
         if not self.connection.isClosed():
-            self.connection.close()
+            self.close()
     def addEventListener(self, listener):
         print("Connection.addEventListener()")
         self.listeners.append(listener)

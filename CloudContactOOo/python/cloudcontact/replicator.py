@@ -48,7 +48,7 @@ class Replicator(unohelper.Base,
                 while not self.event.wait(g_sync):
                     self._synchronize()
             self.count -= 1
-        print("replicator.run()3 count=%s - query=%s" % (self.count, self.datasourece.count))
+        print("replicator.run()3 count=%s - query=%s" % (self.count, self.datasource.count))
         #self.datasource.shutdownDataBase(False)
         #self.datasource._Statement = None
         #self.datasource.Connection.close()
@@ -103,7 +103,7 @@ class Replicator(unohelper.Base,
         format = (pages, inserted, updated, deleted)
         msg = getMessage(self.ctx, 112, format)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncPeople()')
-        self.datasourece.count += inserted + updated + deleted
+        self.datasource.count += inserted + updated + deleted
         print("replicator._syncPeople() 1 %s" % method['PrimaryKey'])
 
     def _syncGroup(self, user, timestamp):
@@ -128,7 +128,7 @@ class Replicator(unohelper.Base,
         format = (pages, inserted, updated, deleted)
         msg = getMessage(self.ctx, 113, format)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncGroup()')
-        self.datasourece.count += inserted + updated + deleted
+        self.datasource.count += inserted + updated + deleted
 
     def _syncConnection(self, user, timestamp):
         pages = i = u = d = 0
@@ -152,7 +152,7 @@ class Replicator(unohelper.Base,
         format = (pages, len(groups), i)
         msg = getMessage(self.ctx, 114, format)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncConnection()')
-        self.datasourece.count += i
+        self.datasource.count += i
 
     def _syncResponse(self, method, user, map, data, timestamp):
         inserted = updated = deleted = 0
