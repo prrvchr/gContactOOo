@@ -503,6 +503,7 @@ class Statement(BaseStatement,
     def __init__(self, connection):
         self.connection = connection
         self.statement = connection.connection.createStatement()
+        print("Statement.__init__()")
 
     @property
     def EscapeProcessing(self):
@@ -513,13 +514,15 @@ class Statement(BaseStatement,
 
     # XStatement
     def executeQuery(self, sql):
-        print("Connection.Statement.executeQuery(): %s" % sql)
+        print("Statement.executeQuery(): %s" % sql)
         result = self.statement.executeQuery(sql)
         #result = ResultSet(self, sql)
         return result
     def executeUpdate(self, sql):
+        print("Statement.executeUpdate(): %s" % sql)
         return self.statement.executeUpdate(sql)
     def execute(self, sql):
+        print("Statement.execute(): %s" % sql)
         return self.statement.execute(sql)
     def getConnection(self):
         print("Connection.Statement.getConnection()")
