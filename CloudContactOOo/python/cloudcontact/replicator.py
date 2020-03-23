@@ -15,6 +15,7 @@ from unolib import getDateTime
 
 from .configuration import g_sync
 from .configuration import g_filter
+from .configuration import g_compact
 from .dataparser import DataParser
 from .logger import logMessage
 from .logger import getMessage
@@ -24,68 +25,60 @@ import traceback
 
 
 class Replicator(unohelper.Base,
-                 XCancellable,
                  Thread):
-    def __init__(self, ctx, datasource, lock):
+    def __init__(self, ctx, datasource, event):
         Thread.__init__(self)
         self.ctx = ctx
         self.datasource = datasource
-        self.lock = lock
-        self.running = True
-        self._Peoples = None
-        self._Types = None
-        self._Labels = None
+        self.event = event
+        self._Peoples = self.datasource.getTableIndex('People')
+        index = self.datasource.getTableIndex('Type')
+        default = self.datasource.getTableIndex('TypeDefault')
+        self._Types = {'Index': index, 'Default': default}
+        self._Labels = self.datasource.getTableIndex('Label')
+        self.count = 1
+        self.query = 0
         self.start()
 
     @property
-    def Peoples(self):
-        if self._Peoples is None:
-            self._Peoples = self.datasource.getTableIndex('People')
-        return self._Peoples
-    @property
-    def Types(self):
-        if self._Types is None:
-            index = self.datasource.getTableIndex('Type')
-            default = self.datasource.getTableIndex('TypeDefault')
-            self._Types = {'Index': index, 'Default': default}
-        return self._Types
-    @property
-    def Labels(self):
-        if self._Labels is None:
-            self._Labels = self.datasource.getTableIndex('Label')
-        return self._Labels
-
-    # XCancellable
-    def cancel(self):
-        if self.is_alive():
-            self.running = False
-            with self.lock:
-                self.lock.notify()
+    def Compact(self):
+        return self.query >= g_compact
 
     def run(self):
-        while self.running:
-            with self.lock:
-                self.lock.wait(g_sync)
-            if self.running:
+        print("replicator.run()1 count=%s" % self.count)
+        while self.count > 0:
+            self.event.clear()
+            print("replicator.run()2 count=%s" % self.count)
+            if not self.event.is_set():
                 self._synchronize()
+                while not self.event.wait(g_sync):
+                    self._synchronize()
+            self.count -= 1
+        print("replicator.run()3 count=%s - query=%s" % (self.count, self.query))
+        #self.datasource.shutdownDataBase(False)
+        #self.datasource._Statement = None
+        #self.datasource.Connection.close()
+        #print("replicator.run()4 count=%s" % self.count)
 
     def _synchronize(self):
+        timestamp = getDateTime(False)
         for user in self.datasource._UsersPool.values():
-            if self.running:
-                self._syncUser(user)
+            if not self.event.is_set():
+                self._syncUser(user, timestamp)
         self.datasource.closeDataSourceCall()
 
-    def _syncUser(self, user):
+    def _syncUser(self, user, timestamp):
         msg = getMessage(self.ctx, 110, user.Account)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
         try:
             if user.Request.isOffLine(self.datasource.Provider.Host):
                 msg = getMessage(self.ctx, 111)
-            else:
-                timestamp = getDateTime(True)
+            elif not self.event.is_set():
                 self._syncPeople(user, timestamp)
-                self._syncGroup(user, timestamp)
-                self._syncConnection(user, timestamp)
+                if not self.event.is_set():
+                    self._syncGroup(user, timestamp)
+                    if not self.event.is_set():
+                       self._syncConnection(user, timestamp)
         except Exception as e:
             msg = getMessage(self.ctx, 115, (e, traceback.print_exc()))
             logMessage(self.ctx, SEVERE, msg, 'Replicator', '_synchronize()')
@@ -93,156 +86,160 @@ class Replicator(unohelper.Base,
         logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
 
     def _syncPeople(self, user, timestamp):
-        rules = {'Method': 'People',
-                 'PrimaryKey': 'Resource',
-                 'Filters': ('metadata', 'primary'),
-                 'Skips': ('Type', 'metadata')}
-        pages = insert = update = 0
-        parameter = self.datasource.Provider.getRequestParameter(rules['Method'], user)
-        parser = DataParser(self.datasource, rules['Method'])
-        map = self.datasource.getFieldsMap(rules['Method'], False)
+        method = {'Name': 'People',
+                  'PrimaryKey': 'Resource',
+                  'ResourceFilter': (),
+                  'Deleted': (('metadata','deleted'), True),
+                  'Filter': (('metadata', 'primary'), True),
+                  'Skip': ('Type', 'metadata')}
+        pages = inserted = updated = deleted = 0
+        parameter = self.datasource.Provider.getRequestParameter(method['Name'], user)
+        parser = DataParser(self.datasource, method['Name'])
+        map = self.datasource.getFieldsMap(method['Name'], False)
         enumerator = user.Request.getEnumeration(parameter, parser)
-        while self.running and enumerator.hasMoreElements():
+        while not self.event.is_set() and enumerator.hasMoreElements():
             response = enumerator.nextElement()
             status = response.IsPresent
             if status:
                 pages += 1
-                i, u = self._syncResponse(rules, user, map, response.Value, timestamp)
-                insert += i
-                update += u
-        format = (pages, insert, update)
+                i, u, d = self._syncResponse(method, user, map, response.Value, timestamp)
+                inserted += i
+                updated += u
+                deleted += d
+        format = (pages, inserted, updated, deleted)
         msg = getMessage(self.ctx, 112, format)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncPeople()')
-        print("replicator._syncPeople() 1 %s" % rules['PrimaryKey'])
+        self.query += inserted + updated + deleted
+        print("replicator._syncPeople() 1 %s" % method['PrimaryKey'])
 
     def _syncGroup(self, user, timestamp):
-        rules = {'Method': 'Group',
-                 'PrimaryKey': 'Resource',
-                 'Filters': ('groupType', ),
-                 'Skips': ()}
-        pages = insert = update = 0
-        parameter = self.datasource.Provider.getRequestParameter(rules['Method'], user)
-        parser = DataParser(self.datasource, rules['Method'])
-        map = self.datasource.getFieldsMap(rules['Method'], False)
+        method = {'Name': 'Group',
+                  'PrimaryKey': 'Resource',
+                  'ResourceFilter': (('groupType', ), g_filter),
+                  'Deleted': (('metadata','deleted'), True)}
+        pages = inserted = updated = deleted = 0
+        parameter = self.datasource.Provider.getRequestParameter(method['Name'], user)
+        parser = DataParser(self.datasource, method['Name'])
+        map = self.datasource.getFieldsMap(method['Name'], False)
         enumerator = user.Request.getEnumeration(parameter, parser)
-        while self.running and enumerator.hasMoreElements():
+        while not self.event.is_set() and enumerator.hasMoreElements():
             response = enumerator.nextElement()
             status = response.IsPresent
             if status:
                 pages += 1
-                i, u = self._syncResponse(rules, user, map, response.Value, timestamp)
-                insert += i
-                update += u
-        format = (pages, insert, update)
+                i, u, d = self._syncResponse(method, user, map, response.Value, timestamp)
+                inserted += i
+                updated += u
+                deleted += d
+        format = (pages, inserted, updated, deleted)
         msg = getMessage(self.ctx, 113, format)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncGroup()')
+        self.query += inserted + updated + deleted
 
     def _syncConnection(self, user, timestamp):
-        pages = insert = update = 0
+        pages = i = u = d = 0
         groups = self.datasource.getUpdatedGroups(user, 'contactGroups/')
         if len(groups) > 0:
             print("replicator._syncConnection(): %s" % ','.join(groups))
-            rules = {'Method': 'Connection',
-                     'PrimaryKey': 'Group',
-                     'Filters': (),
-                     'Skips': ()}
+            method = {'Name': 'Connection',
+                      'PrimaryKey': 'Group',
+                      'ResourceFilter': ()}
             data = KeyMap(**{'Resources': groups})
-            parameter = self.datasource.Provider.getRequestParameter(rules['Method'], data)
-            parser = DataParser(self.datasource, rules['Method'])
-            map = self.datasource.getFieldsMap(rules['Method'], False)
+            parameter = self.datasource.Provider.getRequestParameter(method['Name'], data)
+            parser = DataParser(self.datasource, method['Name'])
+            map = self.datasource.getFieldsMap(method['Name'], False)
             request = user.Request.getRequest(parameter, parser)
             response = request.execute()
             if response.IsPresent:
                 pages += 1
-                insert, update = self._syncResponse(rules, user, map, response.Value, timestamp)
+                i, u, d = self._syncResponse(method, user, map, response.Value, timestamp)
         else:
             print("replicator._syncConnection(): nothing to sync")
-        format = (pages, insert, update)
+        format = (pages, len(groups), i)
         msg = getMessage(self.ctx, 114, format)
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncConnection()')
+        self.query += i
 
-    def _syncResponse(self, rules, user, map, data, timestamp):
-        insert = update = 0
+    def _syncResponse(self, method, user, map, data, timestamp):
+        inserted = updated = deleted = 0
         for key in data.getKeys():
             field = map.getValue(key).getValue('Type')
-            i, u = self._mergeResponse(rules, user, map, key, data.getValue(key), timestamp, field)
-            insert += i
-            update += u
-        return insert, update
+            i, u, d = self._mergeResponse(method, user, map, key, data.getValue(key), timestamp, field)
+            inserted += i
+            updated += u
+            deleted += d
+        return inserted, updated, deleted
 
-    def _mergeResponse(self, rules, user, map, key, data, timestamp, field):
-        insert = update = 0
+    def _mergeResponse(self, method, user, map, key, data, timestamp, field):
+        inserted = updated = deleted = 0
         if field == 'Sequence':
             f = map.getValue(key).getValue('Table')
             for d in data:
-                i, u = self._mergeResponse(rules, user, map, key, d, timestamp, f)
-                insert += i
-                update += u
+                i, u , d = self._mergeResponse(method, user, map, key, d, timestamp, f)
+                inserted += i
+                updated += u
+                deleted += d
         elif field == 'Field':
             self.datasource.updateSyncToken(user, key, data, timestamp)
         elif field == 'Header':
             pass
-        elif data.hasValue(rules['PrimaryKey']):
-            insert, update = self._mergeResource(rules, user, map, data, timestamp)
-        return insert, update
+        elif data.hasValue(method['PrimaryKey']):
+            if self._filterResource(data, *method['ResourceFilter']):
+                func = getattr(self, '_merge%s' % method['Name'])
+                inserted, updated, deleted = func(method, user, map, data, timestamp)
+        return inserted, updated, deleted
 
-    def _filterResource(self, data, filters, value=None, index=0):
+    def _filterResource(self, data, filters=(), value=None, index=0):
         if index < len(filters):
             filter = filters[index]
             if data.hasValue(filter):
                 d = data.getValue(filter)
                 return self._filterResource(d, filters, value, index + 1)
             return False
-        return data if value is None else data == value
+        return True if value is None else data == value
 
-    def _mergeResource(self, rules, user, map, data, timestamp):
-        insert = update = 0
-        method = rules['Method']
-        if method == 'People':
-            insert, update = self._mergePeople(rules, user, map, data, timestamp)
-        elif method == 'Group':
-            if self._filterResource(data, rules['Filters'], g_filter):
-                insert, update = self._mergeGroup(rules, user, map, data, timestamp)
-        elif method == 'Connection':
-            insert, update = self._mergeConnection(rules, user, map, data, timestamp)
-        return insert, update
-
-    def _mergeGroup(self, rules, user, map, data, timestamp):
-        insert = update = 0
-        resource = data.getValue('Resource')
-        if self._filterResource(data, ('metadata','deleted'), True):
-            insert, update = self.datasource.deleteGroup(user, resource)
+    def _mergeGroup(self, method, user, map, data, timestamp):
+        inserted = updated = deleted = 0
+        pkey = method['PrimaryKey']
+        resource = data.getValue(pkey)
+        if self._filterResource(data, *method['Deleted']):
+            deleted = self.datasource.deleteGroup(user, resource)
         else:
             name = data.getDefaultValue('Name', None)
             #timestamp = data.getValue('metadata').getValue('updateTime')
-            insert, update = self.datasource.mergeGroup(user, name, resource, timestamp)
-        return insert, update
+            inserted, updated = self.datasource.mergeGroup(user, name, resource, timestamp)
+        return inserted, updated, deleted
 
-    def _mergePeople(self, rules, user, map, data, timestamp):
-        pkey = rules['PrimaryKey']
-        index, insert, update = self._getPeoples(user, data.getValue(pkey), timestamp)
-        for key in data.getKeys():
-            if key == pkey:
-                continue
-            d = data.getValue(key)
-            f = map.getValue(key).getValue('Type')
-            #print("replicator._mergePeople() %s - %s - %s" % (map, key, f))
-            self._mergePeopleData(rules, map, index, key, data.getValue(key), timestamp, f)
-        return insert, update
+    def _mergePeople(self, method, user, map, data, timestamp):
+        inserted = updated = deleted = 0
+        pkey = method['PrimaryKey']
+        resource = data.getValue(pkey)
+        if self._filterResource(data, *method['Deleted']):
+            deleted = self.datasource.deletePeople(resource)
+        else:
+            index, inserted, updated = self._getPeoples(user, resource, timestamp)
+            for key in data.getKeys():
+                if key == pkey:
+                    continue
+                d = data.getValue(key)
+                f = map.getValue(key).getValue('Type')
+                self._mergePeopleData(method, map, index, key, data.getValue(key), timestamp, f)
+        return inserted, updated, deleted
 
-    def _mergeConnection(self, rules, user, map, data, timestamp):
-        return self.datasource.mergeConnection(user, data.getValue('Group'), timestamp)
+    def _mergeConnection(self, method, user, map, data, timestamp):
+        inserted = self.datasource.mergeConnection(user, data.getValue('Group'), timestamp)
+        return inserted, 0, 0
 
-    def _mergePeopleData(self, rules, map, index, key, data, timestamp, field):
+    def _mergePeopleData(self, method, map, index, key, data, timestamp, field):
         if field == 'Sequence':
             f = map.getValue(key).getValue('Table')
             for d in data:
-                self._mergePeopleData(rules, map, index, key, d, timestamp, f)
+                self._mergePeopleData(method, map, index, key, d, timestamp, f)
         elif field == 'Tables':
-            if self._filterResource(data, rules['Filters']):
+            if self._filterResource(data, *method['Filter']):
                 t = self._getTypes(key, data)
                 for k in data.getKeys():
-                    if k in rules['Skips']:
+                    if k in method['Skip']:
                         continue
                     self._mergePeopleField(key, index, t, k, data.getValue(k), timestamp)
 
@@ -252,29 +249,29 @@ class Replicator(unohelper.Base,
             self.datasource.mergePeople(table, index, typ, label, field, value, timestamp)
 
     def _getPeoples(self, user, resource, timestamp):
-        insert = update = 0
-        if resource not in self.Peoples:
+        inserted = updated = 0
+        if resource not in self._Peoples:
             people = self.datasource.insertPeople(user, resource, timestamp)
             if people is not None:
-                self.Peoples[resource] = people
-                insert = 1
+                self._Peoples[resource] = people
+                inserted = 1
         else:
-            people = self.Peoples[resource]
-            update = 1
-        return people, insert, update
+            people = self._Peoples[resource]
+            updated = 1
+        return people, inserted, updated
 
     def _getTypes(self, key, data):
         if not data.hasValue('Type'):
-            if key in self.Types['Default']:
-                return self.Types['Default'][key]
+            if key in self._Types['Default']:
+                return self._Types['Default'][key]
             return None
         value = data.getValue('Type')
-        if value in self.Types['Index']:
-            return self.Types['Index'][value]
+        if value in self._Types['Index']:
+            return self._Types['Index'][value]
         idx = self.datasource.insertType(value)
         if idx is not None:
-            self.Types['Index'][value] = idx
+            self._Types['Index'][value] = idx
         return idx
 
     def _getLabels(self, value):
-        return self.Labels.get(value, None)
+        return self._Labels.get(value, None)

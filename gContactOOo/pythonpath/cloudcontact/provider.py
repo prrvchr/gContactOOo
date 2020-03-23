@@ -94,7 +94,7 @@ class Provider(unohelper.Base,
             parameter.Method = 'GET'
             parameter.Url += '/contactGroups:batchGet'
             resources = '","'.join(data.getValue('Resources'))
-            parameter.Query = '{"maxMembers": %s, "resourceNames": ["%s"]}' % (g_member, resources)
+            parameter.Query = '{"resourceNames": ["%s"], "maxMembers": %s}' % (resources, g_member)
         return parameter
 
     def transcode(self, name, value):

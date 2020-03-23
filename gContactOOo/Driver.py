@@ -40,6 +40,8 @@ import traceback
 g_ImplementationHelper = unohelper.ImplementationHelper()
 g_ImplementationName = '%s.Driver' % g_identifier
 
+from threading import Event
+
 
 class Driver(unohelper.Base,
              XServiceInfo,
@@ -55,12 +57,13 @@ class Driver(unohelper.Base,
         self.ctx = ctx
         self._supportedProtocol = 'sdbc:google:'
         self._supportedSubProtocols = ('people', 'peoples')
+        self.event = Event()
         print("Driver.__init__()")
 
     @property
     def DataSource(self):
         if Driver.__dataSource is None:
-            Driver.__dataSource = DataSource(self.ctx)
+            Driver.__dataSource = DataSource(self.ctx, self.event)
         return Driver.__dataSource
 
     # XDataDefinitionSupplier
@@ -112,7 +115,7 @@ class Driver(unohelper.Base,
             print("Driver.connect() 6 %s" % version)
             msg += getMessage(self.ctx, 102)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
-            return Connection(self.ctx, connection, protocols, user.Account)
+            return Connection(self.ctx, connection, protocols, user.Account, self.event)
         except SQLException as e:
             raise e
         except Exception as e:

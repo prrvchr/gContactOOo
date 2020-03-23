@@ -74,11 +74,12 @@ class Connection(unohelper.Base,
                  XGroupsSupplier,
                  XTableUIProvider,
                  XConnectionTools):
-    def __init__(self, ctx, connection, protocols, username):
+    def __init__(self, ctx, connection, protocols, username, event):
         self.ctx = ctx
         self.connection = connection
         self.protocols = protocols
         self.username = username
+        self.event = event
         self.listeners = []
 
     # XComponent
@@ -88,6 +89,8 @@ class Connection(unohelper.Base,
         event.Source = self
         for listener in self.listeners:
             litener.disposing(event)
+        if not self.connection.isClosed():
+            self.connection.close()
     def addEventListener(self, listener):
         print("Connection.addEventListener()")
         self.listeners.append(listener)
@@ -127,6 +130,7 @@ class Connection(unohelper.Base,
     def close(self):
         print("Connection.close()********* 1")
         self.connection.close()
+        self.event.set()
         print("Connection.close()********* 2")
 
     # XCommandPreparation

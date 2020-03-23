@@ -12,8 +12,10 @@ g_url = 'https://%s/%s' % (g_host, g_version)
 g_page = 100
 g_member = 1000
 g_admin = False
-g_sync = 600
+g_sync = 120
+g_compact = 100
 
 g_group = 'all'
 g_filter = 'USER_CONTACT_GROUP'
 g_timestamp = '%Y-%m-%dT%H:%M:%S.00'
+g_db_timestamp = 'YYYY-MM-DD"T"HH24:MI:SS.FFFFFFFFFFFF"Z"'

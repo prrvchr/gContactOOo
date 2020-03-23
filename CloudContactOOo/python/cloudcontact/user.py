@@ -65,7 +65,7 @@ class User(unohelper.Base,
         self.MetaData = metadata
 
     def getConnection(self, dbname, password):
-        url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, False)
+        url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, True)
         if self.Warnings is None:
             credential = self.getCredential(password)
             connection, self.Warnings = getDataSourceConnection(self.ctx, url, dbname, *credential)
