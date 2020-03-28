@@ -15,6 +15,8 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 
 from com.sun.star.sdbc import XRestProvider
 
+from unolib import getConnectionMode
+
 from .configuration import g_host
 from .configuration import g_url
 from .configuration import g_page
@@ -40,9 +42,9 @@ class Provider(unohelper.Base,
         return g_url
 
     def isOnLine(self):
-        return self.SessionMode != OFFLINE
+        return getConnectionMode(self.ctx, self.Host)  != OFFLINE
     def isOffLine(self):
-        return self.SessionMode != ONLINE
+        return getConnectionMode(self.ctx, self.Host) != ONLINE
 
     def getRequestParameter(self, method, data=None):
         parameter = uno.createUnoStruct('com.sun.star.auth.RestRequestParameter')
@@ -93,7 +95,7 @@ class Provider(unohelper.Base,
         elif method == 'Connection':
             parameter.Method = 'GET'
             parameter.Url += '/contactGroups:batchGet'
-            resources = '","'.join(data.getValue('Resources'))
+            resources = '","'.join(data.getKeys())
             parameter.Query = '{"resourceNames": ["%s"], "maxMembers": %s}' % (resources, g_member)
         return parameter
 
@@ -104,8 +106,8 @@ class Provider(unohelper.Base,
             value = self._getResource('contactGroups', value)
         return value
     def transform(self, name, value):
-        if name == 'Resource' and value.startswith('people'):
-            value = value.split('/').pop()
+        #if name == 'Resource' and value.startswith('people'):
+        #    value = value.split('/').pop()
         return value
 
     def getUser(self, request, user):

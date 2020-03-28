@@ -443,6 +443,21 @@ class BaseStatement(unohelper.Base,
         print("BaseStatement.UseBookmarks(): 1")
         return False
 
+    # XComponent
+    def dispose(self):
+        print("BaseStatement.dispose()")
+        event = uno.createUnoStruct('com.sun.star.lang.EventObject')
+        event.Source = self
+        for listener in self.listeners:
+            litener.disposing(event)
+    def addEventListener(self, listener):
+        print("BaseStatement.addEventListener()")
+        self.listeners.append(listener)
+    def removeEventListener(self, listener):
+        print("BaseStatement.removeEventListener()")
+        if listener in self.listeners:
+            self.listeners.remove(listener)
+
     # XCloseable
     def close(self):
         print("BaseStatement.close()")
@@ -474,14 +489,6 @@ class BaseStatement(unohelper.Base,
         print("BaseStatement.getMoreResults()")
         return self.statement.getMoreResults()
 
-   # XBatchExecution / XPreparedBatchExecution
-    def addBatch(self, sql):
-        self.statement.addBatch(sql)
-    def clearBatch(self):
-        self.statement.clearBatch()
-    def executeBatch(self):
-        return self.statement.executeBatch()
-
     # XPropertySet
     def _getPropertySetInfo(self):
         properties = {}
@@ -503,6 +510,7 @@ class Statement(BaseStatement,
     def __init__(self, connection):
         self.connection = connection
         self.statement = connection.connection.createStatement()
+        self.listeners = []
         print("Statement.__init__()")
 
     @property
@@ -511,6 +519,14 @@ class Statement(BaseStatement,
     @EscapeProcessing.setter
     def EscapeProcessing(self, state):
         self.statement.EscapeProcessing = state
+
+   # XBatchExecution
+    def addBatch(self, sql):
+        self.statement.addBatch(sql)
+    def clearBatch(self):
+        self.statement.clearBatch()
+    def executeBatch(self):
+        return self.statement.executeBatch()
 
     # XStatement
     def executeQuery(self, sql):
@@ -554,8 +570,17 @@ class PreparedStatement(BaseStatement,
         self.connection = connection
         self.sql = sql
         self.statement = connection.connection.prepareStatement(sql)
+        self.listeners = []
         #self.statement.ResultSetConcurrency = READ_ONLY
         #self.statement.ResultSetType = SCROLL_INSENSITIVE
+
+   # XPreparedBatchExecution
+    def addBatch(self, sql):
+        self.statement.addBatch()
+    def clearBatch(self):
+        self.statement.clearBatch()
+    def executeBatch(self):
+        return self.statement.executeBatch()
 
     # XColumnsSupplier
     def getColumns(self):
@@ -664,6 +689,7 @@ class CallableStatement(PreparedStatement,
         self.connection = connection
         self.sql = sql
         self.statement = connection.connection.prepareCall(sql)
+        self.listeners = []
 
     # XOutParameters
     def registerOutParameter(self, index, sqltype, typename):

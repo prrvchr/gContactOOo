@@ -213,6 +213,21 @@ def getKeyMapSequenceFromResult(result, provider=None):
         sequence.append(keymap)
     return sequence
 
+def getKeyMapKeyMapFromResult(result):
+    sequence = KeyMap()
+    count = result.MetaData.ColumnCount +1
+    while result.next():
+        keymap = KeyMap()
+        dbtype = result.MetaData.getColumnTypeName(1)
+        name = _getValueFromResult(result, dbtype, 1)
+        for i in range(2, count):
+            t = result.MetaData.getColumnTypeName(i)
+            v = _getValueFromResult(result, t, i)
+            n = result.MetaData.getColumnName(i)
+            keymap.insertValue(n, v)
+        sequence.insertValue(name, keymap)
+    return sequence
+
 def getSequenceFromResult(result, sequence=None, index=1, provider=None):
     if sequence is None:
         sequence = []
@@ -259,10 +274,10 @@ def _getValueFromResult(result, dbtype, index, default=None):
 
 def getTablesAndStatements(statement, version=g_version):
     tables = []
-    statements = {}
+    statements = []
     call = getDataSourceCall(statement.getConnection(), 'getTables')
     for table in getSequenceFromResult(statement.executeQuery(getSqlQuery('getTableName'))):
-        statement = False
+        view = False
         versioned = False
         columns = []
         primary = []
@@ -272,7 +287,7 @@ def getTablesAndStatements(statement, version=g_version):
         result = call.executeQuery()
         while result.next():
             data = getKeyMapFromResult(result, KeyMap())
-            statement = data.getValue('View')
+            view = data.getValue('View')
             versioned = data.getValue('Versioned')
             column = data.getValue('Column')
             definition = '"%s"' % column
@@ -306,25 +321,18 @@ def getTablesAndStatements(statement, version=g_version):
         if version >= '2.5.0' and versioned:
             query += getSqlQuery('getSystemVersioning')
         tables.append(query)
-        if statement:
-            names = ['"Value"']
-            values = ['?']
-            where = []
-            i = 1
+        if view:
+            typed = False
             for format in constraint:
-                i =+ 1
-                names.append('"%s"' % format['Column'])
-                values.append('?')
-                where.append('"%s"=?' % format['Column'])
-            vals = list(map(chr, range(123 - i, 123)))
-            format = {'Table': table, 'Names': ','.join(names), 'Values': ','.join(values), 'Vals': ','.join(vals)}
-            merge = 'MERGE INTO "%(Table)s" USING (VALUES(%(Values)s)) AS vals(%(Vals)s) ON "Resource"=vals.x \
-WHEN MATCHED THEN UPDATE SET "People"=vals.w, "Name"=vals.y, "TimeStamp"=vals.z \
-WHEN NOT MATCHED THEN INSERT (%(Names)s) VALUES DEFAULT, vals.w, vals.x, vals.y, vals.z' % format
-            insert = 'INSERT INTO "%s" (%s) VALUES (%s)' % (table, ','.join(names), ','.join(values))
-            update = 'UPDATE "%s" SET "Value"=?,"TimeStamp"=? WHERE %s' % (table, ' AND '.join(where))
-            statements['insert%s' % table] = insert
-            statements['update%s' % table] = update
+                if format['Column'] == 'Type':
+                    typed = True
+                    break
+            format = {'Table': table}
+            if typed:
+                merge = getSqlQuery('createTypedMerge', format)
+            else:
+                merge = getSqlQuery('createUnTypedMerge', format)
+            statements.append(merge)
     call.close()
     return tables, statements
 

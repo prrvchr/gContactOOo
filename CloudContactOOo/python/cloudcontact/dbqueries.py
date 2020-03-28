@@ -186,7 +186,8 @@ CREATE VIEW IF NOT EXISTS "%(Schema)s"."%(View)s" AS
     elif name == 'setUserSchema':
         q = 'ALTER USER "%(UserName)s" SET INITIAL SCHEMA'
         if format.get('Admin', False):
-            q += ' PUBLIC'
+            #q += ' PUBLIC'
+            q += ' "%(UserName)s"'
         else:
             q += ' "%(UserName)s"'
         query = q % format
@@ -277,22 +278,6 @@ CREATE VIEW IF NOT EXISTS "%(Schema)s"."%(View)s" AS
         p = (','.join(s), ' '.join(f))
         query = 'SELECT %s FROM %s WHERE "F"."Method"=? ORDER BY "F"."Field"' % p
 
-    elif name == 'getTypeIndex':
-        query = 'SELECT "Value","Type" FROM "Types" ORDER BY "Type"'
-
-    elif name == 'getTypeDefaultIndex':
-        c1 = '"T2"."Name"'
-        c2 = '"T1"."Type"'
-        f1 = '"TableType" AS "T1"'
-        f2 = 'JOIN "Tables" AS "T2" ON "T1"."Default"=TRUE AND "T1"."Table"="T2"."Table"'
-        c = (c1, c2)
-        f = (f1, f2)
-        p = (','.join(c), ' '.join(f))
-        query = 'SELECT %s FROM %s ORDER BY "T2"."Table"' % p
-
-    elif name == 'getLabelIndex':
-        query = 'SELECT "Name","Label" FROM "Labels" ORDER BY "Label"'
-
     elif name == 'getPrimaryTable':
         s = 'COALESCE("Tables"."Name","Columns"."Name","Labels"."Name","Fields"."Name") AS "Name"'
         f1 = '"Fields" AS "F"'
@@ -304,9 +289,6 @@ CREATE VIEW IF NOT EXISTS "%(Schema)s"."%(View)s" AS
         w = '"F"."Type"=%s AND "F"."Table"=%s' % ("'Primary'","'Tables'")
         p = (s, ' '.join(f), w)
         query = 'SELECT %s FROM %s WHERE %s' % p
-
-    elif name == 'getPeopleIndex':
-        query = 'SELECT "Resource","People" FROM "Peoples" ORDER BY "People"'
 
     elif name == 'getPerson':
         c = '"People","Group","Resource","Account","PeopleSync","GroupSync"'
@@ -344,8 +326,12 @@ CREATE TRIGGER "GroupInsert" AFTER INSERT ON "Groups"
   END"""
 
     elif name == 'selectUpdatedGroup':
-        query = '''\
-SELECT ?||"Resource" FROM "Groups" WHERE "GroupSync"=FALSE AND "People"=? AND "Resource"<>?'''
+        c1 = '?||"Resource" AS "Resource"'
+        c2 = '"Group"'
+        c3 = '"Name"'
+        q = '\
+SELECT %s FROM "Groups" WHERE "GroupSync"=FALSE AND "People"=? AND "Resource"<>?'
+        query = q % ','.join((c1, c2, c3))
 
     elif name == 'truncatGroup':
         q = """\
@@ -397,80 +383,141 @@ CREATE PROCEDURE "InsertUser"(IN "ResourceName" VARCHAR(100),
     OPEN "Result";
   END"""
 
-    elif name == 'createInsertType':
+    elif name == 'createGetPeopleIndex':
         query = """\
-CREATE PROCEDURE "InsertType"(IN "TypeName" VARCHAR(100),
-                              OUT "TypeId" INTEGER)
-  SPECIFIC "InsertType_1"
+CREATE FUNCTION "GetPeopleIndex"("Prefix" VARCHAR(50),"ResourceName" VARCHAR(100))
+  RETURNS INTEGER
+  SPECIFIC "GetPeopleIndex_1"
+  READS SQL DATA
+  RETURN (SELECT "People" FROM "Peoples" WHERE "Prefix"||"Resource"="ResourceName");
+"""
+
+    elif name == 'createGetLabelIndex':
+        query = """\
+CREATE FUNCTION "GetLabelIndex"("LabelName" VARCHAR(100))
+  RETURNS INTEGER
+  SPECIFIC "GetLabelIndex_1"
+  READS SQL DATA
+  RETURN (SELECT "Label" FROM "Labels" WHERE "Name"="LabelName");
+"""
+
+    elif name == 'createGetTypeIndex':
+        query = """\
+CREATE PROCEDURE "GetTypeIndex"(IN "TableName" VARCHAR(100),
+                                IN "TypeName" VARCHAR(100),
+                                OUT "TypeId" INTEGER)
+  SPECIFIC "GetTypeIndex_1"
   MODIFIES SQL DATA
   BEGIN ATOMIC
-    INSERT INTO "Types" ("Name","Value") VALUES ("TypeName","TypeName");
-    SET "TypeId" = IDENTITY();
+    DECLARE "TypeIndex" INTEGER DEFAULT NULL;
+    IF "TypeName" IS NULL THEN
+      SET "TypeIndex" = SELECT "Type" FROM "TableType" JOIN "Tables"
+        ON "TableType"."Table"="Tables"."Table"
+          WHERE "TableType"."Default"=TRUE AND "Tables"."Name"="TableName";
+    ELSE
+      SET "TypeIndex" = SELECT "Type" FROM "Types" WHERE "Name"="TypeName";
+      IF "TypeIndex" IS NULL THEN 
+        SET "TypeIndex" = SELECT "Type" FROM "Types" WHERE "Value"="TypeName";
+        IF "TypeIndex" IS NULL THEN 
+          INSERT INTO "Types" ("Name","Value") VALUES ("TypeName","TypeName");
+          SET "TypeIndex" = IDENTITY();
+        END IF;
+      END IF;
+    END IF;
+    SET "TypeId" = "TypeIndex";
   END"""
 
-    elif name == 'createInsertPeople':
+    elif name == 'createMergePeople':
         query = """\
-CREATE PROCEDURE "InsertPeople"(IN "ResourceName" VARCHAR(100),
-                                IN "GroupId" INTEGER,
-                                IN "Time" TIMESTAMP(6),
-                                OUT "PeopleId" INTEGER)
-  SPECIFIC "InsertPeople_1"
-  MODIFIES SQL DATA
-  BEGIN ATOMIC
-    DECLARE "Id" INTEGER;
-    INSERT INTO "Peoples" ("Resource","TimeStamp") VALUES ("ResourceName","Time");
-    SET "Id" = IDENTITY();
-    INSERT INTO "Connections" ("Group","People","TimeStamp") VALUES ("GroupId","Id","Time");
-    SET "PeopleId" = "Id";
-  END"""
-
-    elif name == 'createDeletePeople':
-        query = """\
-CREATE PROCEDURE "DeletePeople"(IN "Prefix" VARCHAR(50),
-                                IN "ResourceName" VARCHAR(100))
-  SPECIFIC "DeletePeople_1"
+CREATE PROCEDURE "MergePeople"(IN "Prefix" VARCHAR(50),
+                               IN "ResourceName" VARCHAR(100),
+                               IN "GroupId" INTEGER,
+                               IN "Time" TIMESTAMP(6),
+                               IN "Deleted" BOOLEAN)
+  SPECIFIC "MergePeople_1"
   MODIFIES SQL DATA
   BEGIN ATOMIC
     DECLARE "PeopleResource" VARCHAR(100);
     SET "PeopleResource" = REPLACE("ResourceName", "Prefix");
-    DELETE FROM "Peoples" WHERE "Resource"="PeopleResource";
+    IF "Deleted"=TRUE THEN
+      DELETE FROM "Peoples" WHERE "Resource"="PeopleResource";
+    ELSEIF NOT EXISTS(SELECT "People" FROM "Peoples" WHERE "Resource"="PeopleResource") THEN 
+      INSERT INTO "Peoples" ("Resource","TimeStamp") VALUES ("PeopleResource","Time");
+      INSERT INTO "Connections" ("Group","People","TimeStamp") VALUES ("GroupId",IDENTITY(),"Time");
+    END IF;
   END"""
+
+    elif name == 'createUnTypedMerge':
+        q = """\
+CREATE PROCEDURE "Merge%(Table)s"(IN "Table" VARCHAR(50),
+                                  IN "Prefix" VARCHAR(50),
+                                  IN "ResourceName" VARCHAR(100),
+                                  IN "LabelName" VARCHAR(100),
+                                  IN "Value" VARCHAR(100),
+                                  IN "Time" TIMESTAMP(6))
+  SPECIFIC "Merge%(Table)s_1"
+  MODIFIES SQL DATA
+  BEGIN ATOMIC
+    DECLARE "PeopleIndex","LabelIndex" INTEGER DEFAULT NULL;
+    SET "PeopleIndex" = "GetPeopleIndex"("Prefix","ResourceName");
+    SET "LabelIndex" = "GetLabelIndex"("LabelName");
+    MERGE INTO "%(Table)s" USING
+      (VALUES("PeopleIndex","LabelIndex","Value","Time")) AS vals(w,x,y,z)
+      ON "%(Table)s"."People"=vals.w AND "%(Table)s"."Label"=vals.x
+        WHEN MATCHED THEN UPDATE SET "Value"=vals.y, "TimeStamp"=vals.z
+        WHEN NOT MATCHED THEN INSERT ("People","Label","Value","TimeStamp")
+          VALUES vals.w, vals.x, vals.y, vals.z;
+  END"""
+        query = q % format
+
+    elif name == 'createTypedMerge':
+        q = """\
+CREATE PROCEDURE "Merge%(Table)s"(IN "Table" VARCHAR(50),
+                                  IN "Prefix" VARCHAR(50),
+                                  IN "ResourceName" VARCHAR(100),
+                                  IN "LabelName" VARCHAR(100),
+                                  IN "Value" VARCHAR(100),
+                                  IN "Time" TIMESTAMP(6),
+                                  IN "TypeName" VARCHAR(100))
+  SPECIFIC "Merge%(Table)s_1"
+  MODIFIES SQL DATA
+  BEGIN ATOMIC
+    DECLARE "PeopleIndex","TypeIndex","LabelIndex" INTEGER DEFAULT NULL;
+    SET "PeopleIndex" = "GetPeopleIndex"("Prefix","ResourceName");
+    CALL "GetTypeIndex"("Table","TypeName","TypeIndex");
+    SET "LabelIndex" = "GetLabelIndex"("LabelName");
+    MERGE INTO "%(Table)s" USING
+      (VALUES("PeopleIndex","TypeIndex","LabelIndex","Value","Time")) AS vals(v,w,x,y,z)
+      ON "%(Table)s"."People"=vals.v AND "%(Table)s"."Type"=vals.w AND "%(Table)s"."Label"=vals.x
+        WHEN MATCHED THEN UPDATE SET "Value"=vals.y, "TimeStamp"=vals.z
+        WHEN NOT MATCHED THEN INSERT ("People","Type","Label","Value","TimeStamp")
+          VALUES vals.v, vals.w, vals.x, vals.y, vals.z;
+  END"""
+        query = q % format
 
     elif name == 'createMergeGroup':
         query = """\
 CREATE PROCEDURE "MergeGroup"(IN "Prefix" VARCHAR(50),
                               IN "PeopleId" INTEGER,
                               IN "ResourceName" VARCHAR(100),
+                              IN "GroupName" VARCHAR(100),
                               IN "Time" TIMESTAMP(6),
-                              INOUT "GroupName" VARCHAR(100),
-                              OUT "GroupId" INTEGER)
+                              IN "Deleted" BOOLEAN)
   SPECIFIC "MergeGroup_1"
-  MODIFIES SQL DATA
-  BEGIN ATOMIC
-    DECLARE "GroupResource", "OldName" VARCHAR(100);
-    SET "GroupResource" = REPLACE("ResourceName", "Prefix");
-    SELECT COALESCE("Name",'') INTO "OldName" FROM "Groups" WHERE "Resource"="GroupResource";
-    MERGE INTO "Groups" USING (VALUES("PeopleId","GroupResource","GroupName","Time"))
-      AS vals(w,x,y,z) ON "Groups"."Resource"=vals.x
-      WHEN MATCHED THEN UPDATE SET "People"=vals.w, "Name"=vals.y, "TimeStamp"=vals.z, "GroupSync"=FALSE
-      WHEN NOT MATCHED THEN INSERT ("People","Resource","Name","TimeStamp") VALUES vals.w, vals.x, vals.y, vals.z;
-    SELECT "Group" INTO "GroupId" FROM "Groups" WHERE "Resource"="GroupResource";
-    SET "GroupName" = "OldName";
-  END"""
-
-    elif name == 'createDeleteGroup':
-        query = """\
-CREATE PROCEDURE "DeleteGroup"(IN "Prefix" VARCHAR(50),
-                               IN "PeopleId" INTEGER,
-                               IN "ResourceName" VARCHAR(100),
-                               OUT "GroupName" VARCHAR(100))
-  SPECIFIC "DeleteGroup_1"
   MODIFIES SQL DATA
   BEGIN ATOMIC
     DECLARE "GroupResource" VARCHAR(100);
     SET "GroupResource" = REPLACE("ResourceName", "Prefix");
-    SELECT "Name" INTO "GroupName" FROM "Groups" WHERE "People"="PeopleId" AND "Resource"="GroupResource";
-    DELETE FROM "Groups" WHERE "People"="PeopleId" AND "Resource"="GroupResource";
+    IF "Deleted"=TRUE THEN
+      DELETE FROM "Groups" WHERE "People"="PeopleId" AND "Resource"="GroupResource";
+    ELSE
+      MERGE INTO "Groups" USING (VALUES("PeopleId","GroupResource","GroupName","Time"))
+        AS vals(w,x,y,z) ON "Groups"."Resource"=vals.x
+          WHEN MATCHED THEN UPDATE
+            SET "People"=vals.w, "Name"=vals.y, "TimeStamp"=vals.z, "GroupSync"=FALSE
+          WHEN NOT MATCHED THEN INSERT ("People","Resource","Name","TimeStamp")
+            VALUES vals.w, vals.x, vals.y, vals.z;
+    END IF;
   END"""
 
     elif name == 'createMergeConnection':
@@ -497,7 +544,8 @@ CREATE PROCEDURE "MergeConnection"(IN "GroupPrefix" VARCHAR(50),
     WHILE "Index" <= CARDINALITY("MembersArray") DO
       SET "PeopleResource" = REPLACE("MembersArray"["Index"], "PeoplePrefix");
       SELECT "People" INTO "PeopleId" FROM "Peoples" WHERE "Resource"="PeopleResource";
-      INSERT INTO "Connections" ("Group","People","TimeStamp") VALUES ("GroupId","PeopleId","Time");
+      INSERT INTO "Connections" ("Group","People","TimeStamp")
+        VALUES ("GroupId","PeopleId","Time");
       SET "Index" = "Index" + 1;
     END WHILE;
     UPDATE "Groups" SET "GroupSync"=TRUE WHERE "Group"="GroupId";
@@ -507,20 +555,32 @@ CREATE PROCEDURE "MergeConnection"(IN "GroupPrefix" VARCHAR(50),
 # Get Procedure Query
     elif name == 'insertUser':
         query = 'CALL "InsertUser"(?,?,?)'
-    elif name == 'insertType':
-        query = 'CALL "InsertType"(?,?)'
-    elif name == 'insertPeople':
-        query = 'CALL "InsertPeople"(?,?,?,?)'
-    elif name == 'deletePeople':
-        query = 'CALL "DeletePeople"(?,?)'
-    elif name == 'selectGroup':
-        query = 'CALL "SelectGroup"(?,?,?,?)'
+    elif name == 'mergePeople':
+        query = 'CALL "MergePeople"(?,?,?,?,?)'
     elif name == 'mergeGroup':
         query = 'CALL "MergeGroup"(?,?,?,?,?,?)'
-    elif name == 'deleteGroup':
-        query = 'CALL "DeleteGroup"(?,?,?,?)'
     elif name == 'mergeConnection':
         query = 'CALL "MergeConnection"(?,?,?,?,?,?)'
+    elif name == 'mergeData':
+        if format['Type'] is None:
+            q = 'CALL "Merge%(Table)s"(?,?,?,?,?,?)'
+        else:
+            q = 'CALL "Merge%(Table)s"(?,?,?,?,?,?,?)'
+        query = q % format
+
+# Logging Changes Queries
+    elif name == 'loggingChanges':
+        if format:
+            query = 'SET FILES LOG TRUE'
+        else:
+            query = 'SET FILES LOG FALSE'
+
+# Saves Changes Queries
+    elif name == 'saveChanges':
+        if format:
+            query = 'CHECKPOINT DEFRAG'
+        else:
+            query = 'CHECKPOINT'
 
 # ShutDown Queries
     elif name == 'shutdown':

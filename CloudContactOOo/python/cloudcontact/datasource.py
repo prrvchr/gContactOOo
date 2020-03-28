@@ -8,12 +8,11 @@ from com.sun.star.sdbc import SQLException
 from com.sun.star.lang import XEventListener
 from com.sun.star.frame import XTerminateListener
 from com.sun.star.util import XCloseListener
+from com.sun.star.sdbc import XRestDataSource
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 from com.sun.star.sdb.CommandType import QUERY
-from com.sun.star.ucb.ConnectionMode import ONLINE
-
-from com.sun.star.sdbc import XRestDataSource
+from com.sun.star.sdbc.DataType import VARCHAR
 
 from unolib import KeyMap
 from unolib import g_oauth2
@@ -43,12 +42,15 @@ from .dbtools import getDataSourceLocation
 from .dbtools import getDataBaseConnection
 from .dbtools import getDataSourceConnection
 from .dbtools import getKeyMapFromResult
+from .dbtools import getKeyMapSequenceFromResult
+from .dbtools import getKeyMapKeyMapFromResult
 from .dbtools import getSequenceFromResult
 from .dbtools import getDataSourceCall
 from .dbtools import getSqlException
 from .logger import logMessage
 from .logger import getMessage
 
+from collections import OrderedDict
 from threading import Condition
 from threading import Event
 import traceback
@@ -64,7 +66,8 @@ class DataSource(unohelper.Base,
         self._Statement = None
         self._FieldsMap = {}
         self._UsersPool = {}
-        self._CallsPool = {}
+        self._CallsPool = OrderedDict()
+        self._batchedCall = []
         self.event = event
         self.replicator = None
         self.count = 0
@@ -146,8 +149,20 @@ class DataSource(unohelper.Base,
         if self.replicator is None or not self.replicator.is_alive():
             self.replicator = Replicator(self.ctx, self, self.event)
         else:
-            self.replicator.count += 1
+            self.replicator.event.clear()
         return user
+
+    def setLoggingChanges(self, state):
+        sql = getSqlQuery('loggingChanges', state)
+        self._Statement.execute(sql)
+
+    def saveChanges(self, compact=False, page=0):
+        if self.count >= g_compact:
+            compact = True
+            self.count = 0
+        sql = getSqlQuery('saveChanges', compact)
+        print("DataSource.saveChanges(): %s - %s" % (page, sql))
+        self._Statement.execute(sql)
 
     def shutdownDataBase(self, compact=False):
         try:
@@ -225,15 +240,14 @@ class DataSource(unohelper.Base,
         return identity
 
     def getUpdatedGroups(self, user, prefix):
-        groups = []
+        groups = None
         call = self.getDataSourceCall('selectUpdatedGroup')
         call.setString(1, prefix)
         call.setLong(2, user.People)
         call.setString(3, user.Resource)
         result = call.executeQuery()
-        while result.next():
-            groups.append(result.getString(1))
-        return tuple(groups)
+        groups = getKeyMapKeyMapFromResult(result)
+        return groups
 
     def truncatGroup(self, start):
         format = {'TimeStamp': unparseTimeStamp(start)}
@@ -249,14 +263,14 @@ class DataSource(unohelper.Base,
         query = self._getGroupViewQuery('drop', user, name)
         self._Statement.execute(query)
 
-    def updateSyncToken(self, user, token, value, timestamp):
-        call = self.getDataSourceCall('update%s' % token)
+    def updateSyncToken(self, user, token, data, timestamp):
+        value = data.getValue(token)
+        call = self.getDataSourceCall('update%s' % token, True)
         call.setString(1, value)
         call.setTimestamp(2, timestamp)
         call.setLong(3, user.People)
-        if call.executeUpdate():
-            user.MetaData.setValue(token, value)
-        print("datasource.updateSyncToken(): %s - %s" % (token, value))
+        call.addBatch()
+        return KeyMap(**{token: value})
 
     def getTableIndex(self, table):
         map = {}
@@ -266,76 +280,44 @@ class DataSource(unohelper.Base,
             map[result.getString(1)] = result.getLong(2)
         return map
 
-    def insertType(self, value):
-        identity = None
-        call = self.getDataSourceCall('insertType')
-        call.setString(1, value)
-        row = call.execute()
-        identity = call.getLong(2)
-        return identity
-
-    def insertPeople(self, user, resource, timestamp):
-        identity = None
-        call = self.getDataSourceCall('insertPeople')
-        call.setString(1, resource)
-        call.setLong(2, user.Group)
-        call.setTimestamp(3, timestamp)
-        row = call.execute()
-        identity = call.getLong(4)
-        return identity
-
-    def mergePeople(self, table, index, typ, label, field, value, timestamp):
-        call = self.getPreparedCall('update%s' % table)
-        call.setString(1, value)
-        call.setTimestamp(2, timestamp)
-        call.setLong(3, index)
-        call.setLong(4, label)
-        if typ is not None:
-            call.setLong(5, typ)
-        row = call.executeUpdate()
-        if row != 1:
-            call = self.getPreparedCall('insert%s' % table)
-            call.setString(1, value)
-            call.setLong(2, index)
-            call.setLong(3, label)
-            if typ is not None:
-                call.setLong(4, typ)
-            row = call.executeUpdate()
-
-    def deletePeople(self, resource):
-        call = self.getDataSourceCall('deletePeople')
+    def mergePeople(self, user, resource, timestamp, deleted):
+        call = self.getDataSourceCall('mergePeople', True)
         call.setString(1, 'people/')
         call.setString(2, resource)
-        i = call.execute()
-        return i
-
-    def deleteGroup(self, user, resource):
-        call = self.getDataSourceCall('deleteGroup')
-        call.setString(1, 'contactGroups/')
-        call.setLong(2, user.People)
-        call.setString(3, resource)
-        i = call.execute()
-        self.dropGroupView(user, call.getString(4))
-        return i
-
-    def mergeGroup(self, user, name, resource, timestamp):
-        call = self.getDataSourceCall('mergeGroup')
-        call.setString(1, 'contactGroups/')
-        call.setLong(2, user.People)
-        call.setString(3, resource)
+        call.setLong(3, user.Group)
         call.setTimestamp(4, timestamp)
-        call.setString(5, name)
-        i = call.execute()
-        oldname = call.getString(5)
-        updated = oldname != ''
-        if updated and oldname != name:
-            self.dropGroupView(user, oldname)
-        self.createGroupView(user, name, call.getLong(6))
-        return (0, 1) if updated else (1, 0)
+        call.setBoolean(5, deleted)
+        call.addBatch()
+        return (0, 1) if deleted else (1, 0)
+
+    def mergeData(self, table, resource, typename, label, value, timestamp):
+        format = {'Table': table, 'Type': typename}
+        call = self.getDataSourceCall(table, True, format, 'mergeData')
+        call.setString(1, table)
+        call.setString(2, 'people/')
+        call.setString(3, resource)
+        call.setString(4, label)
+        call.setString(5, value)
+        call.setTimestamp(6, timestamp)
+        if typename is not None:
+            call.setString(7, typename)
+        call.addBatch()
+        return 1
+
+    def mergeGroup(self, user, resource, name, timestamp, deleted):
+        call = self.getDataSourceCall('mergeGroup', True)
+        call.setString(1, 'contactGroups/')
+        call.setLong(2, user.People)
+        call.setString(3, resource)
+        call.setString(4, name)
+        call.setTimestamp(5, timestamp)
+        call.setBoolean(6, deleted)
+        call.addBatch()
+        return (0, 1) if deleted else (1, 0)
 
     def mergeConnection(self, user, data, timestamp):
         separator = ','
-        call = self.getDataSourceCall('mergeConnection')
+        call = self.getDataSourceCall('mergeConnection', True)
         call.setString(1, 'contactGroups/')
         call.setString(2, 'people/')
         call.setString(3, data.getValue('Resource'))
@@ -343,7 +325,7 @@ class DataSource(unohelper.Base,
         call.setString(5, separator)
         members = data.getDefaultValue('Connections', ())
         call.setString(6, separator.join(members))
-        row = call.execute()
+        call.addBatch()
         print("datasource._mergeConnection() %s - %s" % (data.getValue('Resource'), len(members)))
         return len(members)
 
@@ -412,9 +394,20 @@ class DataSource(unohelper.Base,
         status += self._Statement.executeUpdate(sql)
         return status == 0
 
-    def getDataSourceCall(self, name, format=None):
+    def getDataSourceCall(self, key, batched=False, format=None, name=None):
+        if key not in self._CallsPool:
+            name = key if name is None else name
+            self._CallsPool[key] = getDataSourceCall(self.Connection, name, format)
+        if batched and key not in self._batchedCall:
+            self._batchedCall.append(key)
+        return self._CallsPool[key]
+
+    def getPreparedCall1(self, name):
         if name  not in self._CallsPool:
-            self._CallsPool[name] = getDataSourceCall(self.Connection, name, format)
+            query = 'CALL "Merge%s"(?,?,?,?,?,?,?)' % name
+            self._CallsPool[name] = self.Connection.prepareCall(query)
+        if name not in self._batchedCall:
+            self._batchedCall.append(name)
         return self._CallsPool[name]
 
     def getPreparedCall(self, name):
@@ -423,9 +416,20 @@ class DataSource(unohelper.Base,
             # TODO: it trow a: java.lang.IncompatibleClassChangeError
             query = self.Connection.getQueries().getByName(name).Command
             self._CallsPool[name] = self.Connection.prepareCall(query)
+        if name not in self._batchedCall:
+            self._batchedCall.append(name)
         return self._CallsPool[name]
+
+    def executeBatchCall(self):
+        for name in self._batchedCall:
+            self._CallsPool[name].executeBatch()
+        self._batchedCall = []
 
     def closeDataSourceCall(self):
         for name in self._CallsPool:
-            self._CallsPool[name].close()
-        self._CallsPool = {}
+            call = self._CallsPool[name]
+            if name in self._batchedCall:
+                call.executeBatch()
+            call.close()
+        self._CallsPool = OrderedDict()
+        self._batchedCall = []

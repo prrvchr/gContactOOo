@@ -50,10 +50,10 @@ def _createDataBase(ctx, datasource, url, dbname):
         if error is None:
             statement = connection.createStatement()
             createStaticTable(statement, _getStaticTables())
-            tables, statements = getTablesAndStatements(statement, version)
+            tables, queries = getTablesAndStatements(statement, version)
             executeSqlQueries(statement, tables)
-            _createPreparedStatement(ctx, datasource, statements)
             executeQueries(statement, _getQueries())
+            _executeQueries(statement, queries)
             print("dbinit._createDataBase()")
             views, triggers = _getViewsAndTriggers(statement)
             executeSqlQueries(statement, views)
@@ -61,6 +61,10 @@ def _createDataBase(ctx, datasource, url, dbname):
         connection.close()
         connection.dispose()
     return error
+
+def _executeQueries(statement, queries):
+    for query in queries:
+        statement.executeQuery(query)
 
 def _getTableColumns(connection, tables):
     columns = {}
@@ -153,10 +157,10 @@ def _getStaticTables():
     return tables
 
 def _getQueries():
-    return ('createInsertType',
-            'createInsertUser',
-            'createInsertPeople',
-            'createDeletePeople',
+    return ('createInsertUser',
+            'createGetPeopleIndex',
+            'createGetLabelIndex',
+            'createGetTypeIndex',
+            'createMergePeople',
             'createMergeGroup',
-            'createDeleteGroup',
             'createMergeConnection')
