@@ -52,8 +52,8 @@ def _createDataBase(ctx, datasource, url, dbname):
             createStaticTable(statement, _getStaticTables())
             tables, queries = getTablesAndStatements(statement, version)
             executeSqlQueries(statement, tables)
-            executeQueries(statement, _getQueries())
-            _executeQueries(statement, queries)
+            _executeQueries(statement, _getQueries())
+            executeSqlQueries(statement, queries)
             print("dbinit._createDataBase()")
             views, triggers = _getViewsAndTriggers(statement)
             executeSqlQueries(statement, views)
@@ -63,7 +63,8 @@ def _createDataBase(ctx, datasource, url, dbname):
     return error
 
 def _executeQueries(statement, queries):
-    for query in queries:
+    for name, format in queries.items():
+        query = getSqlQuery(name, format)
         statement.executeQuery(query)
 
 def _getTableColumns(connection, tables):
@@ -157,10 +158,10 @@ def _getStaticTables():
     return tables
 
 def _getQueries():
-    return ('createInsertUser',
-            'createGetPeopleIndex',
-            'createGetLabelIndex',
-            'createGetTypeIndex',
-            'createMergePeople',
-            'createMergeGroup',
-            'createMergeConnection')
+    return {'createInsertUser': None,
+            'createGetPeopleIndex': None,
+            'createGetLabelIndex': None,
+            'createGetTypeIndex': None,
+            'createMergePeople': None,
+            'createMergeGroup': None,
+            'createMergeConnection': None}

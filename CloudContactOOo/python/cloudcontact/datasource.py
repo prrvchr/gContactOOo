@@ -107,9 +107,6 @@ class DataSource(unohelper.Base,
         # Add a TerminateListener  which is responsible for the shutdown of the database
         desktop = 'com.sun.star.frame.Desktop'
         self.ctx.ServiceManager.createInstance(desktop).addTerminateListener(self)
-        # The connection to the database is done, we can start the replication in background task
-        #if not self.replicator.is_alive():
-        #    self.replicator.start()
         print("DataSource.connect() OK")
         #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
         #mri.inspect(connection)
@@ -146,6 +143,8 @@ class DataSource(unohelper.Base,
             if not self._initializeUser(user, name, password):
                 return None
             self._UsersPool[name] = user
+        # User has been initialized and the connection to the database is done...
+        # We can start the database replication in a background task.
         if self.replicator is None or not self.replicator.is_alive():
             self.replicator = Replicator(self.ctx, self, self.event)
         else:
@@ -230,15 +229,6 @@ class DataSource(unohelper.Base,
             map = KeyMap(**{j: {'Map': i, 'Type': k, 'Table': l} for i, j, k, l in self._FieldsMap[method]})
         return map
 
-    def getIdentity(self):
-        identity = -1
-        call = getDataSourceCall(self.Connection, 'getIdentity')
-        result = call.executeQuery()
-        if result.next():
-            identity = result.getLong(1)
-        call.close()
-        return identity
-
     def getUpdatedGroups(self, user, prefix):
         groups = None
         call = self.getDataSourceCall('selectUpdatedGroup')
@@ -252,6 +242,11 @@ class DataSource(unohelper.Base,
     def truncatGroup(self, start):
         format = {'TimeStamp': unparseTimeStamp(start)}
         query = getSqlQuery('truncatGroup', format)
+        self._Statement.execute(query)
+
+    def createSynonym(self, user, name):
+        format = {'Schema': user.Resource, 'View': name.title()}
+        query = getSqlQuery('createSynonym', format)
         self._Statement.execute(query)
 
     def createGroupView(self, user, name, group):
@@ -271,14 +266,6 @@ class DataSource(unohelper.Base,
         call.setLong(3, user.People)
         call.addBatch()
         return KeyMap(**{token: value})
-
-    def getTableIndex(self, table):
-        map = {}
-        call = self.getDataSourceCall('get%sIndex' % table)
-        result = call.executeQuery()
-        while result.next():
-            map[result.getString(1)] = result.getLong(2)
-        return map
 
     def mergePeople(self, user, resource, timestamp, deleted):
         call = self.getDataSourceCall('mergePeople', True)
@@ -331,7 +318,9 @@ class DataSource(unohelper.Base,
 
     def _getGroupViewQuery(self, method, user, name, group=0):
         query = '%sGroupView' % method
-        format = {'Schema': user.Resource, 'View': name.title(), 'Group': group}
+        format = {'User': user.Resource,
+                  'View': '%s@%s' % (user.Name, name.title()),
+                  'Group': group}
         return getSqlQuery(query, format)
 
     def _getFieldsMap(self, method):
@@ -356,6 +345,7 @@ class DataSource(unohelper.Base,
                 if self._createUser(resource, password):
                     user.MetaData = self._insertUser(resource, name)
                     self.createGroupView(user, g_group, user.Group)
+                    #self.createSynonym(user, g_group)
                     return True
                 else:
                     state = getMessage(self.ctx, 1005)
@@ -385,13 +375,9 @@ class DataSource(unohelper.Base,
         return data
 
     def _createUser(self, name, password):
-        credential = {'UserName': name, 'Password': password, 'Admin': g_admin}
-        sql = getSqlQuery('createUser', credential)
+        format = {'User': name, 'Password': password, 'Admin': g_admin}
+        sql = getSqlQuery('createUser', format)
         status = self._Statement.executeUpdate(sql)
-        sql = getSqlQuery('createSchema', credential)
-        status += self._Statement.executeUpdate(sql)
-        sql = getSqlQuery('setUserSchema', credential)
-        status += self._Statement.executeUpdate(sql)
         return status == 0
 
     def getDataSourceCall(self, key, batched=False, format=None, name=None):
@@ -401,14 +387,6 @@ class DataSource(unohelper.Base,
         if batched and key not in self._batchedCall:
             self._batchedCall.append(key)
         return self._CallsPool[key]
-
-    def getPreparedCall1(self, name):
-        if name  not in self._CallsPool:
-            query = 'CALL "Merge%s"(?,?,?,?,?,?,?)' % name
-            self._CallsPool[name] = self.Connection.prepareCall(query)
-        if name not in self._batchedCall:
-            self._batchedCall.append(name)
-        return self._CallsPool[name]
 
     def getPreparedCall(self, name):
         if name not in self._CallsPool:

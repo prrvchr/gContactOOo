@@ -142,22 +142,28 @@ def getSqlQuery(name, format=None):
     elif name == 'getSystemVersioning':
         query = ' WITH SYSTEM VERSIONING'
 
+# Create Synonym Queries
+    elif name == 'createSynonym':
+        query = 'CREATE SYNONYM "PUBLIC"."%(View)s" FOR "%(Schema)s"."%(View)s"' % format
+
 # Create Dynamic View Queries
     elif name == 'createView':
         query = 'CREATE VIEW "%s"(%s) AS SELECT %s FROM %s' % format
 
     elif name == 'createGroupView':
-        q = """\
-CREATE VIEW IF NOT EXISTS "%(Schema)s"."%(View)s" AS
+        q = '''\
+CREATE VIEW IF NOT EXISTS "%(View)s" AS
   SELECT "AddressBook".* FROM "AddressBook"
   JOIN "Connections" ON "AddressBook"."People"="Connections"."People"
   JOIN "Groups" ON "Connections"."Group"="Groups"."Group"
-  WHERE "Groups"."Group"=%(Group)s"""
+  WHERE "Groups"."Group"=%(Group)s;
+GRANT SELECT ON "%(View)s" TO "%(User)s";
+'''
         query = q % format
 
 # Drop Dynamic View Queries
     elif name == 'dropGroupView':
-        query = 'DROP VIEW IF EXISTS "%(Schema)s"."%(View)s"' % format
+        query = 'DROP VIEW IF EXISTS "%(View)s"' % format
 
 # Create Trigger Query
     elif name == 'createTriggerUpdateAddressBook':
@@ -173,23 +179,29 @@ CREATE VIEW IF NOT EXISTS "%(Schema)s"."%(View)s" AS
         q += '; END IF;'
         query = q % format
 
-# Create User and Schema Query
+# Create User, Role and Schema Query
     elif name == 'createUser':
-        q = 'CREATE USER "%(UserName)s" PASSWORD \'%(Password)s\''
+        q = 'CREATE USER "%(User)s" PASSWORD \'%(Password)s\''
         if format.get('Admin', False):
             q += ' ADMIN'
         query = q % format
 
+    elif name == 'createRole':
+        query = 'CREATE ROLE "%(Role)s"' % format
+
+    elif name == 'setRole':
+        query = 'GRANT "%(Role)s" TO "%(User)s"' % format
+
     elif name == 'createSchema':
-        query = 'CREATE SCHEMA "%(UserName)s" AUTHORIZATION "%(UserName)s"' % format
+        query = 'CREATE SCHEMA "%(User)s" AUTHORIZATION "%(User)s"' % format
 
     elif name == 'setUserSchema':
-        q = 'ALTER USER "%(UserName)s" SET INITIAL SCHEMA'
+        q = 'ALTER USER "%(User)s" SET INITIAL SCHEMA'
         if format.get('Admin', False):
             #q += ' PUBLIC'
-            q += ' "%(UserName)s"'
+            q += ' "%(User)s"'
         else:
-            q += ' "%(UserName)s"'
+            q += ' "%(User)s"'
         query = q % format
 
 # Get last IDENTITY value that was inserted into a table by the current session
@@ -410,18 +422,14 @@ CREATE PROCEDURE "GetTypeIndex"(IN "TableName" VARCHAR(100),
   MODIFIES SQL DATA
   BEGIN ATOMIC
     DECLARE "TypeIndex" INTEGER DEFAULT NULL;
-    IF "TypeName" IS NULL THEN
+    SET "TypeIndex" = SELECT "Type" FROM "Types" WHERE "Name"="TypeName";
+    IF "TypeIndex" IS NULL THEN
       SET "TypeIndex" = SELECT "Type" FROM "TableType" JOIN "Tables"
         ON "TableType"."Table"="Tables"."Table"
           WHERE "TableType"."Default"=TRUE AND "Tables"."Name"="TableName";
-    ELSE
-      SET "TypeIndex" = SELECT "Type" FROM "Types" WHERE "Name"="TypeName";
       IF "TypeIndex" IS NULL THEN 
-        SET "TypeIndex" = SELECT "Type" FROM "Types" WHERE "Value"="TypeName";
-        IF "TypeIndex" IS NULL THEN 
-          INSERT INTO "Types" ("Name","Value") VALUES ("TypeName","TypeName");
-          SET "TypeIndex" = IDENTITY();
-        END IF;
+        INSERT INTO "Types" ("Name","Value") VALUES ("TypeName","TypeName");
+        SET "TypeIndex" = IDENTITY();
       END IF;
     END IF;
     SET "TypeId" = "TypeIndex";

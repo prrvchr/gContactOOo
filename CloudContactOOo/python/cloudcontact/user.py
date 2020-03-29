@@ -41,6 +41,10 @@ class User(unohelper.Base,
     def Account(self):
         return self.MetaData.getDefaultValue('Account', None)
     @property
+    def Name(self):
+        account = self.MetaData.getDefaultValue('Account', '')
+        return account.split('@').pop(0)
+    @property
     def PeopleSync(self):
         return self.MetaData.getDefaultValue('PeopleSync', None)
     @property
