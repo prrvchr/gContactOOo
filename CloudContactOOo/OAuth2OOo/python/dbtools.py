@@ -249,14 +249,16 @@ def getSequenceFromResult(result, sequence=None, index=1, provider=None):
         sequence.append(value)
     return sequence
 
-def getRowResult(result, index=0):
+def getRowResult(result, index=(0,), separator=' '):
     sequence = []
-    column = index + 1
-    dbtype = result.MetaData.getColumnTypeName(column)
     result.beforeFirst()
     while result.next():
-        value = _getValueFromResult(result, dbtype, column, '')
-        sequence.append(value)
+        values = []
+        for i in index:
+            column = i + 1
+            dbtype = result.MetaData.getColumnTypeName(column)
+            values.append(_getValueFromResult(result, dbtype, column, ''))
+        sequence.append(separator.join(values))
     return tuple(sequence)
 
 def _getValueFromResult(result, dbtype, index, default=None):
