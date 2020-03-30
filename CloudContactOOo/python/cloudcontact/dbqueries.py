@@ -455,10 +455,9 @@ CREATE PROCEDURE "MergePeople"(IN "Prefix" VARCHAR(50),
     END IF;
   END"""
 
-    elif name == 'createUnTypedMerge':
+    elif name == 'createUnTypedDataMerge':
         q = """\
-CREATE PROCEDURE "Merge%(Table)s"(IN "Table" VARCHAR(50),
-                                  IN "Prefix" VARCHAR(50),
+CREATE PROCEDURE "Merge%(Table)s"(IN "Prefix" VARCHAR(50),
                                   IN "ResourceName" VARCHAR(100),
                                   IN "LabelName" VARCHAR(100),
                                   IN "Value" VARCHAR(100),
@@ -478,14 +477,14 @@ CREATE PROCEDURE "Merge%(Table)s"(IN "Table" VARCHAR(50),
   END"""
         query = q % format
 
-    elif name == 'createTypedMerge':
+    elif name == 'createTypedDataMerge':
         q = """\
-CREATE PROCEDURE "Merge%(Table)s"(IN "Table" VARCHAR(50),
-                                  IN "Prefix" VARCHAR(50),
+CREATE PROCEDURE "Merge%(Table)s"(IN "Prefix" VARCHAR(50),
                                   IN "ResourceName" VARCHAR(100),
                                   IN "LabelName" VARCHAR(100),
                                   IN "Value" VARCHAR(100),
                                   IN "Time" TIMESTAMP(6),
+                                  IN "Table" VARCHAR(50),
                                   IN "TypeName" VARCHAR(100))
   SPECIFIC "Merge%(Table)s_1"
   MODIFIES SQL DATA
@@ -569,9 +568,9 @@ CREATE PROCEDURE "MergeConnection"(IN "GroupPrefix" VARCHAR(50),
         query = 'CALL "MergeGroup"(?,?,?,?,?,?)'
     elif name == 'mergeConnection':
         query = 'CALL "MergeConnection"(?,?,?,?,?,?)'
-    elif name == 'mergeData':
+    elif name == 'mergePeopleData':
         if format['Type'] is None:
-            q = 'CALL "Merge%(Table)s"(?,?,?,?,?,?)'
+            q = 'CALL "Merge%(Table)s"(?,?,?,?,?)'
         else:
             q = 'CALL "Merge%(Table)s"(?,?,?,?,?,?,?)'
         query = q % format

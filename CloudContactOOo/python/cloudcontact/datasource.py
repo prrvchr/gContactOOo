@@ -277,16 +277,16 @@ class DataSource(unohelper.Base,
         call.addBatch()
         return (0, 1) if deleted else (1, 0)
 
-    def mergeData(self, table, resource, typename, label, value, timestamp):
+    def mergePeopleData(self, table, resource, typename, label, value, timestamp):
         format = {'Table': table, 'Type': typename}
-        call = self.getDataSourceCall(table, True, format, 'mergeData')
-        call.setString(1, table)
-        call.setString(2, 'people/')
-        call.setString(3, resource)
-        call.setString(4, label)
-        call.setString(5, value)
-        call.setTimestamp(6, timestamp)
+        call = self.getDataSourceCall(table, True, 'mergePeopleData', format)
+        call.setString(1, 'people/')
+        call.setString(2, resource)
+        call.setString(3, label)
+        call.setString(4, value)
+        call.setTimestamp(5, timestamp)
         if typename is not None:
+            call.setString(6, table)
             call.setString(7, typename)
         call.addBatch()
         return 1
@@ -319,7 +319,7 @@ class DataSource(unohelper.Base,
     def _getGroupViewQuery(self, method, user, name, group=0):
         query = '%sGroupView' % method
         format = {'User': user.Resource,
-                  'View': '%s@%s' % (user.Name, name.title()),
+                  'View': '%s.%s' % (user.Name, name.title()),
                   'Group': group}
         return getSqlQuery(query, format)
 
@@ -338,7 +338,7 @@ class DataSource(unohelper.Base,
             return False
         if user.MetaData is not None:
             return True
-        if not user.Request.isOffLine(self.Provider.Host):
+        if self.Provider.isOnLine():
             data = self.Provider.getUser(user.Request, user)
             if data.IsPresent:
                 resource = self.Provider.getUserId(data.Value)
@@ -380,7 +380,7 @@ class DataSource(unohelper.Base,
         status = self._Statement.executeUpdate(sql)
         return status == 0
 
-    def getDataSourceCall(self, key, batched=False, format=None, name=None):
+    def getDataSourceCall(self, key, batched=False, name=None, format=None):
         if key not in self._CallsPool:
             name = key if name is None else name
             self._CallsPool[key] = getDataSourceCall(self.Connection, name, format)

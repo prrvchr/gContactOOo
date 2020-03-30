@@ -246,5 +246,5 @@ class Replicator(unohelper.Base,
                     if label in method['Skip']:
                         continue
                     value = data.getValue(label)
-                    update += self.datasource.mergeData(key, resource, typename, label, value, timestamp)
+                    update += self.datasource.mergePeopleData(key, resource, typename, label, value, timestamp)
         return update
