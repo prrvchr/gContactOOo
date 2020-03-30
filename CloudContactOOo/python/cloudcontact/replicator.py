@@ -55,7 +55,7 @@ class Replicator(unohelper.Base,
     def _syncData(self, timestamp):
         result = KeyMap()
         self.datasource.setLoggingChanges(False)
-        self.datasource.saveChanges(False, 1)
+        self.datasource.saveChanges()
         self.datasource.Connection.setAutoCommit(False)
         for user in self.datasource._UsersPool.values():
             if not self.event.is_set():
@@ -75,7 +75,7 @@ class Replicator(unohelper.Base,
         self.datasource.closeDataSourceCall()
         self.datasource.Connection.commit()
         self.datasource.setLoggingChanges(True)
-        self.datasource.saveChanges(False, 2)
+        self.datasource.saveChanges()
         self.datasource.Connection.setAutoCommit(True)
 
     def _syncUser(self, user, timestamp):

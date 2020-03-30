@@ -155,12 +155,11 @@ class DataSource(unohelper.Base,
         sql = getSqlQuery('loggingChanges', state)
         self._Statement.execute(sql)
 
-    def saveChanges(self, compact=False, page=0):
+    def saveChanges(self, compact=False):
         if self.count >= g_compact:
             compact = True
             self.count = 0
         sql = getSqlQuery('saveChanges', compact)
-        print("DataSource.saveChanges(): %s - %s" % (page, sql))
         self._Statement.execute(sql)
 
     def shutdownDataBase(self, compact=False):
