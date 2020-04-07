@@ -9,8 +9,9 @@ from unolib import getSimpleFile
 
 from .dbconfig import g_path
 from .dbconfig import g_version
+
 from .dbqueries import getSqlQuery
-from .dbtools import getTablesAndStatements
+
 from .dbtools import getDataSourceCall
 from .dbtools import getSequenceFromResult
 from .dbtools import getDataFromResult
