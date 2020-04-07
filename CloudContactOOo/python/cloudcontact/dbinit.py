@@ -198,8 +198,9 @@ def _getViewsAndTriggers(statement):
             triggercore.append(getSqlQuery('createTriggerUpdateAddressBookCore', data))
     call.close()
     if queries:
-        c1.insert(0, '"%s"' % pcolumn)
-        s1.insert(0, '"%s"."%s"' % (ptable, pcolumn))
+        column = 'Resource'
+        c1.insert(0, '"%s"' % column)
+        s1.insert(0, '"%s"."%s"' % (ptable, column))
         f1.insert(0, '"%s"' % ptable)
         f1.append('ORDER BY "%s"."%s"' % (ptable, pcolumn))
         format = ('AddressBook', ','.join(c1), ','.join(s1), ' '.join(f1))

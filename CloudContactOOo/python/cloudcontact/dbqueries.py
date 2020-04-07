@@ -154,9 +154,10 @@ def getSqlQuery(name, format=None):
         q = '''\
 CREATE VIEW IF NOT EXISTS "%(View)s" AS
   SELECT "AddressBook".* FROM "AddressBook"
-  JOIN "Connections" ON "AddressBook"."People"="Connections"."People"
+  JOIN "Peoples" ON "AddressBook"."Resource"="Peoples"."Resource"
+  JOIN "Connections" ON "Peoples"."People"="Connections"."People"
   JOIN "Groups" ON "Connections"."Group"="Groups"."Group"
-  WHERE "Groups"."Group"=%(Group)s;
+  WHERE "Groups"."Group"=%(Group)s ORDER BY "Peoples"."People";
 GRANT SELECT ON "%(View)s" TO "%(User)s";
 '''
         query = q % format

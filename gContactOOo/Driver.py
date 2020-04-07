@@ -68,8 +68,10 @@ class Driver(unohelper.Base,
 
     # XDataDefinitionSupplier
     def getDataDefinitionByConnection(self, connection):
-        return connection.getTables()
+        print("Driver.getDataDefinitionByConnection()")
+        return connection
     def getDataDefinitionByURL(self, url, infos):
+        print("Driver.getDataDefinitionByURL()")
         connection = self.connect(url, infos)
         return self.getDataDefinitionByConnection(connection)
 

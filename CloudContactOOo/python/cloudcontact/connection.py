@@ -88,7 +88,7 @@ class Connection(unohelper.Base,
         event = uno.createUnoStruct('com.sun.star.lang.EventObject')
         event.Source = self
         for listener in self.listeners:
-            litener.disposing(event)
+            listener.disposing(event)
         if not self.connection.isClosed():
             self.close()
     def addEventListener(self, listener):
