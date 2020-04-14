@@ -89,8 +89,12 @@ class Connection(unohelper.Base,
         event.Source = self
         for listener in self.listeners:
             listener.disposing(event)
+<<<<<<< HEAD
         if not self.connection.isClosed():
             self.close()
+=======
+        self.close()
+>>>>>>> refs/subrepo/CloudContactOOo/fetch
     def addEventListener(self, listener):
         print("Connection.addEventListener()")
         self.listeners.append(listener)
@@ -129,7 +133,8 @@ class Connection(unohelper.Base,
     # XCloseable
     def close(self):
         print("Connection.close()********* 1")
-        self.connection.close()
+        if not self.connection.isClosed():
+            self.connection.close()
         self.event.set()
         print("Connection.close()********* 2")
 
@@ -147,7 +152,7 @@ class Connection(unohelper.Base,
         return self.connection.createQueryComposer()
     # XMultiServiceFactory
     def createInstance(self, service):
-        print("Connection.createInstance()")
+        print("Connection.createInstance() %s" % service)
         return self.connection.createInstance(service)
     def createInstanceWithArguments(self, service, arguments):
         print("Connection.createInstanceWithArguments()")
@@ -157,9 +162,10 @@ class Connection(unohelper.Base,
         return self.connection.getAvailableServiceNames()
     # XChild
     def getParent(self):
+        print("Connection.getParent() *************************************************************")
         return DataSource(self, self.protocols, self.username)
     def setParent(self):
-        pass
+        print("Connection.setParent() *************************************************************")
     # XTablesSupplier
     def getTables(self):
         print("Connection.getTables()")
@@ -937,19 +943,19 @@ class DatabaseMetaData(unohelper.Base,
         return value
     def nullsAreSortedHigh(self):
         value = self.metadata.nullsAreSortedHigh()
-        print("Connection.MetaData.isReadOnly() %s" % value)
+        print("Connection.MetaData.nullsAreSortedHigh() %s" % value)
         return value
     def nullsAreSortedLow(self):
         value = self.metadata.nullsAreSortedLow()
-        print("Connection.MetaData.isReadOnly() %s" % value)
+        print("Connection.MetaData.nullsAreSortedLow() %s" % value)
         return value
     def nullsAreSortedAtStart(self):
         value = self.metadata.nullsAreSortedAtStart()
-        print("Connection.MetaData.isReadOnly() %s" % value)
+        print("Connection.MetaData.nullsAreSortedAtStart() %s" % value)
         return value
     def nullsAreSortedAtEnd(self):
         value = self.metadata.nullsAreSortedAtEnd()
-        print("Connection.MetaData.isReadOnly() %s" % value)
+        print("Connection.MetaData.nullsAreSortedAtEnd() %s" % value)
         return value
     def getDatabaseProductName(self):
         print("Connection.MetaData.getDatabaseProductName()")

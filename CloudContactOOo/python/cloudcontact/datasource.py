@@ -60,6 +60,7 @@ class DataSource(unohelper.Base,
                  XTerminateListener,
                  XRestDataSource):
     def __init__(self, ctx, event):
+        print("DataSource.__init__() 1")
         self.ctx = ctx
         self.Provider = Provider(self.ctx)
         self._Warnings = None
@@ -71,6 +72,7 @@ class DataSource(unohelper.Base,
         self.event = event
         self.replicator = None
         self.count = 0
+        print("DataSource.__init__() 2")
 
     @property
     def Connection(self):
@@ -93,19 +95,24 @@ class DataSource(unohelper.Base,
         self._Warnings = None
 
     def isConnected(self):
+        print("DataSource.isConnected() 1")
         if self.Connection is not None and not self.Connection.isClosed():
             return True
         dbname = self.Provider.Host
+        print("DataSource.isConnected() 2")
         url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, True)
         if self.Warnings is not None:
             return False
+        print("DataSource.isConnected() 3")
         connection, self.Warnings = getDataSourceConnection(self.ctx, url, dbname)
         if self.Warnings is not None:
             return False
+        print("DataSource.isConnected() 4")
         # Piggyback DataBase Connections (easy and clean ShutDown ;-) )
         self._Statement = connection.createStatement()
         # Add a TerminateListener  which is responsible for the shutdown of the database
         desktop = 'com.sun.star.frame.Desktop'
+        print("DataSource.isConnected() 5")
         self.ctx.ServiceManager.createInstance(desktop).addTerminateListener(self)
         print("DataSource.connect() OK")
         #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
