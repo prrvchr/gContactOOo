@@ -89,12 +89,7 @@ class Connection(unohelper.Base,
         event.Source = self
         for listener in self.listeners:
             listener.disposing(event)
-<<<<<<< HEAD
-        if not self.connection.isClosed():
-            self.close()
-=======
         self.close()
->>>>>>> refs/subrepo/CloudContactOOo/fetch
     def addEventListener(self, listener):
         print("Connection.addEventListener()")
         self.listeners.append(listener)
