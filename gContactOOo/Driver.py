@@ -63,7 +63,9 @@ class Driver(unohelper.Base,
     @property
     def DataSource(self):
         if Driver.__dataSource is None:
+            print("Driver.DataSource() 1")
             Driver.__dataSource = DataSource(self.ctx, self.event)
+        print("Driver.DataSource() 2")
         return Driver.__dataSource
 
     # XDataDefinitionSupplier
@@ -86,6 +88,7 @@ class Driver(unohelper.Base,
     # XDriver
     def connect(self, url, infos):
         try:
+            print("Driver.connect() 1")
             protocols = url.strip().split(':')
             username, password = self._getUserCredential(infos)
             if len(protocols) != 3 or not all(protocols):
@@ -102,19 +105,23 @@ class Driver(unohelper.Base,
                 msg = getMessage(self.ctx, 1104)
                 raise getSqlException(state, 1104, msg, self)
             level = INFO
+            print("Driver.connect() 2")
             dbname = self.DataSource.Provider.Host
             msg = getMessage(self.ctx, 100, dbname)
+            print("Driver.connect() 3")
             if not self.DataSource.isConnected():
                 raise self.DataSource.getWarnings()
             user = self.DataSource.getUser(username, password)
+            print("Driver.connect() 4")
             if user is None:
                 raise self.DataSource.getWarnings()
             connection = user.getConnection(dbname, password)
+            print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()
-            print("Driver.connect() 5 %s" % connection.isClosed())
+            print("Driver.connect() 6 %s" % connection.isClosed())
             version = connection.getMetaData().getDriverVersion()
-            print("Driver.connect() 6 %s" % version)
+            print("Driver.connect() 7 %s" % version)
             msg += getMessage(self.ctx, 102)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             return Connection(self.ctx, connection, protocols, user.Account, self.event)
@@ -125,7 +132,9 @@ class Driver(unohelper.Base,
 
     def acceptsURL(self, url):
         print("Driver.acceptsURL() %s" % url)
-        return url.startswith(self._supportedProtocol)
+        value = url.startswith(self._supportedProtocol)
+        print("Driver.acceptsURL() %s" % value)
+        return value
 
     def getPropertyInfo(self, url, infos):
         try:
