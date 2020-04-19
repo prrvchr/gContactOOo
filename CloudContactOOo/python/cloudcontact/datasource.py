@@ -264,6 +264,14 @@ class DataSource(unohelper.Base,
         query = self._getGroupViewQuery('drop', user, name)
         self._Statement.execute(query)
 
+    def _getGroupViewQuery(self, method, user, name, group=0):
+        query = '%sGroupView' % method
+        account, pwd = user.getCredential('')
+        format = {'User': account,
+                  'View': '%s.%s' % (user.Name, name.title()),
+                  'Group': group}
+        return getSqlQuery(query, format)
+
     def updateSyncToken(self, user, token, data, timestamp):
         value = data.getValue(token)
         call = self.getDataSourceCall('update%s' % token, True)
@@ -322,13 +330,6 @@ class DataSource(unohelper.Base,
         print("datasource._mergeConnection() %s - %s" % (data.getValue('Resource'), len(members)))
         return len(members)
 
-    def _getGroupViewQuery(self, method, user, name, group=0):
-        query = '%sGroupView' % method
-        format = {'User': user.Resource,
-                  'View': '%s.%s' % (user.Name, name.title()),
-                  'Group': group}
-        return getSqlQuery(query, format)
-
     def _getFieldsMap(self, method):
         map = []
         call = getDataSourceCall(self.Connection, 'getFieldsMap')
@@ -347,11 +348,10 @@ class DataSource(unohelper.Base,
         if self.Provider.isOnLine():
             data = self.Provider.getUser(user.Request, user)
             if data.IsPresent:
-                resource = self.Provider.getUserId(data.Value)
-                if self._createUser(resource, password):
-                    user.MetaData = self._insertUser(resource, name)
+                user.MetaData = self._insertUser(data.Value, name)
+                credential = user.getCredential(password)
+                if self._createUser(*credential):
                     self.createGroupView(user, g_group, user.Group)
-                    #self.createSynonym(user, g_group)
                     return True
                 else:
                     state = getMessage(self.ctx, 1005)
@@ -368,17 +368,17 @@ class DataSource(unohelper.Base,
         self.Warnings = getSqlException(state, code, msg, self)
         return False
 
-    def _insertUser(self, resource, account):
-        data = KeyMap()
+    def _insertUser(self, data, account):
+        user = KeyMap()
         call = getDataSourceCall(self.Connection, 'insertUser')
-        call.setString(1, resource)
+        call.setString(1, self.Provider.getUserId(data))
         call.setString(2, account)
         call.setString(3, g_group)
         result = call.executeQuery()
         if result.next():
-            data = getKeyMapFromResult(result)
+            user = getKeyMapFromResult(result)
         call.close()
-        return data
+        return user
 
     def _createUser(self, name, password):
         format = {'User': name, 'Password': password, 'Admin': g_admin}

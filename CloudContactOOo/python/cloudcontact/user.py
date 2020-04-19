@@ -81,4 +81,4 @@ class User(unohelper.Base,
         return None
 
     def getCredential(self, password):
-        return self.Resource, password
+        return self.Account, password

@@ -209,6 +209,10 @@ GRANT SELECT ON "%(View)s" TO "%(User)s";
     elif name == 'getIdentity':
         query = 'CALL IDENTITY();'
 
+# Get Users Query
+    elif name == 'getUsers':
+        query = 'SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS'
+
 # Select Queries
     elif name == 'getTableName':
         query = 'SELECT "Name" FROM "Tables" WHERE "View" IS NOT NULL ORDER BY "Table"'
