@@ -43,4 +43,5 @@ class DataContainer(unohelper.Base,
 g_ImplementationHelper.addImplementation(DataContainer,
                                          g_ImplementationName,
                                         (g_ImplementationName,
-                                        'com.sun.star.sdb.DefinitionContainer'))
+                                        'com.sun.star.sdb.DefinitionContainer',
+                                        'com.sun.star.sdb.DocumentContainer'))
