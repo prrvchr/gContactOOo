@@ -234,9 +234,12 @@ class PreparedStatement(BaseStatement,
                         XColumnsSupplier,
                         XPreparedBatchExecution):
     def __init__(self, connection, sql):
+        # TODO: cannot use: result = self._statement.executeQuery()
+        # TODO: it trow a: java.lang.IncompatibleClassChangeError
+        # TODO: fallback to: self._statement as connection.prepareCall(sql)
         self.connection = connection
         self.sql = sql
-        self._statement = connection._connection.prepareStatement(sql)
+        self._statement = connection._connection.prepareCall(sql)
         self._statement.ResultSetType = SCROLL_INSENSITIVE
 
    # XPreparedBatchExecution
@@ -254,28 +257,8 @@ class PreparedStatement(BaseStatement,
 
     # XPreparedStatement
     def executeQuery(self):
-        # TODO: cannot use: result = self._statement.executeQuery()
-        # TODO: it trow a: java.lang.IncompatibleClassChangeError
-        # TODO: fallback to: self._statement.execute()
-        try:
-            print("Connection.PreparedStatement.executeQuery() hack 1")
-            return self._statement.executeQuery()
-        except Exception as e:
-            print("PreparedStatement.executeQuery() ERROR: %s - %s" % (e, traceback.print_exc()))
-        try:
-            print("Connection.PreparedStatement.executeQuery() hack 2")
-            if self._statement.execute():
-                return self._statement.getResultSet()
-        except Exception as e:
-            print("PreparedStatement.executeQuery() ERROR: %s - %s" % (e, traceback.print_exc()))
-        try:
-            print("Connection.PreparedStatement.executeQuery() hack 3")
-            statement = self.connection._connection.createStatement()
-            return statement.executeQuery(self.sql)
-        except Exception as e:
-            print("PreparedStatement.executeQuery() ERROR: %s - %s" % (e, traceback.print_exc()))
-        print("Connection.PreparedStatement.executeQuery() hack 4")
-        raise e
+        print("Connection.PreparedStatement.executeQuery()")
+        return self._statement.executeQuery()
     def executeUpdate(self):
         print("Connection.PreparedStatement.executeUpdate()")
         return self._statement.executeUpdate()
@@ -301,8 +284,6 @@ class PreparedStatement(BaseStatement,
     def setBoolean(self, index, value):
         print("PreparedStatement.setBoolean()1 %s - %s" % (index, value))
         self._statement.setBoolean(index, value)
-        #self._statement.setObject(index, value)
-        print("PreparedStatement.setBoolean()2 %s - %s" % (index, value))
     def setByte(self, index, value):
         self._statement.setByte(index, value)
     def setShort(self, index, value):
@@ -323,8 +304,6 @@ class PreparedStatement(BaseStatement,
     def setString(self, index, value):
         print("PreparedStatement.setString()1 %s - %s" % (index, value))
         self._statement.setString(index, value)
-        #self._statement.setObject(index, value)
-        print("PreparedStatement.setString()2 %s - %s" % (index, value))
     def setBytes(self, index, value):
         self._statement.setBytes(index, value)
     def setDate(self, index, value):
