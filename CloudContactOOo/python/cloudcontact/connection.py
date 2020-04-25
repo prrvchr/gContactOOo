@@ -38,11 +38,11 @@ from unolib import createService
 from .dbtools import getSequenceFromResult
 from .dbqueries import getSqlQuery
 
-from .unodb.documentdatasource import DocumentDataSource
-from .unodb.databasemetadata import DatabaseMetaData
-from .unodb.statement import Statement
-from .unodb.statement import PreparedStatement
-from .unodb.statement import CallableStatement
+from .documentdatasource import DocumentDataSource
+from .databasemetadata import DatabaseMetaData
+from .statement import Statement
+from .statement import PreparedStatement
+from .statement import CallableStatement
 
 import traceback
 
