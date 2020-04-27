@@ -16,6 +16,11 @@ from com.sun.star.lang import XMultiServiceFactory
 from com.sun.star.container import XChild
 from com.sun.star.sdb.application import XTableUIProvider
 from com.sun.star.sdb.tools import XConnectionTools
+from com.sun.star.sdb.CommandType import TABLE
+from com.sun.star.sdb.CommandType import QUERY
+from com.sun.star.sdb.CommandType import COMMAND
+
+from com.sun.star.sdbc import SQLException 
 
 from com.sun.star.uno import XWeak
 from com.sun.star.uno import XAdapter
@@ -126,8 +131,23 @@ class Connection(unohelper.Base,
 
     # XCommandPreparation
     def prepareCommand(self, command, commandtype):
+        # TODO: cannot use: self._connection.prepareCommand()
+        # TODO: it trow a: java.lang.IncompatibleClassChangeError
+        # TODO: in the same way when using self._connection.prepareStatement(sql)
+        # TODO: fallback to: self._connection.prepareCall(sql)
         print("Connection.prepareCommand()")
-        return self._connection.prepareCommand(command, commandtype)
+        sql = None
+        if commandtype == TABLE:
+            sql = 'SELECT * FROM "%s"' % command
+        elif commandtype == QUERY:
+            if self.getQueries().hasByName(command):
+                sql = self.getQueries().getByName(command).Command
+        elif commandtype == COMMAND:
+            sql = command
+        if sql is not None:
+            statement = PreparedStatement(self, sql)
+            return statement
+        raise SQLException()
 
     # XQueriesSupplier
     def getQueries(self):
@@ -152,11 +172,10 @@ class Connection(unohelper.Base,
 
     # XChild
     def getParent(self):
-        #print("Connection.getParent() *************************************************************")
         parent = self._connection.getParent()
         return DocumentDataSource(parent, self._protocols, self._username)
     def setParent(self):
-        print("Connection.setParent() *************************************************************")
+        pass
 
     # XTablesSupplier
     def getTables(self):
