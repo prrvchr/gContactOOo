@@ -230,7 +230,7 @@ class Connection(unohelper.Base,
         print("Connection.isClosed()")
         return self._connection.isClosed()
     def getMetaData(self):
-        #print("Connection.getMetaData()")
+        print("Connection.getMetaData()")
         metadata = self._connection.getMetaData()
         return DatabaseMetaData(self, metadata, self._protocols, self._username)
     def setReadOnly(self, readonly):
