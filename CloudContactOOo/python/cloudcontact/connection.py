@@ -19,8 +19,9 @@ from com.sun.star.sdb.tools import XConnectionTools
 from com.sun.star.sdb.CommandType import TABLE
 from com.sun.star.sdb.CommandType import QUERY
 from com.sun.star.sdb.CommandType import COMMAND
+from com.sun.star.beans.PropertyAttribute import READONLY
 
-from com.sun.star.sdbc import SQLException 
+from com.sun.star.sdbc import SQLException
 
 from com.sun.star.uno import XWeak
 from com.sun.star.uno import XAdapter
