@@ -137,16 +137,17 @@ class Connection(unohelper.Base,
         # TODO: in the same way when using self._connection.prepareStatement(sql)
         # TODO: fallback to: self._connection.prepareCall(sql)
         print("Connection.prepareCommand()")
-        sql = None
+        query = None
         if commandtype == TABLE:
-            sql = 'SELECT * FROM "%s"' % command
+            query = 'SELECT * FROM "%s"' % command
         elif commandtype == QUERY:
-            if self.getQueries().hasByName(command):
-                sql = self.getQueries().getByName(command).Command
+            queries = self._connection.getQueries()
+            if queries.hasByName(command):
+                query = queries.getByName(command).Command
         elif commandtype == COMMAND:
-            sql = command
-        if sql is not None:
-            statement = PreparedStatement(self, sql)
+            query = command
+        if query is not None:
+            statement = CallableStatement(self, query)
             return statement
         raise SQLException()
 
@@ -199,7 +200,7 @@ class Connection(unohelper.Base,
             #mri.inspect(result)
             #users = self._connection.getUsers()
             print("Connection.getUsers()2 %s" % users)
-            return DataContainer(users, 'string')
+            return DataContainer(self._connection, users, 'string')
         except Exception as e:
             print("Connection.getUsers(): %s - %s" % (e, traceback.print_exc()))
 
@@ -250,7 +251,7 @@ class Connection(unohelper.Base,
         print("Connection.isClosed()")
         return self._connection.isClosed()
     def getMetaData(self):
-        print("Connection.getMetaData()")
+        #print("Connection.getMetaData()")
         metadata = self._connection.getMetaData()
         return DatabaseMetaData(self, metadata, self._protocols, self._username)
     def setReadOnly(self, readonly):
@@ -293,8 +294,8 @@ class DataContainer(unohelper.Base,
                     XNameAccess,
                     XIndexAccess,
                     XEnumerationAccess):
-    def __init__(self, names, typename):
-        self._elements = {name: DataBaseUser(name) for name in names}
+    def __init__(self, connection, names, typename):
+        self._elements = {name: DataBaseUser(connection, name) for name in names}
         self._typename = typename
         print("DataContainer.__init__()")
 
@@ -350,7 +351,8 @@ class DataBaseUser(unohelper.Base,
                    XAdapter,
                    XGroupsSupplier,
                    PropertySet):
-    def __init__(self, username):
+    def __init__(self, connection, username):
+        self._connection = connection
         self.Name = username
         print("DataBaseUser.__init__()")
 
@@ -367,21 +369,25 @@ class DataBaseUser(unohelper.Base,
     def removeReference(self, reference):
         pass
 
-    # XUser, 
+    # XUser
     def changePassword(self, oldpwd, newpwd):
         print("DataBaseUser.changePassword()")
-        pass
+        query = getSqlQuery('changePassword', newpwd)
+        print("DataBaseUser.changePassword() %s" % query)
+        result = self._connection.createStatement().executeUpdate(query)
+        print("DataBaseUser.changePassword() %s" % result)
+    # XAuthorizable
     def getPrivileges(self, objname, objtype):
-        print("DataBaseUser.getPrivileges()")
+        print("DataBaseUser.getPrivileges() %s - %s" % (objname, objtype))
         pass
     def getGrantablePrivileges(self, objname, objtype):
-        print("DataBaseUser.getGrantablePrivileges()")
+        print("DataBaseUser.getGrantablePrivileges() %s - %s" % (objname, objtype))
         pass
     def grantPrivileges(self, objname, objtype, objprivilege):
-        print("DataBaseUser.grantPrivileges()")
+        print("DataBaseUser.grantPrivileges() %s - %s - %s" % (objname, objtype, objprivilege))
         pass
     def revokePrivileges(self, objname, objtype, objprivilege):
-        print("DataBaseUser.revokePrivileges()")
+        print("DataBaseUser.revokePrivileges() %s - %s - %s" % (objname, objtype, objprivilege))
         pass
 
     # XGroupsSupplier

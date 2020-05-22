@@ -212,6 +212,8 @@ GRANT SELECT ON "%(View)s" TO "%(User)s";
 # Get Users Query
     elif name == 'getUsers':
         query = 'SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS'
+    elif name == 'changePassword':
+        query = "SET PASSWORD '%s'" % format
 
 # Select Queries
     elif name == 'getTableName':
