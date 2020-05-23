@@ -42,6 +42,7 @@ from unolib import getProperty
 from unolib import createService
 
 from .dbtools import getSequenceFromResult
+from .dbtools import getKeyMapSequenceFromResult
 from .dbqueries import getSqlQuery
 
 from .documentdatasource import DocumentDataSource
@@ -196,10 +197,12 @@ class Connection(unohelper.Base,
             query = getSqlQuery('getUsers')
             result = self._connection.createStatement().executeQuery(query)
             users = getSequenceFromResult(result)
+            #query = getSqlQuery('getPrivileges')
+            #result = self._connection.createStatement().executeQuery(query)
+            #privileges = getKeyMapSequenceFromResult(result)
             #mri = createService(self.ctx, 'mytools.Mri')
-            #mri.inspect(result)
-            #users = self._connection.getUsers()
-            print("Connection.getUsers()2 %s" % users)
+            #mri.inspect(tuple(privileges))
+            print("Connection.getUsers()2 %s" % (users, ))
             return DataContainer(self._connection, users, 'string')
         except Exception as e:
             print("Connection.getUsers(): %s - %s" % (e, traceback.print_exc()))
@@ -354,7 +357,7 @@ class DataBaseUser(unohelper.Base,
     def __init__(self, connection, username):
         self._connection = connection
         self.Name = username
-        print("DataBaseUser.__init__()")
+        print("DataBaseUser.__init__() %s" % username)
 
     # XWeak
     def queryAdapter(self):
