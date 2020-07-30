@@ -133,7 +133,7 @@ class DataSource(unohelper.Base,
             msg += getMessage(self.ctx, 103)
         else:
             compact = self.count >= g_compact
-            query = getSqlQuery('shutdown', compact)
+            query = getSqlQuery(self.ctx, 'shutdown', compact)
             print("DataSource.queryTermination() 3")
             self._Statement.execute(query)
             msg += getMessage(self.ctx, 102)
@@ -160,14 +160,14 @@ class DataSource(unohelper.Base,
         return user
 
     def setLoggingChanges(self, state):
-        sql = getSqlQuery('loggingChanges', state)
+        sql = getSqlQuery(self.ctx, 'loggingChanges', state)
         self._Statement.execute(sql)
 
     def saveChanges(self, compact=False):
         if self.count >= g_compact:
             compact = True
             self.count = 0
-        sql = getSqlQuery('saveChanges', compact)
+        sql = getSqlQuery(self.ctx, 'saveChanges', compact)
         self._Statement.execute(sql)
 
     def shutdownDataBase(self, compact=False):
@@ -183,7 +183,7 @@ class DataSource(unohelper.Base,
             else:
                 print("DataSource.shutdownDataBase() 4")
                 compact = self.replicator.Compact
-                query = getSqlQuery('shutdown', compact)
+                query = getSqlQuery(self.ctx, 'shutdown', compact)
                 print("DataSource.shutdownDataBase() 5")
                 self._Statement.execute(query)
                 print("DataSource.shutdownDataBase() 6")
@@ -195,7 +195,7 @@ class DataSource(unohelper.Base,
 
     def getUserFields(self):
         fields = []
-        call = getDataSourceCall(self.Connection, 'getFieldNames')
+        call = getDataSourceCall(self.ctx, self.Connection, 'getFieldNames')
         result = call.executeQuery()
         fields = getSequenceFromResult(result)
         call.close()
@@ -204,19 +204,15 @@ class DataSource(unohelper.Base,
 
     def getRequest(self, name):
         request = createService(self.ctx, g_oauth2)
-        if request:
+        if request is not None:
             request.initializeSession(self.Provider.Host, name)
-        else:
-            state = getMessage(self.ctx, 1003)
-            msg = getMessage(self.ctx, 1105, g_oauth2)
-            self.Warnings = getSqlException(state, 1105, msg, self)
         return request
 
     def selectUser(self, account):
         user = None
         print("DataSource.selectUser() %s - %s" % (account, user))
         try:
-            call = getDataSourceCall(self.Connection, 'getPerson')
+            call = getDataSourceCall(self.ctx, self.Connection, 'getPerson')
             call.setString(1, account)
             result = call.executeQuery()
             if result.next():
@@ -248,12 +244,12 @@ class DataSource(unohelper.Base,
 
     def truncatGroup(self, start):
         format = {'TimeStamp': unparseTimeStamp(start)}
-        query = getSqlQuery('truncatGroup', format)
+        query = getSqlQuery(self.ctx, 'truncatGroup', format)
         self._Statement.execute(query)
 
     def createSynonym(self, user, name):
         format = {'Schema': user.Resource, 'View': name.title()}
-        query = getSqlQuery('createSynonym', format)
+        query = getSqlQuery(self.ctx, 'createSynonym', format)
         self._Statement.execute(query)
 
     def createGroupView(self, user, name, group):
@@ -271,7 +267,7 @@ class DataSource(unohelper.Base,
         format = {'User': account,
                   'View': '%s.%s' % (user.Name, name.title()),
                   'Group': group}
-        return getSqlQuery(query, format)
+        return getSqlQuery(self.ctx, query, format)
 
     def updateSyncToken(self, user, token, data, timestamp):
         value = data.getValue(token)
@@ -333,7 +329,7 @@ class DataSource(unohelper.Base,
 
     def _getFieldsMap(self, method):
         map = []
-        call = getDataSourceCall(self.Connection, 'getFieldsMap')
+        call = getDataSourceCall(self.ctx, self.Connection, 'getFieldsMap')
         call.setString(1, method)
         r = call.executeQuery()
         while r.next():
@@ -342,36 +338,37 @@ class DataSource(unohelper.Base,
         return tuple(map)
 
     def _initializeUser(self, user, name, password):
-        if user.Request is None:
-            return False
-        if user.MetaData is not None:
-            return True
-        if self.Provider.isOnLine():
-            data = self.Provider.getUser(user.Request, user)
-            if data.IsPresent:
-                user.MetaData = self._insertUser(data.Value, name)
-                credential = user.getCredential(password)
-                if self._createUser(*credential):
-                    self.createGroupView(user, g_group, user.Group)
-                    return True
+        if user.Request is not None:
+            if user.MetaData is not None:
+                return True
+            if self.Provider.isOnLine():
+                data = self.Provider.getUser(user.Request, user)
+                if data.IsPresent:
+                    user.MetaData = self._insertUser(data.Value, name)
+                    credential = user.getCredential(password)
+                    if self._createUser(*credential):
+                        self.createGroupView(user, g_group, user.Group)
+                        return True
+                    else:
+                        warning = self._getWarning(1005, 1106, name)
                 else:
-                    state = getMessage(self.ctx, 1005)
-                    code = 1106
-                    msg = getMessage(self.ctx, code, name)
+                    warning = self._getWarning(1006, 1107, name)
             else:
-                state = getMessage(self.ctx, 1006)
-                code = 1107
-                msg = getMessage(self.ctx, code, name)
+                warning = self._getWarning(1004, 1108, name)
         else:
-            state = getMessage(self.ctx, 1004)
-            code = 1108
-            msg = getMessage(self.ctx, code, name)
-        self.Warnings = getSqlException(state, code, msg, self)
+            warning = self._getWarning(1003, 1105, g_oauth2)
+        self.Warnings = warning
         return False
+
+    def _getWarning(self, state, code, format):
+        state = getMessage(self.ctx, state)
+        msg = getMessage(self.ctx, code, format)
+        warning = getSqlException(state, code, msg, self)
+        return warning
 
     def _insertUser(self, data, account):
         user = KeyMap()
-        call = getDataSourceCall(self.Connection, 'insertUser')
+        call = getDataSourceCall(self.ctx, self.Connection, 'insertUser')
         call.setString(1, self.Provider.getUserId(data))
         call.setString(2, account)
         call.setString(3, g_group)
@@ -383,14 +380,14 @@ class DataSource(unohelper.Base,
 
     def _createUser(self, name, password):
         format = {'User': name, 'Password': password, 'Admin': g_admin}
-        sql = getSqlQuery('createUser', format)
+        sql = getSqlQuery(self.ctx, 'createUser', format)
         status = self._Statement.executeUpdate(sql)
         return status == 0
 
     def getDataSourceCall(self, key, batched=False, name=None, format=None):
         if key not in self._CallsPool:
             name = key if name is None else name
-            self._CallsPool[key] = getDataSourceCall(self.Connection, name, format)
+            self._CallsPool[key] = getDataSourceCall(self.ctx, self.Connection, name, format)
         if batched and key not in self._batchedCall:
             self._batchedCall.append(key)
         return self._CallsPool[key]

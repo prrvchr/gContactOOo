@@ -42,7 +42,7 @@ class Provider(unohelper.Base,
         return g_url
 
     def isOnLine(self):
-        return getConnectionMode(self.ctx, self.Host)  != OFFLINE
+        return getConnectionMode(self.ctx, self.Host) != OFFLINE
     def isOffLine(self):
         return getConnectionMode(self.ctx, self.Host) != ONLINE
 

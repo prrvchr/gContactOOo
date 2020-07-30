@@ -1,10 +1,17 @@
 #!
 # -*- coding: utf_8 -*-
 
+from com.sun.star.logging.LogLevel import INFO
+from com.sun.star.logging.LogLevel import SEVERE
+
 from .dbconfig import g_csv
 from .configuration import g_member
 
-def getSqlQuery(name, format=None):
+from .logger import logMessage
+from .logger import getMessage
+
+
+def getSqlQuery(ctx, name, format=None):
 
 # Create Text Table Queries
     if name == 'createTableTables':
@@ -610,5 +617,7 @@ CREATE PROCEDURE "MergeConnection"(IN "GroupPrefix" VARCHAR(50),
 
 # Queries don't exist!!!
     else:
-        print("dbqueries.getSqlQuery(): ERROR: Query '%s' not found!!!" % name)
+        query = None
+        msg = getMessage(ctx, 130, name)
+        logMessage(ctx, SEVERE, msg, 'dbqueries', 'getSqlQuery()')
     return query

@@ -52,13 +52,13 @@ def _createDataBase(ctx, datasource, url, dbname):
         version, error = checkDataBase(ctx, connection)
         if error is None:
             statement = connection.createStatement()
-            createStaticTable(statement, _getStaticTables())
-            tables, queries = _getTablesAndStatements(statement, version)
+            createStaticTable(ctx, statement, _getStaticTables())
+            tables, queries = _getTablesAndStatements(ctx, statement, version)
             executeSqlQueries(statement, tables)
-            _executeQueries(statement, _getQueries())
+            _executeQueries(ctx, statement, _getQueries())
             executeSqlQueries(statement, queries)
             print("dbinit._createDataBase() 2")
-            views, triggers = _getViewsAndTriggers(statement)
+            views, triggers = _getViewsAndTriggers(ctx, statement)
             executeSqlQueries(statement, views)
             #executeSqlQueries(statement, triggers)
         connection.close()
@@ -66,9 +66,9 @@ def _createDataBase(ctx, datasource, url, dbname):
     print("dbinit._createDataBase() 3")
     return error
 
-def _executeQueries(statement, queries):
+def _executeQueries(ctx, statement, queries):
     for name, format in queries.items():
-        query = getSqlQuery(name, format)
+        query = getSqlQuery(ctx, name, format)
         statement.executeQuery(query)
 
 def _getTableColumns(connection, tables):
@@ -94,11 +94,11 @@ def _createPreparedStatement(ctx, datasource, statements):
             query.Command = sql
             queries.insertByName(name, query)
 
-def _getTablesAndStatements(statement, version=g_version):
+def _getTablesAndStatements(ctx, statement, version=g_version):
     tables = []
     statements = []
     call = getDataSourceCall(statement.getConnection(), 'getTables')
-    for table in getSequenceFromResult(statement.executeQuery(getSqlQuery('getTableName'))):
+    for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableName'))):
         view = False
         versioned = False
         columns = []
@@ -131,17 +131,17 @@ def _getTablesAndStatements(statement, version=g_version):
                                    'ForeignTable': data.getValue('ForeignTable'),
                                    'ForeignColumn': data.getValue('ForeignColumn')})
         if primary:
-            columns.append(getSqlQuery('getPrimayKey', primary))
+            columns.append(getSqlQuery(ctx, 'getPrimayKey', primary))
         for format in unique:
-            columns.append(getSqlQuery('getUniqueConstraint', format))
+            columns.append(getSqlQuery(ctx, 'getUniqueConstraint', format))
         for format in constraint:
-            columns.append(getSqlQuery('getForeignConstraint', format))
+            columns.append(getSqlQuery(ctx, 'getForeignConstraint', format))
         if version >= '2.5.0' and versioned:
-            columns.append(getSqlQuery('getPeriodColumns'))
+            columns.append(getSqlQuery(ctx, 'getPeriodColumns'))
         format = (table, ','.join(columns))
-        query = getSqlQuery('createTable', format)
+        query = getSqlQuery(ctx, 'createTable', format)
         if version >= '2.5.0' and versioned:
-            query += getSqlQuery('getSystemVersioning')
+            query += getSqlQuery(ctx, 'getSystemVersioning')
         tables.append(query)
         if view:
             typed = False
@@ -151,14 +151,14 @@ def _getTablesAndStatements(statement, version=g_version):
                     break
             format = {'Table': table}
             if typed:
-                merge = getSqlQuery('createTypedDataMerge', format)
+                merge = getSqlQuery(ctx, 'createTypedDataMerge', format)
             else:
-                merge = getSqlQuery('createUnTypedDataMerge', format)
+                merge = getSqlQuery(ctx, 'createUnTypedDataMerge', format)
             statements.append(merge)
     call.close()
     return tables, statements
 
-def _getViewsAndTriggers(statement):
+def _getViewsAndTriggers(ctx, statement):
     c1 = []
     s1 = []
     f1 = []
@@ -166,7 +166,7 @@ def _getViewsAndTriggers(statement):
     triggers = []
     triggercore = []
     call = getDataSourceCall(statement.getConnection(), 'getViews')
-    tables = getSequenceFromResult(statement.executeQuery(getSqlQuery('getViewName')))
+    tables = getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getViewName')))
     for table in tables:
         call.setString(1, table)
         result = call.executeQuery()
@@ -196,9 +196,9 @@ def _getViewsAndTriggers(statement):
                 f = 'JOIN "Types" ON "%s"."Type"="Types"."Type" AND "Types"."Type"=%s'
                 f2.append(f % (table, typeid))
             format = (view, ','.join(c2), ','.join(s2), ' '.join(f2))
-            query = getSqlQuery('createView', format)
+            query = getSqlQuery(ctx, 'createView', format)
             queries.append(query)
-            triggercore.append(getSqlQuery('createTriggerUpdateAddressBookCore', data))
+            triggercore.append(getSqlQuery(ctx, 'createTriggerUpdateAddressBookCore', data))
     call.close()
     if queries:
         column = 'Resource'
@@ -207,10 +207,10 @@ def _getViewsAndTriggers(statement):
         f1.insert(0, '"%s"' % ptable)
         f1.append('ORDER BY "%s"."%s"' % (ptable, pcolumn))
         format = ('AddressBook', ','.join(c1), ','.join(s1), ' '.join(f1))
-        query = getSqlQuery('createView', format)
+        query = getSqlQuery(ctx, 'createView', format)
         #print("dbinit._getViewsAndTriggers() %s"  % query)
         queries.append(query)
-        trigger = getSqlQuery('createTriggerUpdateAddressBook', ' '.join(triggercore))
+        trigger = getSqlQuery(ctx, 'createTriggerUpdateAddressBook', ' '.join(triggercore))
         triggers.append(trigger)
     return queries, triggers
 
