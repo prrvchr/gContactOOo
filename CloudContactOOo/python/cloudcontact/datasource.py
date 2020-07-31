@@ -100,19 +100,22 @@ class DataSource(unohelper.Base,
         return user
 
     def _initializeUser(self, user, name, password):
+        print("DataSource._initializeUser() 1")
         if user.Request is not None:
             if user.MetaData is not None:
-                user.setDataBase(self.DataBase.getDataSource(), password, self.sync)
                 return True
             if self.Provider.isOnLine():
                 data = self.Provider.getUser(user.Request, user)
                 if data.IsPresent:
+                    print("DataSource._initializeUser() 2")
                     userid = self.Provider.getUserId(data.Value)
-                    user.MetaData = self.DataBase.insertUser(userid, name)
+                    user.MetaData = self.DataBase.insertUser(userid, name, g_group)
                     credential = user.getCredential(password)
+                    print("DataSource._initializeUser() 3 %s" % (user.MetaData.getKeys(), ))
                     if self.DataBase.createUser(*credential):
+                        print("DataSource._initializeUser() 4")
                         self.DataBase.createGroupView(user, g_group, user.Group)
-                        user.setDataBase(self.DataBase.getDataSource(), password, self.sync)
+                        print("DataSource._initializeUser() 5")
                         return True
                     else:
                         warning = self._getWarning(1005, 1106, name)
@@ -130,81 +133,3 @@ class DataSource(unohelper.Base,
         msg = getMessage(self.ctx, code, format)
         warning = getSqlException(state, code, msg, self)
         return warning
-
-
-
-
-
-
-
-
-    def shutdownDataBase(self, compact=False):
-        try:
-            print("DataSource.shutdownDataBase() 1")
-            level = INFO
-            msg = getMessage(self.ctx, 101, self.Provider.Host)
-            print("DataSource.shutdownDataBase() 2")
-            if self.Connection is None or self.Connection.isClosed():
-                print("DataSource.shutdownDataBase() 3")
-                level = SEVERE
-                msg += getMessage(self.ctx, 103)
-            else:
-                print("DataSource.shutdownDataBase() 4")
-                compact = self.replicator.Compact
-                query = getSqlQuery(self.ctx, 'shutdown', compact)
-                print("DataSource.shutdownDataBase() 5")
-                self._Statement.execute(query)
-                print("DataSource.shutdownDataBase() 6")
-                msg += getMessage(self.ctx, 102)
-            logMessage(self.ctx, level, msg, 'DataSource', 'queryTermination()')
-            print("DataSource.shutdownDataBase() %s" % msg)
-        except Exception as e:
-            print("datasource.shutdownDataBase() ERROR: %s - %s" % (e, traceback.print_exc()))
-
-    # XTerminateListener
-    def queryTermination(self, event):
-        level = INFO
-        msg = getMessage(self.ctx, 101, self.Provider.Host)
-        print("DataSource.queryTermination() 1")
-        self.event.set()
-        self.replicator.join(30)
-        print("DataSource.queryTermination() 2")
-        if self.Connection is None or self.Connection.isClosed():
-            level = SEVERE
-            msg += getMessage(self.ctx, 103)
-        else:
-            compact = self.count >= g_compact
-            query = getSqlQuery(self.ctx, 'shutdown', compact)
-            print("DataSource.queryTermination() 3")
-            self._Statement.execute(query)
-            msg += getMessage(self.ctx, 102)
-        logMessage(self.ctx, level, msg, 'DataSource', 'queryTermination()')
-        print("DataSource.queryTermination() 4 - %s" % msg)
-    def notifyTermination(self, event):
-        pass
-
-    def isConnected(self):
-        print("DataSource.isConnected() 1")
-        if self.Connection is not None and not self.Connection.isClosed():
-            return True
-        dbname = self.Provider.Host
-        print("DataSource.isConnected() 2")
-        url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, True)
-        print("DataSource.isConnected() 3 %s" % url)
-        if self.Warnings is not None:
-            return False
-        print("DataSource.isConnected() 4")
-        connection, self.Warnings = getDataSourceConnection(self.ctx, url, dbname)
-        if self.Warnings is not None:
-            return False
-        print("DataSource.isConnected() 5")
-        # Piggyback DataBase Connections (easy and clean ShutDown ;-) )
-        self._Statement = connection.createStatement()
-        # Add a TerminateListener  which is responsible for the shutdown of the database
-        desktop = 'com.sun.star.frame.Desktop'
-        print("DataSource.isConnected() 6")
-        self.ctx.ServiceManager.createInstance(desktop).addTerminateListener(self)
-        print("DataSource.connect() OK")
-        #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
-        #mri.inspect(connection)
-        return True

@@ -12,6 +12,8 @@ from com.sun.star.sdbc import XRestUser
 
 from unolib import getRequest
 
+from .database import DataBase
+
 from .configuration import g_identifier
 from .dbinit import getDataSourceUrl
 from .dbtools import getDataSourceConnection
@@ -22,9 +24,8 @@ import traceback
 
 class User(unohelper.Base,
            XRestUser):
-    def __init__(self, ctx, source, name, database=None):
+    def __init__(self, ctx, source, name):
         self.ctx = ctx
-        self.DataBase = database
         self._Warnings = None
         self.MetaData = source.DataBase.selectUser(name)
         self.Fields = source.DataBase.getUserFields()
@@ -68,27 +69,10 @@ class User(unohelper.Base,
     def clearWarnings(self):
         self._Warnings = None
 
-    def setMetaData(self, metadata):
-        self.MetaData = metadata
-
-    def getConnection(self):
-        return self.DataBase.Connection
-
-    def getConnection1(self, dbname, password):
-        url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, True)
-        if self.Warnings is None:
-            credential = self.getCredential(password)
-            connection, self.Warnings = getDataSourceConnection(self.ctx, url, dbname, *credential)
-            #connection, self.Warnings = getDataBaseConnection(self.ctx, url, dbname, *credential)
-            if self.Warnings is None:
-                #mri = self.ctx.ServiceManager.createInstance('mytools.Mri')
-                #mri.inspect(connection)
-                return connection
-        return None
-
-    def setDataBase(self, datasource, password, sync):
+    def getConnection(self, datasource, password):
         name, password = self.getCredential(password)
-        self.DataBase = DataBase(self.ctx, datasource, name, password, sync)
+        connection = datasource.getConnection(name, password)
+        return connection
 
     def getCredential(self, password):
         return self.Account, password

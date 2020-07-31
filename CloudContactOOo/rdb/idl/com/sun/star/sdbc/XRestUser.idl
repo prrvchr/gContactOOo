@@ -12,13 +12,8 @@ module com { module sun { module star { module sdbc {
 interface XRestUser: com::sun::star::uno::XInterface
 {
 
-    void setMetaData([in] ::com::sun::star::auth::XRestKeyMap MetaData);
-
-    void setDataBase([in] ::com::sun::star::sdbc::XDataSource DataSource,
-                     [in] string Password,
-                     [in] ::com::sun::star::uno::XInterface Sync);
-
-    ::com::sun::star::sdbc::XConnection getConnection();
+    ::com::sun::star::sdbc::XConnection getConnection([in] ::com::sun::star::sdbc::XDataSource DataSource,
+                                                      [in] string Password);
 
     sequence<string> getCredential([in] string Password);
 

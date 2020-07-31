@@ -26,7 +26,14 @@ interface XRestDataBase: com::sun::star::uno::XInterface
 
     sequence<string> getUserFields();
 
+    boolean createUser([in] string Name,
+                       [in] string Password);
+
     ::com::sun::star::auth::XRestKeyMap selectUser([in] string Name);
+
+    ::com::sun::star::auth::XRestKeyMap insertUser([in] string UserId,
+                                                   [in] string UserName,
+                                                   [in] string Group);
 
     ::com::sun::star::auth::XRestKeyMap getFieldsMap([in] string Method,
                                                      [in] boolean Reverse);

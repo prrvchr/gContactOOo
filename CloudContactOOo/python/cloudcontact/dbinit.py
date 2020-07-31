@@ -97,7 +97,7 @@ def _createPreparedStatement(ctx, datasource, statements):
 def getTablesAndStatements(ctx, statement, version=g_version):
     tables = []
     statements = []
-    call = getDataSourceCall(statement.getConnection(), 'getTables')
+    call = getDataSourceCall(ctx, statement.getConnection(), 'getTables')
     for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableName'))):
         view = False
         versioned = False
@@ -165,7 +165,7 @@ def getViewsAndTriggers(ctx, statement):
     queries = []
     triggers = []
     triggercore = []
-    call = getDataSourceCall(statement.getConnection(), 'getViews')
+    call = getDataSourceCall(ctx, statement.getConnection(), 'getViews')
     tables = getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getViewName')))
     for table in tables:
         call.setString(1, table)

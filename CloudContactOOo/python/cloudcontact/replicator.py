@@ -66,7 +66,7 @@ class Replicator(unohelper.Base,
         if self.Provider.isOffLine():
             msg = getMessage(self.ctx, 111)
             logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
-        else:
+        elif not self.canceled:
             self._syncData(timestamp)
 
     def _syncData(self, timestamp):
@@ -89,7 +89,7 @@ class Replicator(unohelper.Base,
                 user.MetaData += result.getValue(account)
                 print("Replicator._syncData(): %s" % (user.MetaData, ))
                 self._syncConnection(user, timestamp)
-        self.DataBase.closeDataSourceCall()
+        self.DataBase.executeBatchCall()
         self.DataBase.Connection.commit()
         self.DataBase.setLoggingChanges(True)
         self.DataBase.saveChanges()

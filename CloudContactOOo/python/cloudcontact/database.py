@@ -32,6 +32,7 @@ from .dbtools import getKeyMapKeyMapFromResult
 from .dbinit import getStaticTables
 from .dbinit import getQueries
 from .dbinit import getTablesAndStatements
+from .dbinit import getViewsAndTriggers
 
 from .logger import logMessage
 from .logger import getMessage
@@ -45,9 +46,8 @@ class DataBase(unohelper.Base,
     def __init__(self, ctx, datasource, name='', password='', sync=None):
         self.ctx = ctx
         self._statement = datasource.getConnection(name, password).createStatement()
-        self._FieldsMap = {}
-        self._CallsPool = OrderedDict()
-        self._batchedCall = []
+        self._fieldsMap = {}
+        self._batchedCalls = OrderedDict()
         self.sync = sync
 
     @property
@@ -63,7 +63,7 @@ class DataBase(unohelper.Base,
             executeSqlQueries(self._statement, tables)
             executeQueries(self.ctx, self._statement, getQueries())
             executeSqlQueries(self._statement, queries)
-            views, triggers = getViewsAndTriggers(ctx, self._statement)
+            views, triggers = getViewsAndTriggers(self.ctx, self._statement)
             executeSqlQueries(self._statement, views)
         return error
 
@@ -76,14 +76,6 @@ class DataBase(unohelper.Base,
     def addCloseListener(self, listener):
         self.Connection.Parent.DatabaseDocument.addCloseListener(listener)
 
-    def setLoggingChanges(self, state):
-        query = getSqlQuery(self.ctx, 'loggingChanges', state)
-        self._statement.execute(query)
-
-    def saveChanges(self, compact=False):
-        query = getSqlQuery(self.ctx, 'saveChanges', compact)
-        self._Statement.execute(query)
-
     def shutdownDataBase(self, compact=False):
         query = getSqlQuery(self.ctx, 'shutdown', compact)
         self._statement.execute(query)
@@ -91,14 +83,16 @@ class DataBase(unohelper.Base,
     def createUser(self, name, password):
         format = {'User': name, 'Password': password, 'Admin': g_admin}
         query = getSqlQuery(self.ctx, 'createUser', format)
-        self._statement.execute(query)
+        status = self._statement.executeUpdate(query)
+        print("DataBase.createUser() %s" % status)
+        return status == 0
 
-    def insertUser(self, userid, account):
+    def insertUser(self, userid, account, group):
         user = KeyMap()
-        call = getDataSourceCall(self.ctx, self.Connection, 'insertUser')
+        call = self._getCall('insertUser')
         call.setString(1, userid)
         call.setString(2, account)
-        call.setString(3, g_group)
+        call.setString(3, group)
         result = call.executeQuery()
         if result.next():
             user = getKeyMapFromResult(result)
@@ -109,7 +103,7 @@ class DataBase(unohelper.Base,
         user = None
         print("DataBase.selectUser() %s - %s" % (account, user))
         try:
-            call = getDataSourceCall(self.ctx, self.Connection, 'getPerson')
+            call = self._getCall('getPerson')
             call.setString(1, account)
             result = call.executeQuery()
             if result.next():
@@ -120,56 +114,63 @@ class DataBase(unohelper.Base,
             self.Warnings = e
         return user
 
+    def truncatGroup(self, start):
+        format = {'TimeStamp': unparseTimeStamp(start)}
+        query = getSqlQuery(self.ctx, 'truncatGroup', format)
+        self._statement.execute(query)
+
+    def createSynonym(self, user, name):
+        format = {'Schema': user.Resource, 'View': name.title()}
+        query = getSqlQuery(self.ctx, 'createSynonym', format)
+        self._statement.execute(query)
+
+    def createGroupView(self, user, name, group):
+        self._dropGroupView(user, name)
+        query = self._getGroupViewQuery('create', user, name, group)
+        self._statement.execute(query)
+
+# Procedures called by the User
     def getUserFields(self):
         fields = []
-        call = getDataSourceCall(self.ctx, self.Connection, 'getFieldNames')
+        call = self._getCall('getFieldNames')
         result = call.executeQuery()
         fields = getSequenceFromResult(result)
         call.close()
         print("DataBase.getUserFields() %s" % (fields, ))
         return tuple(fields)
 
+# Procedures called by the Replicator
+    def setLoggingChanges(self, state):
+        query = getSqlQuery(self.ctx, 'loggingChanges', state)
+        self._statement.execute(query)
+
+    def saveChanges(self, compact=False):
+        query = getSqlQuery(self.ctx, 'saveChanges', compact)
+        self._statement.execute(query)
+
     def getFieldsMap(self, method, reverse):
-        if method not in self._FieldsMap:
-            self._FieldsMap[method] = self._getFieldsMap(method)
+        if method not in self._fieldsMap:
+            self._fieldsMap[method] = self._getFieldsMap(method)
         if reverse:
-            map = KeyMap(**{i: {'Map': j, 'Type': k, 'Table': l} for i, j, k, l in self._FieldsMap[method]})
+            map = KeyMap(**{i: {'Map': j, 'Type': k, 'Table': l} for i, j, k, l in self._fieldsMap[method]})
         else:
-            map = KeyMap(**{j: {'Map': i, 'Type': k, 'Table': l} for i, j, k, l in self._FieldsMap[method]})
+            map = KeyMap(**{j: {'Map': i, 'Type': k, 'Table': l} for i, j, k, l in self._fieldsMap[method]})
         return map
 
     def getUpdatedGroups(self, user, prefix):
         groups = None
-        call = self.getDataSourceCall('selectUpdatedGroup')
+        call = self._getCall('selectUpdatedGroup')
         call.setString(1, prefix)
         call.setLong(2, user.People)
         call.setString(3, user.Resource)
         result = call.executeQuery()
         groups = getKeyMapKeyMapFromResult(result)
+        call.close()
         return groups
-
-    def truncatGroup(self, start):
-        format = {'TimeStamp': unparseTimeStamp(start)}
-        query = getSqlQuery(self.ctx, 'truncatGroup', format)
-        self._Statement.execute(query)
-
-    def createSynonym(self, user, name):
-        format = {'Schema': user.Resource, 'View': name.title()}
-        query = getSqlQuery(self.ctx, 'createSynonym', format)
-        self._Statement.execute(query)
-
-    def createGroupView(self, user, name, group):
-        self.dropGroupView(user, name)
-        query = self._getGroupViewQuery('create', user, name, group)
-        self._Statement.execute(query)
-
-    def dropGroupView(self, user, name):
-        query = self._getGroupViewQuery('drop', user, name)
-        self._Statement.execute(query)
 
     def updateSyncToken(self, user, token, data, timestamp):
         value = data.getValue(token)
-        call = self.getDataSourceCall('update%s' % token, True)
+        call = self._getBatchedCall('update%s' % token)
         call.setString(1, value)
         call.setTimestamp(2, timestamp)
         call.setLong(3, user.People)
@@ -177,7 +178,7 @@ class DataBase(unohelper.Base,
         return KeyMap(**{token: value})
 
     def mergePeople(self, user, resource, timestamp, deleted):
-        call = self.getDataSourceCall('mergePeople', True)
+        call = self._getBatchedCall('mergePeople')
         call.setString(1, 'people/')
         call.setString(2, resource)
         call.setLong(3, user.Group)
@@ -188,7 +189,7 @@ class DataBase(unohelper.Base,
 
     def mergePeopleData(self, table, resource, typename, label, value, timestamp):
         format = {'Table': table, 'Type': typename}
-        call = self.getDataSourceCall(table, True, 'mergePeopleData', format)
+        call = self._getBatchedCall(table, 'mergePeopleData', format)
         call.setString(1, 'people/')
         call.setString(2, resource)
         call.setString(3, label)
@@ -201,7 +202,7 @@ class DataBase(unohelper.Base,
         return 1
 
     def mergeGroup(self, user, resource, name, timestamp, deleted):
-        call = self.getDataSourceCall('mergeGroup', True)
+        call = self._getBatchedCall('mergeGroup')
         call.setString(1, 'contactGroups/')
         call.setLong(2, user.People)
         call.setString(3, resource)
@@ -213,7 +214,7 @@ class DataBase(unohelper.Base,
 
     def mergeConnection(self, user, data, timestamp):
         separator = ','
-        call = self.getDataSourceCall('mergeConnection', True)
+        call = self._getBatchedCall('mergeConnection')
         call.setString(1, 'contactGroups/')
         call.setString(2, 'people/')
         call.setString(3, data.getValue('Resource'))
@@ -225,15 +226,27 @@ class DataBase(unohelper.Base,
         print("DataBase._mergeConnection() %s - %s" % (data.getValue('Resource'), len(members)))
         return len(members)
 
+    def executeBatchCall(self):
+        for name in self._batchedCalls:
+            call = self._batchedCalls[name]
+            call.executeBatch()
+            call.close()
+        self._batchedCalls = OrderedDict()
+
+# Procedures called internaly
     def _getFieldsMap(self, method):
         map = []
-        call = getDataSourceCall(self.ctx, self.Connection, 'getFieldsMap')
+        call = self._getCall('getFieldsMap')
         call.setString(1, method)
         r = call.executeQuery()
         while r.next():
             map.append((r.getString(1), r.getString(2), r.getString(3), r.getString(4)))
         call.close()
         return tuple(map)
+
+    def _dropGroupView(self, user, name):
+        query = self._getGroupViewQuery('drop', user, name)
+        self._statement.execute(query)
 
     def _getGroupViewQuery(self, method, user, name, group=0):
         query = '%sGroupView' % method
@@ -243,31 +256,14 @@ class DataBase(unohelper.Base,
                   'Group': group}
         return getSqlQuery(self.ctx, query, format)
 
-
-    def getDataSourceCall(self, key, batched=False, name=None, format=None):
-        if key not in self._CallsPool:
-            name = key if name is None else name
-            self._CallsPool[key] = getDataSourceCall(self.ctx, self.Connection, name, format)
-        if batched and key not in self._batchedCall:
-            self._batchedCall.append(key)
-        return self._CallsPool[key]
-
-    def executeBatchCall(self):
-        for name in self._batchedCall:
-            self._CallsPool[name].executeBatch()
-        self._batchedCall = []
-
-    def closeDataSourceCall(self):
-        for name in self._CallsPool:
-            call = self._CallsPool[name]
-            if name in self._batchedCall:
-                call.executeBatch()
-            call.close()
-        self._CallsPool = OrderedDict()
-        self._batchedCall = []
-
     def _getCall(self, name, format=None):
         return getDataSourceCall(self.ctx, self.Connection, name, format)
+
+    def _getBatchedCall(self, key, name=None, format=None):
+        if key not in self._batchedCalls:
+            name = key if name is None else name
+            self._batchedCalls[key] = getDataSourceCall(self.ctx, self.Connection, name, format)
+        return self._batchedCalls[key]
 
     def _getPreparedCall(self, name):
         # TODO: cannot use: call = self.Connection.prepareCommand(name, QUERY)

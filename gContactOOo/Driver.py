@@ -62,9 +62,7 @@ class Driver(unohelper.Base,
     @property
     def DataSource(self):
         if Driver._dataSource is None:
-            print("Driver.DataSource() 1")
             Driver._dataSource = DataSource(self.ctx, self.event)
-        print("Driver.DataSource() 2")
         return Driver._dataSource
 
     # XDataDefinitionSupplier
@@ -116,7 +114,8 @@ class Driver(unohelper.Base,
             print("Driver.connect() 4")
             if user is None:
                 raise self.DataSource.getWarnings()
-            connection = user.getConnection()
+            datasource = self.DataSource.DataBase.getDataSource()
+            connection = user.getConnection(datasource, password)
             print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()
