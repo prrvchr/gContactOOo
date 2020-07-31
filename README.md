@@ -1,34 +1,51 @@
 **The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
-## gContactOOo v0.0.4
+## gContactOOo v0.0.5
 
+### What has been done for version 0.0.5
+
+- Integration and use of the new Hsqldb v2.5.1.
+
+- Writing of a new [Replicator interface](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py), launched in the background (python Thread) responsible for:
+
+    - Perform the necessary procedures when creating a new user (initial Pull).
+
+- Writing of a new [DataBase interface](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py), responsible for making all calls to the database.
+
+- Many other fix...
+
+### What remains to be done for version 0.0.5
+
+- Write the implementation Pull Change and Push Change in the new [Replicator interface](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
+
+- Add new language for internationalization...
+
+- Anything welcome...
 
 ### Integration of your Google Contacts in LibreOffice / OpenOffice.
 
-
 ### Use:
 
-#### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/releases/download/v0.0.4/OAuth2OOo.oxt) extention v 0.0.4.
+#### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extention v 0.0.5.
 
 You must install this extention first!!!
 
 Restart LibreOffice / OpenOffice after installation.
 
-#### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/releases/download/v0.0.3/gContactOOo.oxt) extention v 0.0.3.
+#### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extention v 0.0.5.
 
 Restart LibreOffice / OpenOffice after installation.
 
-
 ### Requirement:
 
-gContactOOo uses a local Hsqldb database of version 2.5.x.  
+gContactOOo uses a local Hsqldb database of version 2.5.1.  
 The use of Hsqldb requires the installation and configuration within LibreOffice / OpenOffice  
 of a **JRE version 1.8 minimum** (ie: Java version 8)
 
 Sometimes it may be necessary for LibreOffice users must have no Hsqldb driver installed with LibreOffice  
 (check your Installed Application under Windows or your Packet Manager under Linux)  
+It seems that version 7.x of LibreOffice has fixed this problem and is able to work with different driver version of Hsqldb simultaneously.  
 OpenOffice doesn't seem to need this workaround.
-
 
 ### Configuration:
 
@@ -67,10 +84,17 @@ Go back and normally you can test the connection. It must operate...
 
 Have fun...
 
-
 ### Has been tested with:
 
-* LibreOffice 6.3.2.2 - Lubuntu 18.04 -  LxQt 0.12.0.4
+* LibreOffice 6.4.4.2 - Ubuntu 20.04 -  LxQt 0.14.1
+
+* LibreOffice 7.0.0.0.alpha1 - Ubuntu 20.04 -  LxQt 0.14.1
+
+* OpenOffice 4.1.5 x86_64 - Ubuntu 20.04 - LxQt 0.14.1
+
+* OpenOffice 4.2.0.Build:9820 x86_64 - Ubuntu 20.04 - LxQt 0.14.1
+
+* LibreOffice 6.1.5.2 - Raspbian 10 buster - Raspberry Pi 4 Model B
 
 I encourage you in case of problem :-(  
 to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)  
