@@ -16,20 +16,20 @@ from unolib import getResourceLocation
 from unolib import getDialog
 from unolib import createService
 
-from cloudcontact import getDataSourceLocation
-from cloudcontact import getDataSourceJavaInfo
-from cloudcontact import getDataSourceUrl
+from gcontact import getDataSourceLocation
+from gcontact import getDataSourceJavaInfo
+from gcontact import getDataSourceUrl
 
-from cloudcontact import getLoggerUrl
-from cloudcontact import getLoggerSetting
-from cloudcontact import setLoggerSetting
-from cloudcontact import clearLogger
-from cloudcontact import logMessage
+from gcontact import getLoggerUrl
+from gcontact import getLoggerSetting
+from gcontact import setLoggerSetting
+from gcontact import clearLogger
+from gcontact import logMessage
 
-from cloudcontact import g_extension
-from cloudcontact import g_identifier
-from cloudcontact import g_path
-from cloudcontact import g_host
+from gcontact import g_extension
+from gcontact import g_identifier
+from gcontact import g_path
+from gcontact import g_host
 
 import traceback
 

@@ -9,7 +9,7 @@ from com.sun.star.logging.LogLevel import SEVERE
 
 from com.sun.star.sdb.CommandType import QUERY
 
-from com.sun.star.ucb import XRestDataBase
+from com.sun.star.sdbc import XRestDataBase
 
 from unolib import KeyMap
 from unolib import parseDateTime

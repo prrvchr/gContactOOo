@@ -7,7 +7,7 @@ import unohelper
 from com.sun.star.lang import XServiceInfo
 from com.sun.star.lang import XInitialization
 
-from cloudcontact import g_identifier
+from gcontact import g_identifier
 
 import traceback
 

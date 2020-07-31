@@ -35,5 +35,5 @@ try:
     from .logger import getMessage
 
 except Exception as e:
-    print("cloudcontact.__init__() ERROR: %s - %s" % (e, traceback.print_exc()))
+    print("gcontact.__init__() ERROR: %s - %s" % (e, traceback.print_exc()))
 
