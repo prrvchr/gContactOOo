@@ -85,6 +85,8 @@ class Driver(unohelper.Base,
     # XDriver
     def connect(self, url, infos):
         try:
+            msg = 'Loading the driver for the url: %s' % url
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 1")
             protocols = url.strip().split(':')
             username, password = self._getUserCredential(infos)
@@ -104,23 +106,37 @@ class Driver(unohelper.Base,
             level = INFO
             print("Driver.connect() 2")
             dbname = self.DataSource.Provider.Host
+            msg = 'Loading the hsqldb database: %s' % dbname
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             msg = getMessage(self.ctx, 100, dbname)
             print("Driver.connect() 3")
             if not self.DataSource.isValid():
+                msg = 'The loading of the Hsqldb database: %s failed' % dbname
+                logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
                 state = getMessage(self.ctx, 1005)
                 msg = self.DataSource.Error
                 raise getSqlException(state, 1104, msg, self)
+            msg = 'Loading of the hsqldb database: %s completed' % dbname
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             user = self.DataSource.getUser(username, password)
             print("Driver.connect() 4")
             if user is None:
+                msg = 'The creation / recovery of the user: %s failed' % username
+                logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
                 raise self.DataSource.getWarnings()
+            msg = 'Connection of user: %s to the database' % username
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             datasource = self.DataSource.DataBase.getDataSource()
             connection = user.getConnection(datasource, password)
             print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()
+            msg = 'Connection of user: %s to the database completed' % username
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 6 %s" % connection.isClosed())
             version = connection.getMetaData().getDriverVersion()
+            msg = 'Hsqldb version: %s database is loaded, the user: %s is connected' % (version, username)
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 7 %s" % version)
             msg += getMessage(self.ctx, 102)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
