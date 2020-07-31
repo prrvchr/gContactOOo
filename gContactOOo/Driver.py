@@ -9,28 +9,22 @@ from com.sun.star.sdbc import XDriver
 from com.sun.star.sdbcx import XDataDefinitionSupplier
 from com.sun.star.sdbcx import XCreateCatalog
 from com.sun.star.sdbcx import XDropCatalog
+
 from com.sun.star.sdbc import SQLException
+
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
-from com.sun.star.sdbc.ResultSetType import SCROLL_INSENSITIVE
-from com.sun.star.sdbc.ResultSetType import SCROLL_SENSITIVE
-from com.sun.star.sdbc.ResultSetType import FORWARD_ONLY
-from com.sun.star.sdbc.ResultSetConcurrency import READ_ONLY
-from com.sun.star.sdbc.ResultSetConcurrency import UPDATABLE
-
-
-from com.sun.star.uno import Exception as UnoException
 
 from unolib import getConfiguration
 
-from gcontact import g_identifier
 from gcontact import User
 from gcontact import DataSource
 from gcontact import Connection
-from gcontact import getDataSourceUrl
-from gcontact import getDataSourceConnection
+
+from gcontact import g_identifier
 from gcontact import getDataBaseInfo
 from gcontact import getSqlException
+
 from gcontact import logMessage
 from gcontact import getMessage
 
@@ -58,6 +52,8 @@ class Driver(unohelper.Base,
         self._supportedSubProtocols = ('people', 'peoples')
         self.event = Event()
         print("Driver.__init__()")
+        msg = 'Driver initialization completed'
+        logMessage(self.ctx, INFO, msg, 'Driver', '__init__()')
 
     @property
     def DataSource(self):
@@ -147,6 +143,8 @@ class Driver(unohelper.Base,
             print("Driver.connect() ERROR: %s - %s" % (e, traceback.print_exc()))
 
     def acceptsURL(self, url):
+        msg = 'Load request for url: %s' % url
+        logMessage(self.ctx, INFO, msg, 'Driver', 'acceptsURL()')
         print("Driver.acceptsURL() %s" % url)
         value = url.startswith(self._supportedProtocol)
         print("Driver.acceptsURL() %s" % value)

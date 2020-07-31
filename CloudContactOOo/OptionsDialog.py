@@ -45,7 +45,7 @@ class OptionsDialog(unohelper.Base,
     def __init__(self, ctx):
         self.ctx = ctx
         self.stringResource = getStringResource(self.ctx, g_identifier, g_extension, 'OptionsDialog')
-        logMessage(self.ctx, INFO, "Loading ... Done", 'OptionsDialog', '__init__()')
+        logMessage(self.ctx, INFO, "Initialization completed", 'OptionsDialog', '__init__()')
 
     # XContainerWindowEventHandler, XDialogEventHandler
     def callHandlerMethod(self, dialog, event, method):
