@@ -10,8 +10,10 @@ try:
     from .provider import Provider
     from .replicator import Replicator
 
-    from .configuration import g_extension
     from .configuration import g_identifier
+
+    from .configuration import g_extension
+
     from .configuration import g_host
     from .configuration import g_url
 

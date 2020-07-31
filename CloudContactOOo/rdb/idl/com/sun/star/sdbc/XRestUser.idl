@@ -4,7 +4,8 @@
 #include <com/sun/star/uno/XInterface.idl>
 #include <com/sun/star/auth/XRestKeyMap.idl>
 #include <com/sun/star/sdbc/XConnection.idl>
-#include <com/sun/star/sdbc/XRestDataSource.idl>
+#include <com/sun/star/sdbc/XRestProvider.idl>
+#include <com/sun/star/sdbc/XDataSource.idl>
 
 module com { module sun { module star { module sdbc {
 
@@ -13,8 +14,11 @@ interface XRestUser: com::sun::star::uno::XInterface
 
     void setMetaData([in] ::com::sun::star::auth::XRestKeyMap MetaData);
 
-    ::com::sun::star::sdbc::XConnection getConnection([in] string Scheme,
-                                                      [in] string Password);
+    void setDataBase([in] ::com::sun::star::sdbc::XDataSource DataSource,
+                     [in] string Password,
+                     [in] ::com::sun::star::uno::XInterface Sync);
+
+    ::com::sun::star::sdbc::XConnection getConnection();
 
     sequence<string> getCredential([in] string Password);
 
@@ -22,6 +26,7 @@ interface XRestUser: com::sun::star::uno::XInterface
     void clearWarnings();
 
     [attribute, readonly] ::com::sun::star::uno::XInterface Request;
+    [attribute, readonly] ::com::sun::star::sdbc::XRestProvider Provider;
     [attribute] ::com::sun::star::auth::XRestKeyMap MetaData;
     [attribute, readonly] sequence<string> Fields;
     [attribute, readonly] long People;

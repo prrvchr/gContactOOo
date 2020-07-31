@@ -11,8 +11,10 @@ rm ${Path}/types.rdb
 ./rdb/make_rdb.sh com/sun/star/auth/XInteractionUserName
 ./rdb/make_rdb.sh com/sun/star/auth/XRestDataParser
 ./rdb/make_rdb.sh com/sun/star/sdbc/XRestProvider
+./rdb/make_rdb.sh com/sun/star/sdbc/XRestDataBase
 ./rdb/make_rdb.sh com/sun/star/sdbc/XRestDataSource
 ./rdb/make_rdb.sh com/sun/star/sdbc/XRestUser
+./rdb/make_rdb.sh com/sun/star/sdbc/XRestReplicator
 
 read -p "Press enter to continue"
 

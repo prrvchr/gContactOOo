@@ -23,16 +23,16 @@ from com.sun.star.uno import Exception as UnoException
 
 from unolib import getConfiguration
 
-from cloudcontact import g_identifier
-from cloudcontact import User
-from cloudcontact import DataSource
-from cloudcontact import Connection
-from cloudcontact import getDataSourceUrl
-from cloudcontact import getDataSourceConnection
-from cloudcontact import getDataBaseInfo
-from cloudcontact import getSqlException
-from cloudcontact import logMessage
-from cloudcontact import getMessage
+from gcontact import g_identifier
+from gcontact import User
+from gcontact import DataSource
+from gcontact import Connection
+from gcontact import getDataSourceUrl
+from gcontact import getDataSourceConnection
+from gcontact import getDataBaseInfo
+from gcontact import getSqlException
+from gcontact import logMessage
+from gcontact import getMessage
 
 import traceback
 
@@ -50,8 +50,7 @@ class Driver(unohelper.Base,
              XDropCatalog,
              XDriver):
 
-    __dataSource = None
-    __usersPool = {}
+    _dataSource = None
 
     def __init__(self, ctx):
         self.ctx = ctx
@@ -62,11 +61,11 @@ class Driver(unohelper.Base,
 
     @property
     def DataSource(self):
-        if Driver.__dataSource is None:
+        if Driver._dataSource is None:
             print("Driver.DataSource() 1")
-            Driver.__dataSource = DataSource(self.ctx, self.event)
+            Driver._dataSource = DataSource(self.ctx, self.event)
         print("Driver.DataSource() 2")
-        return Driver.__dataSource
+        return Driver._dataSource
 
     # XDataDefinitionSupplier
     def getDataDefinitionByConnection(self, connection):
@@ -109,13 +108,15 @@ class Driver(unohelper.Base,
             dbname = self.DataSource.Provider.Host
             msg = getMessage(self.ctx, 100, dbname)
             print("Driver.connect() 3")
-            if not self.DataSource.isConnected():
-                raise self.DataSource.getWarnings()
+            if not self.DataSource.isValid():
+                state = getMessage(self.ctx, 1005)
+                msg = self.DataSource.Error
+                raise getSqlException(state, 1104, msg, self)
             user = self.DataSource.getUser(username, password)
             print("Driver.connect() 4")
             if user is None:
                 raise self.DataSource.getWarnings()
-            connection = user.getConnection(dbname, password)
+            connection = user.getConnection()
             print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()

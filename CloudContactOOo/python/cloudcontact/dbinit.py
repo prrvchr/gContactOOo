@@ -94,7 +94,7 @@ def _createPreparedStatement(ctx, datasource, statements):
             query.Command = sql
             queries.insertByName(name, query)
 
-def _getTablesAndStatements(ctx, statement, version=g_version):
+def getTablesAndStatements(ctx, statement, version=g_version):
     tables = []
     statements = []
     call = getDataSourceCall(statement.getConnection(), 'getTables')
@@ -158,7 +158,7 @@ def _getTablesAndStatements(ctx, statement, version=g_version):
     call.close()
     return tables, statements
 
-def _getViewsAndTriggers(ctx, statement):
+def getViewsAndTriggers(ctx, statement):
     c1 = []
     s1 = []
     f1 = []
@@ -214,7 +214,7 @@ def _getViewsAndTriggers(ctx, statement):
         triggers.append(trigger)
     return queries, triggers
 
-def _getStaticTables():
+def getStaticTables():
     tables = ('Tables',
               'Types',
               'Columns',
@@ -226,11 +226,11 @@ def _getStaticTables():
               'Settings')
     return tables
 
-def _getQueries():
-    return {'createInsertUser': None,
-            'createGetPeopleIndex': None,
-            'createGetLabelIndex': None,
-            'createGetTypeIndex': None,
-            'createMergePeople': None,
-            'createMergeGroup': None,
-            'createMergeConnection': None}
+def getQueries():
+    return (('createInsertUser', None),
+            ('createGetPeopleIndex', None),
+            ('createGetLabelIndex', None),
+            ('createGetTypeIndex', None),
+            ('createMergePeople', None),
+            ('createMergeGroup', None),
+            ('createMergeConnection', None))

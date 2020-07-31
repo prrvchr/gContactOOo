@@ -10,6 +10,8 @@ from com.sun.star.ucb.ConnectionMode import OFFLINE
 from com.sun.star.ucb.ConnectionMode import ONLINE
 from com.sun.star.sdbc import XRestUser
 
+from unolib import getRequest
+
 from .configuration import g_identifier
 from .dbinit import getDataSourceUrl
 from .dbtools import getDataSourceConnection
@@ -20,13 +22,14 @@ import traceback
 
 class User(unohelper.Base,
            XRestUser):
-    def __init__(self, ctx, datasource, name):
+    def __init__(self, ctx, source, name, database=None):
         self.ctx = ctx
-        self._Statement = None
+        self.DataBase = database
         self._Warnings = None
-        self.Request = datasource.getRequest(name)
-        self.MetaData = datasource.selectUser(name)
-        self.Fields = datasource.getUserFields()
+        self.MetaData = source.DataBase.selectUser(name)
+        self.Fields = source.DataBase.getUserFields()
+        self.Provider = source.Provider
+        self.Request = getRequest(self.ctx, self.Provider.Host, name)
 
     @property
     def People(self):
@@ -68,7 +71,10 @@ class User(unohelper.Base,
     def setMetaData(self, metadata):
         self.MetaData = metadata
 
-    def getConnection(self, dbname, password):
+    def getConnection(self):
+        return self.DataBase.Connection
+
+    def getConnection1(self, dbname, password):
         url, self.Warnings = getDataSourceUrl(self.ctx, dbname, g_identifier, True)
         if self.Warnings is None:
             credential = self.getCredential(password)
@@ -79,6 +85,10 @@ class User(unohelper.Base,
                 #mri.inspect(connection)
                 return connection
         return None
+
+    def setDataBase(self, datasource, password, sync):
+        name, password = self.getCredential(password)
+        self.DataBase = DataBase(self.ctx, datasource, name, password, sync)
 
     def getCredential(self, password):
         return self.Account, password

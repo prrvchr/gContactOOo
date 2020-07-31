@@ -12,9 +12,9 @@ from unolib import KeyMap
 
 class DataParser(unohelper.Base,
                  XRestDataParser):
-    def __init__(self, datasource, method):
-        self.provider = datasource.Provider
-        self.map = datasource.getFieldsMap(method, True)
+    def __init__(self, database, provider, method):
+        self.provider = provider
+        self.map = database.getFieldsMap(method, True)
         self.keys = self.map.getKeys()
         #map = {}
         #for key in self.keys:
