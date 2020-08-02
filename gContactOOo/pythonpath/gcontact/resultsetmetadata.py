@@ -1,1 +1,1 @@
-../../../CloudContactOOo/python/cloudcontact/resultsetmetadata.py
+../../../CloudContactOOo/OAuth2OOo/python/resultsetmetadata.py
