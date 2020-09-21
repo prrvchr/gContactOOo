@@ -2,7 +2,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos** [Conditions d'utilisation](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [Politique de protection des données](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
 
-## gContactOOo v0.0.5
+## [gContactOOo](https://github.com/prrvchr/gContactOOo) v0.0.5
 
 ### Ce qui a été fait pour la version 0.0.5
 
