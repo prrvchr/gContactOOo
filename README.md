@@ -1,4 +1,4 @@
-[Ce document en français](https://prrvchr.github.io/gContactOOo//README_fr)
+[Ce document en français](https://prrvchr.github.io/gContactOOo/README_fr)
 
 **The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
