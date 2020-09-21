@@ -28,7 +28,7 @@
 
 Les contacts de votre téléphone Android.
 
-### Utilisation:
+### Installation:
 
 #### Installer l'extension [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) v 0.0.5.
 
@@ -79,7 +79,7 @@ Dans Authentification de l'utilisateur: Nom d'utilisateur:
 - mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
 
 Puis:
-- cliquez sur: Tester la connxion (bouton)
+- cliquez sur: Tester la connexion (bouton)
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
