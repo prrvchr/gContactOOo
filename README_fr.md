@@ -1,4 +1,4 @@
-[This document in English](https://prrvchr.github.io/gContactOOo)
+[This document in English](https://prrvchr.github.io/gContactOOo/README)
 
 **L'utilisation de ce logiciel vous soumet à nos** [Conditions d'utilisation](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [Politique de protection des données](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
 
@@ -8,17 +8,17 @@
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
-- Ecriture d'une nouvelle [interface Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py), lancé en arrière-plan (python Thread) responsable de:
+- Ecriture d'une nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py), lancé en arrière-plan (python Thread) responsable de:
 
     - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
 
-- Ecriture d'une nouvelle [interface DataBase](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py), responsable de tous les appels à la base de données.
+- Ecriture d'une nouvelle interface [DataBase](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py), responsable de tous les appels à la base de données.
 
 - Beaucoup d'autres correctifs...
 
 ### Que reste-t-il à faire pour la version 0.0.5
 
-- Écriture de l'implémentation des changements Pull et Push dans le nouvelle [interface Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
+- Écriture de l'implémentation des changements Pull et Push dans le nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
 
 - Ajouter des nouvelles langue pour l'internationalisation...
 

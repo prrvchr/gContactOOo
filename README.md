@@ -8,17 +8,17 @@
 
 - Integration and use of the new Hsqldb v2.5.1.
 
-- Writing of a new [Replicator interface](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py), launched in the background (python Thread) responsible for:
+- Writing of a new [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) interface, launched in the background (python Thread) responsible for:
 
     - Perform the necessary procedures when creating a new user (initial Pull).
 
-- Writing of a new [DataBase interface](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py), responsible for making all calls to the database.
+- Writing of a new [DataBase](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py) interface, responsible for making all calls to the database.
 
 - Many other fix...
 
 ### What remains to be done for version 0.0.5
 
-- Write the implementation Pull Change and Push Change in the new [Replicator interface](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
+- Write the implementation Pull Change and Push Change in the new [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) interface.
 
 - Add new language for internationalization...
 

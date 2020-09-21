@@ -4,7 +4,7 @@
 ### Introduction:
 
 La bibliothèque gContactOOo fait partie d'un projet personnel.
-La documentation complète est disponible [sur cette page](https://prrvchr.github.io/gContactOOo).
+La documentation complète est disponible [sur cette page](https://prrvchr.github.io/gContactOOo/README_fr).
 
 L'utilisation de ce logiciel vous soumet à nos **Règles de Confidentialité** comme décrites dans [ce document](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr).
 
