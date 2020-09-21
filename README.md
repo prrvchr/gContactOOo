@@ -26,13 +26,13 @@
 
 ### Integration of your Google Contacts in LibreOffice / OpenOffice.
 
+Contacts from your Android phone.
+
 ### Use:
 
 #### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extention v 0.0.5.
 
 You must install this extention first!!!
-
-Restart LibreOffice / OpenOffice after installation.
 
 #### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extention v 0.0.5.
 
@@ -46,7 +46,7 @@ LibreOffice / OpenOffice of a **JRE version 1.8 minimum** (ie: Java version 8)
 
 Sometimes it may be necessary for LibreOffice users must have no Hsqldb driver installed with LibreOffice  
 (check your Installed Application under Windows or your Packet Manager under Linux)  
-It seems that version 7.x of LibreOffice has fixed this problem and is able to work with different driver version of Hsqldb simultaneously.  
+It seems that versions 6.4.x and 7.x of LibreOffice have fixed this problem and are able to work with different driver version of Hsqldb simultaneously.  
 OpenOffice doesn't seem to need this workaround.
 
 ### Configuration:

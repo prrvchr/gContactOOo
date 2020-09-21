@@ -20,19 +20,19 @@
 
 - Écriture de l'implémentation des changements Pull et Push dans le nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
 
-- Ajouter des nouvelles langue pour l'internationalisation...
+- Ajouter de nouvelles langue pour l'internationalisation...
 
 - Tout ce qui est bienvenu...
 
 ### Intégration de vos contacts Google dans LibreOffice / OpenOffice.
+
+Les contacts de votre téléphone Android.
 
 ### Utilisation:
 
 #### Installer l'extension [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) v 0.0.5.
 
 Vous devez d'abord installer cette extension!!!
-
-Redémarrez LibreOffice / OpenOffice après l'installation.
 
 #### Installer l'extension [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) v 0.0.5.
 
@@ -46,7 +46,7 @@ LibreOffice / OpenOffice d'un **JRE version 1.8 minimum** (c'est-à-dire: Java v
 
 Parfois, il peut être nécessaire pour les utilisateurs de LibreOffice de ne pas avoir de pilote Hsqldb installé avec LibreOffice  
 (vérifiez vos applications installées sous Windows ou votre gestionnaire de paquets sous Linux)  
-Il semble que les versions 6.4.x et 7.x de LibreOffice ait résolu ce problème et sont capable de fonctionner simultanément avec différentes versions de pilote de Hsqldb.  
+Il semble que les versions 6.4.x et 7.x de LibreOffice aient résolu ce problème et sont capables de fonctionner simultanément avec différentes versions de pilote de Hsqldb.  
 OpenOffice ne semble pas avoir besoin de cette solution de contournement.
 
 ### Configuration:
@@ -76,14 +76,14 @@ Dans Général: URL de la source de données:
 - mettre: people
 
 Dans Authentification de l'utilisateur: Nom d'utilisateur:
-- mettre: votre compte Google (c'est-à-dire:: votre_compte@gmail.com)
+- mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
 
 Puis:
 - cliquez sur: Tester la connxion (bouton)
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-Normallement vous de voir s'afficher: Test de connexion: Connexion établie.
+Normallement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 
