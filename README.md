@@ -57,18 +57,18 @@ In LibreOffice / OpenOffice go to File -> Wizards -> Address Data Source...:
 
 In step: 1. Address Book Type:
 - select: Other external data source
-- click: Next(Button)
+- click on: Next(Button)
 
 ![gContactOOo screenshot 2](gContactOOo-2.png)
 
 In step: 2. Connection Settings:
-- click: Settings(Button)
+- click on: Settings(Button)
 
 ![gContactOOo screenshot 3](gContactOOo-3.png)
 
 In Database type list:
 - select: Google People API
-- click: Next(Button)
+- click on: Next(Button)
 
 ![gContactOOo screenshot 4](gContactOOo-4.png)
 
@@ -79,7 +79,7 @@ In User Authentication: user name:
 - put: your Google account (ie: your_account@gmail.com)
 
 Then:
-- click: Test connection (button)
+- click on: Test connection (button)
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
