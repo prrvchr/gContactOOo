@@ -83,7 +83,7 @@ Puis:
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-Normallement vous devez voir s'afficher: Test de connexion: Connexion établie.
+Normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 

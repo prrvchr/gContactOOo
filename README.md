@@ -78,9 +78,12 @@ In General: Datasource Url:
 In User Authentication: user name:
 - put: your Google account (ie: your_account@gmail.com)
 
+Then:
+- click: Test connection (button)
+
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-Go back and normally you can test the connection. It must operate...
+Normally you should see: Connection Test: The connection was established successfully.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 
