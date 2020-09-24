@@ -97,7 +97,7 @@ I will try to solve it ;-)
 
 ### Historical:
 
-#### What has been done for version 0.0.5
+#### What has been done for version 0.0.5:
 
 - Integration and use of the new Hsqldb v2.5.1.
 
@@ -109,7 +109,7 @@ I will try to solve it ;-)
 
 - Many other fix...
 
-#### What remains to be done for version 0.0.5
+#### What remains to be done for version 0.0.5:
 
 - Write the implementation Pull Change and Push Change in the new [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) interface.
 

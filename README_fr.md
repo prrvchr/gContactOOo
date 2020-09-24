@@ -96,7 +96,7 @@ J'essaierai de la résoudre ;-)
 
 ### Historique:
 
-#### Ce qui a été fait pour la version 0.0.5
+#### Ce qui a été fait pour la version 0.0.5:
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
@@ -108,7 +108,7 @@ J'essaierai de la résoudre ;-)
 
 - Beaucoup d'autres correctifs...
 
-#### Que reste-t-il à faire pour la version 0.0.5
+#### Que reste-t-il à faire pour la version 0.0.5:
 
 - Écriture de l'implémentation des changements Pull et Push dans le nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
 
