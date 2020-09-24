@@ -2,7 +2,7 @@
 
 **The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
-## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo/README#Historical)
+## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo#historical)
 
 ### Introduction:
 
