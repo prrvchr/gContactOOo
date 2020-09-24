@@ -7,11 +7,11 @@ La confidentialité des utilisateurs du logiciel gContactOOo est très important
 Cette politique explique ce que nous faisons avec vos informations personnelles.
 
 Pour plus de simplicité, dans la suite de ce document, on nommera:
-- `gContactOOo`:  le logiciel gContactOOo dans son intégrité.
+- `gContactOOo`:  le logiciel gContactOOo dans son intégralité.
 - `Utilisateur`: l'utilisateur du logiciel gContactOOo.
 - `Fournisseur`: fournisseur de services Internet fournissant des services Internet à `gContactOOo`.
 
-L'utilisation de ce logiciel vous soumet à nos **Conditions d'Utilisation** comme décrites dans [ce document:](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr)
+L'utilisation de ce logiciel vous soumet également à nos [**Conditions d'Utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr)
 
 ### Contact:
 

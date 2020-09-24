@@ -7,11 +7,11 @@ the privacy of our gContactOOo software users is very important to us, and we ar
 This policy explains what we do with your personal information.
 
 For simplicity, in the rest of this document, will be named:
-- `gContactOOo`:  the gContactOOo software in its integrity.
+- `gContactOOo`:  the gContactOOo software in its entirety.
 - `User`: the user of the gContactOOo software.
 - `Supplier`: the internet service provider delivering internet services to `gContactOOo`.
 
-Use of this software subjects you to our **Terms Of Use** as described in [this document:](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en)
+Use of this software also subjects you to our [**Terms Of Use**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en)
 
 ### Contact:
 
