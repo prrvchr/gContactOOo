@@ -2,41 +2,17 @@
 
 **L'utilisation de ce logiciel vous soumet à nos** [Conditions d'utilisation](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [Politique de protection des données](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
 
-## [gContactOOo](https://github.com/prrvchr/gContactOOo) v0.0.5
+## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#Historical)
 
-### Ce qui a été fait pour la version 0.0.5
+### Introduction:
 
-- Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
+**gContactOOo** est une extension LibreOffice et/ou OpenOffice permettant de vous offrir des services inovants dans ces suites bureautique publiées en logiciel libre.  
+A savoir, l'integration de vos contacts téléphonique dans LibreOffice / OpenOffice (les contacts de votre téléphone Android).
 
-- Ecriture d'une nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py), lancé en arrière-plan (python Thread) responsable de:
-
-    - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
-
-- Ecriture d'une nouvelle interface [DataBase](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py), responsable de tous les appels à la base de données.
-
-- Beaucoup d'autres correctifs...
-
-### Que reste-t-il à faire pour la version 0.0.5
-
-- Écriture de l'implémentation des changements Pull et Push dans le nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
-
-- Ajouter de nouvelles langue pour l'internationalisation...
-
-- Tout ce qui est bienvenu...
-
-### Intégration de vos contacts Google dans LibreOffice / OpenOffice.
-
-Les contacts de votre téléphone Android.
-
-### Installation:
-
-#### Installer l'extension [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) v 0.0.5.
-
-Vous devez d'abord installer cette extension!!!
-
-#### Installer l'extension [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) v 0.0.5.
-
-Redémarrez LibreOffice / OpenOffice après l'installation.
+Etant un logiciel libre je vous encourage:
+- A dupliquer le code source.
+- A apporter des modifications, des corrections, des ameliorations.
+Bref, à participer au developpement de cette extension, car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
 ### Prérequis:
 
@@ -49,7 +25,17 @@ Parfois, il peut être nécessaire pour les utilisateurs de LibreOffice de ne pa
 Il semble que les versions 6.4.x et 7.x de LibreOffice aient résolu ce problème et sont capables de fonctionner simultanément avec différentes versions de pilote de Hsqldb.  
 OpenOffice ne semble pas avoir besoin de cette solution de contournement.
 
-### Configuration:
+### Installation:
+
+#### Installer l'extension [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) v 0.0.5.
+
+Vous devez d'abord installer cette extension!!!
+
+#### Installer l'extension [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) v 0.0.5.
+
+Redémarrez LibreOffice / OpenOffice après l'installation.
+
+### Utilisation:
 
 Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de données des adresses...:
 
@@ -107,3 +93,24 @@ Je vous encourage en cas de problème :-(
 de créer une [issue](https://github.com/prrvchr/gContactOOo/issues/new)  
 J'essaierai de la résoudre ;-)
 
+### Historique:
+
+#### Ce qui a été fait pour la version 0.0.5
+
+- Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
+
+- Ecriture d'une nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py), lancé en arrière-plan (python Thread) responsable de:
+
+    - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
+
+- Ecriture d'une nouvelle interface [DataBase](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py), responsable de tous les appels à la base de données.
+
+- Beaucoup d'autres correctifs...
+
+#### Que reste-t-il à faire pour la version 0.0.5
+
+- Écriture de l'implémentation des changements Pull et Push dans le nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
+
+- Ajouter de nouvelles langue pour l'internationalisation...
+
+- Tout ce qui est bienvenu...
