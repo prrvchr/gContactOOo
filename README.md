@@ -31,7 +31,7 @@ OpenOffice doesn't seem to need this workaround.
 
 #### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extention v 0.0.5.
 
-You must install this extention first!!!
+You must first install this extension, if it is not already installed.
 
 #### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extention v 0.0.5.
 

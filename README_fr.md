@@ -30,7 +30,7 @@ OpenOffice ne semble pas avoir besoin de cette solution de contournement.
 
 #### Installer l'extension [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) v 0.0.5.
 
-Vous devez d'abord installer cette extension!!!
+Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
 
 #### Installer l'extension [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) v 0.0.5.
 
