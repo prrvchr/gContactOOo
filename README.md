@@ -1,17 +1,18 @@
 [**Ce document en français**](https://prrvchr.github.io/gContactOOo/README_fr)
 
-**The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
+**The use of this software subjects you to our** [**Terms Of Use**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [**Data Protection Policy**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
 ## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo#historical)
 
 ### Introduction:
 
-** gContactOOo ** is a LibreOffice and/or OpenOffice extension allowing to offer you innovative services in these office suites published in free software.  
+**gContactOOo** is a LibreOffice and/or OpenOffice extension allowing to offer you innovative services in these office suites published in free software.  
 Namely, the integration of your telephone contacts in LibreOffice / OpenOffice (the contacts of your Android phone).
 
 Being free software I encourage you:
 - To duplicate the source code.
 - To make changes, corrections, improvements.
+
 In short, to participate in the development of this extension.
 Because it is together that we can make Free Software smarter.
 

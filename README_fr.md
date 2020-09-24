@@ -1,8 +1,8 @@
 [**This document in English**](https://prrvchr.github.io/gContactOOo)
 
-**L'utilisation de ce logiciel vous soumet à nos** [Conditions d'utilisation](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [Politique de protection des données](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
+**L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
 
-## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#historical)
+## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#historique)
 
 ### Introduction:
 
@@ -12,6 +12,7 @@ A savoir, l'integration de vos contacts téléphonique dans LibreOffice / OpenOf
 Etant un logiciel libre je vous encourage:
 - A dupliquer le code source.
 - A apporter des modifications, des corrections, des ameliorations.
+
 Bref, à participer au developpement de cette extension, car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
 ### Prérequis:
