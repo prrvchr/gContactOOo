@@ -1,4 +1,4 @@
-# version [v0.0.5](https://prrvchr.github.io/gContactOOo#historical)
+# version [0.0.5](https://prrvchr.github.io/gContactOOo#historical)
 
 [**Ce document en français**](https://prrvchr.github.io/gContactOOo/README_fr)
 
