@@ -32,13 +32,13 @@ OpenOffice doesn't seem to need this workaround.
 It seems important that the file was not renamed when it was downloaded.
 If necessary, rename it before installing it.
 
-    - Install [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extension version 0.0.5.
+- Install [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extension version 0.0.5.
 
-    You must first install this extension, if it is not already installed.
+You must first install this extension, if it is not already installed.
 
-    - Install [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extension version 0.0.5.
+- Install [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extension version 0.0.5.
 
-    Restart LibreOffice / OpenOffice after installation.
+Restart LibreOffice / OpenOffice after installation.
 
 ## Use:
 

@@ -32,13 +32,13 @@ OpenOffice ne semble pas avoir besoin de cette solution de contournement.
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-    - Installer l'extension [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) version 0.0.5.
+- Installer l'extension [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) version 0.0.5.
 
-    Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
+Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
 
-    - Installer l'extension [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) version 0.0.5.
+- Installer l'extension [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) version 0.0.5.
 
-    Redémarrez LibreOffice / OpenOffice après l'installation.
+Redémarrez LibreOffice / OpenOffice après l'installation.
 
 ## Utilisation:
 
