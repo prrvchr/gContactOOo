@@ -1,22 +1,22 @@
+# version [v0.0.5](https://prrvchr.github.io/gContactOOo#historical)
+
 [**Ce document en français**](https://prrvchr.github.io/gContactOOo/README_fr)
 
 **The use of this software subjects you to our** [**Terms Of Use**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [**Data Protection Policy**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
-## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo#historical)
+## Introduction:
 
-### Introduction:
-
-**gContactOOo** is a LibreOffice and/or OpenOffice extension allowing to offer you innovative services in these office suites published in free software.  
-Namely, the integration of your telephone contacts in LibreOffice / OpenOffice (the contacts of your Android phone).
+**gContactOOo** is a [LibreOffice](https://fr.libreoffice.org/download/telecharger-libreoffice/) and/or [OpenOffice](https://www.openoffice.org/fr/Telecharger/) extension allowing to offer you innovative services in these office suites.  
+This extension gives you access to your phone contacts in LibreOffice / OpenOffice (the contacts of your Android phone).
 
 Being free software I encourage you:
-- To duplicate the source code.
+- To duplicate its [source code](https://github.com/prrvchr/gContactOOo).
 - To make changes, corrections, improvements.
 
 In short, to participate in the development of this extension.
 Because it is together that we can make Free Software smarter.
 
-### Requirement:
+## Requirement:
 
 gContactOOo uses a local Hsqldb database of version 2.5.1.  
 The use of Hsqldb requires the installation and configuration within  
@@ -27,17 +27,20 @@ Sometimes it may be necessary for LibreOffice users must have no Hsqldb driver i
 It seems that versions 6.4.x and 7.x of LibreOffice have fixed this problem and are able to work with different driver version of Hsqldb simultaneously.  
 OpenOffice doesn't seem to need this workaround.
 
-### Installation:
+## Installation:
 
-#### Install [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extension v 0.0.5.
+It seems important that the file was not renamed when it was downloaded.
+If necessary, rename it before installing it.
 
-You must first install this extension, if it is not already installed.
+    - Install [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extension version 0.0.5.
 
-#### Install [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extension v 0.0.5.
+    You must first install this extension, if it is not already installed.
 
-Restart LibreOffice / OpenOffice after installation.
+    - Install [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extension version 0.0.5.
 
-### Use:
+    Restart LibreOffice / OpenOffice after installation.
+
+## Use:
 
 In LibreOffice / OpenOffice go to File -> Wizards -> Address Data Source...:
 
@@ -71,13 +74,13 @@ Then:
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-Normally you should see: Connection Test: The connection was established successfully.
+After authorizing the OAuthOOo application to access your Contacts, normally you should see: Connection Test: The connection was established successfully.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 
 Have fun...
 
-### Has been tested with:
+## Has been tested with:
 
 * LibreOffice 6.4.4.2 - Ubuntu 20.04 -  LxQt 0.14.1
 
@@ -95,9 +98,9 @@ I encourage you in case of problem :-(
 to create an [issue](https://github.com/prrvchr/gContactOOo/issues/new)  
 I will try to solve it ;-)
 
-### Historical:
+## Historical:
 
-#### What has been done for version 0.0.5:
+### What has been done for version 0.0.5:
 
 - Integration and use of the new Hsqldb v2.5.1.
 
@@ -109,7 +112,7 @@ I will try to solve it ;-)
 
 - Many other fix...
 
-#### What remains to be done for version 0.0.5:
+### What remains to be done for version 0.0.5:
 
 - Write the implementation Pull Change and Push Change in the new [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) interface.
 

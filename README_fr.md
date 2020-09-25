@@ -1,21 +1,22 @@
+# version [v0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#historique)
+
 [**This document in English**](https://prrvchr.github.io/gContactOOo)
 
 **L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
 
-## [gContactOOo](https://github.com/prrvchr/gContactOOo) [v0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#historique)
+## Introduction:
 
-### Introduction:
-
-**gContactOOo** est une extension LibreOffice et/ou OpenOffice permettant de vous offrir des services inovants dans ces suites bureautique publiées en logiciel libre.  
-A savoir, l'integration de vos contacts téléphonique dans LibreOffice / OpenOffice (les contacts de votre téléphone Android).
+**gContactOOo** est une extension [LibreOffice](https://fr.libreoffice.org/download/telecharger-libreoffice/) et/ou [OpenOffice](https://www.openoffice.org/fr/Telecharger/) permettant de vous offrir des services inovants dans ces suites bureautique.  
+Cette extension vous donne l'acces à vos contacts téléphonique dans LibreOffice / OpenOffice (les contacts de votre téléphone Android).
 
 Etant un logiciel libre je vous encourage:
-- A dupliquer le code source.
+- A dupliquer son [code source](https://github.com/prrvchr/gContactOOo).
 - A apporter des modifications, des corrections, des ameliorations.
 
-Bref, à participer au developpement de cette extension, car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
+Bref, à participer au developpement de cette extension.
+Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
-### Prérequis:
+## Prérequis:
 
 gContactOOo utilise une base de données locale Hsqldb version 2.5.1.  
 L'utilisation de Hsqldb nécessite l'installation et la configuration dans
@@ -26,17 +27,20 @@ Parfois, il peut être nécessaire pour les utilisateurs de LibreOffice de ne pa
 Il semble que les versions 6.4.x et 7.x de LibreOffice aient résolu ce problème et sont capables de fonctionner simultanément avec différentes versions de pilote de Hsqldb.  
 OpenOffice ne semble pas avoir besoin de cette solution de contournement.
 
-### Installation:
+## Installation:
 
-#### Installer l'extension [OAuth2OOo](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) v 0.0.5.
+Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
+Si nécessaire, renommez-le avant de l'installer.
 
-Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
+    - Installer l'extension [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) version 0.0.5.
 
-#### Installer l'extension [gContactOOo](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) v 0.0.5.
+    Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
 
-Redémarrez LibreOffice / OpenOffice après l'installation.
+    - Installer l'extension [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) version 0.0.5.
 
-### Utilisation:
+    Redémarrez LibreOffice / OpenOffice après l'installation.
+
+## Utilisation:
 
 Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de données des adresses...:
 
@@ -70,13 +74,13 @@ Puis:
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-Normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
+Après avoir autorisé l'application OAuthOOo à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 
 Maintenant à vous d'en profiter...
 
-### A été testé avec:
+## A été testé avec:
 
 * LibreOffice 6.4.4.2 - Ubuntu 20.04 -  LxQt 0.14.1
 
@@ -94,9 +98,9 @@ Je vous encourage en cas de problème :-(
 de créer une [issue](https://github.com/prrvchr/gContactOOo/issues/new)  
 J'essaierai de la résoudre ;-)
 
-### Historique:
+## Historique:
 
-#### Ce qui a été fait pour la version 0.0.5:
+### Ce qui a été fait pour la version 0.0.5:
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
@@ -108,9 +112,9 @@ J'essaierai de la résoudre ;-)
 
 - Beaucoup d'autres correctifs...
 
-#### Que reste-t-il à faire pour la version 0.0.5:
+### Que reste-t-il à faire pour la version 0.0.5:
 
-- Écriture de l'implémentation des changements Pull et Push dans le nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
+- Écriture de l'implémentation des changements Pull et Push dans la nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
 
 - Ajouter de nouvelles langue pour l'internationalisation...
 
