@@ -4,7 +4,7 @@
 ### Introduction:
 
 The gContactOOo library is a part of a personnal project.
-Full documentation is available [on this page](https://prrvchr.github.io/gContactOOo/README).
+Full documentation is available [on this page](https://prrvchr.github.io/gContactOOo).
 
 Use of this software also subjects you to our [**Data Protection Policy**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en).
 
