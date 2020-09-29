@@ -75,7 +75,7 @@ Then:
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-After authorizing the [OAuthOOo](https://prrvchr.github.io/OAuthOOo) application to access your Contacts, normally you should see: Connection Test: The connection was established successfully.
+After authorizing the [OAuth2OOo](https://prrvchr.github.io/OAuth2OOo) application to access your Contacts, normally you should see: Connection Test: The connection was established successfully.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 

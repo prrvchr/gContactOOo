@@ -75,7 +75,7 @@ Puis:
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-Après avoir autorisé l'application [OAuthOOo](https://prrvchr.github.io/OAuthOOo/README_fr) à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
+Après avoir autorisé l'application [OAuth2OOo](https://prrvchr.github.io/OAuth2OOo/README_fr) à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 
