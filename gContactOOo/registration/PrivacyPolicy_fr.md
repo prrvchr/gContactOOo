@@ -1,6 +1,10 @@
-## Politique de protection des données pour [gContactOOo](https://github.com/prrvchr/gContactOOo)
+**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation](https://prrvchr.github.io/OAuth2OOo/OAuth2OOo/registration/TermsOfUse_fr).**
 
-### Introduction:
+Concernant l'installation, la configuration et l'utilisation, veuillez consulter la [documentation](https://prrvchr.github.io/OAuth2OOo/README_fr).
+
+# Politique de protection des données
+
+## Introduction:
 
 La confidentialité des utilisateurs du logiciel gContactOOo est très importante pour nous et nous nous engageons à la protéger.
 
@@ -11,16 +15,13 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 - `Utilisateur`: l'utilisateur du logiciel gContactOOo.
 - `Fournisseur`: fournisseur de services Internet fournissant des services Internet à `gContactOOo`.
 
-L'utilisation de ce logiciel vous soumet également à nos [**Conditions d'Utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr)
-
-### Contact:
+## Contact:
 
 Dans tous les cas, il est possible de contacter le responsable du traitement des données à l'adresse suivante:
 
 prrvchr@gmail.com
 
-
-### Utilisation de vos données personnelles:
+## Utilisation de vos données personnelles:
 
 Pour fonctionner, `gContactOOo` doit conserver des données localement.
 
@@ -34,8 +35,7 @@ L'utilisation des services du `Fournisseur` au travers de `gContactOOo` peut vou
 
 Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
-
-### Sécurité de vos informations personnelles:
+## Sécurité de vos informations personnelles:
 
 Étant donné que les données collectées par `gContactOOo` sont situées sur l'ordinateur de l'utilisateur, seul l'`Utilisateur` est responsable de la sécurité des données collectées.
 
@@ -43,8 +43,7 @@ L'utilisation des services du `Fournisseur` via `gContactOOo` peut vous soumettr
 
 Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
-
-### Expiration des données collectées:
+## Expiration des données collectées:
 
 La mise à jour des données collectées localement est effectuée chaque fois que `gContactOOo` est utilisé.
 

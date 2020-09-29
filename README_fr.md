@@ -1,17 +1,18 @@
-# version [0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#historique)
-
 [**This document in English**](https://prrvchr.github.io/gContactOOo)
 
 **L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
 
+# version [0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#historique)
+
 ## Introduction:
 
-**gContactOOo** est une extension [LibreOffice](https://fr.libreoffice.org/download/telecharger-libreoffice/) et/ou [OpenOffice](https://www.openoffice.org/fr/Telecharger/) permettant de vous offrir des services inovants dans ces suites bureautique.  
+**gContactOOo** fait partie d'une [Suite](https://prrvchr.github.io/README_fr) d'extensions [LibreOffice](https://fr.libreoffice.org/download/telecharger-libreoffice/) et/ou [OpenOffice](https://www.openoffice.org/fr/Telecharger/) permettant de vous offrir des services inovants dans ces suites bureautique.  
 Cette extension vous donne l'acces à vos contacts téléphonique dans LibreOffice / OpenOffice (les contacts de votre téléphone Android).
 
 Etant un logiciel libre je vous encourage:
 - A dupliquer son [code source](https://github.com/prrvchr/gContactOOo).
 - A apporter des modifications, des corrections, des ameliorations.
+- D'ouvrir une [issue](https://github.com/prrvchr/gDriveOOo/issues/new) si nécessaire.
 
 Bref, à participer au developpement de cette extension.
 Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
@@ -74,7 +75,7 @@ Puis:
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-Après avoir autorisé l'application OAuthOOo à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
+Après avoir autorisé l'application [OAuthOOo](https://prrvchr.github.io/OAuthOOo/README_fr) à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 

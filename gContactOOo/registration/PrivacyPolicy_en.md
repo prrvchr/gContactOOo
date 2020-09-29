@@ -1,6 +1,10 @@
-## Data Protection Policy for [gContactOOo](https://github.com/prrvchr/gContactOOo)
+**Use of this software also subjects you to our [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en).**
 
-### Introduction:
+Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/gContactOOo).
+
+# Data Protection Policy
+
+## Introduction:
 
 the privacy of our gContactOOo software users is very important to us, and we are commited to safeguarding it.
 
@@ -11,16 +15,13 @@ For simplicity, in the rest of this document, will be named:
 - `User`: the user of the gContactOOo software.
 - `Supplier`: the internet service provider delivering internet services to `gContactOOo`.
 
-Use of this software also subjects you to our [**Terms Of Use**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en)
-
-### Contact:
+## Contact:
 
 In any case, it is possible to contact the person responsible for data processing at:
 
 prrvchr@gmail.com
 
-
-### Use of your personal data:
+## Use of your personal data:
 
 To work `gContactOOo` need to keep data locally.
 
@@ -34,8 +35,7 @@ Use of the `Supplier` services through `gContactOOo`, may submit you to the Data
 
 `Supplier` is solely responsible for the use of the data it collects as described in its Policy.
 
-
-### Security of your personal information:
+## Security of your personal information:
 
 Since the data collected by `gContactOOo` is located on the user's computer, only the `User` is responsible for the security of the data collected.
 
@@ -43,8 +43,7 @@ Use of the `Supplier` services via `gContactOOo` may subject you to the Data Pro
 
 `Supplier` is solely responsible for the security of the data it collects as described in its Policy.
 
-
-### Expiration of collected data:
+## Expiration of collected data:
 
 Updating the data collected locally is done each time `gContactOOo` is used.
 

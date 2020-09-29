@@ -1,20 +1,18 @@
-## Terms Of Use for [gContactOOo](https://github.com/prrvchr/gContactOOo)
+**Use of this software also subjects you to our [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en).**
 
+Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/gContactOOo).
 
-### Introduction:
+# Terms Of Use for [gContactOOo](https://github.com/prrvchr/gContactOOo)
+
+## Introduction:
 
 The gContactOOo library is a part of a personnal project.
-Full documentation is available [on this page](https://prrvchr.github.io/gContactOOo).
 
-Use of this software also subjects you to our [**Data Protection Policy**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en).
-
-
-### Responsibilities:
+## Responsibilities:
 
 gContactOOo is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of **MERCHANTABILITY** or **FITNESS FOR A PARTICULAR PURPOSE**.
 
-
-### License:
+## License:
 
 gContactOOo is free software; you can redistribute it and/or modify it under the terms of either (at your option):
 

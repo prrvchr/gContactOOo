@@ -1,17 +1,18 @@
-# version [0.0.5](https://prrvchr.github.io/gContactOOo#historical)
-
 [**Ce document en français**](https://prrvchr.github.io/gContactOOo/README_fr)
 
 **The use of this software subjects you to our** [**Terms Of Use**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [**Data Protection Policy**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
+# version [0.0.5](https://prrvchr.github.io/gContactOOo#historical)
+
 ## Introduction:
 
-**gContactOOo** is a [LibreOffice](https://fr.libreoffice.org/download/telecharger-libreoffice/) and/or [OpenOffice](https://www.openoffice.org/fr/Telecharger/) extension allowing to offer you innovative services in these office suites.  
+**gContactOOo** is part of a [Suite](https://prrvchr.github.io/) of [LibreOffice](https://www.libreoffice.org/download/download/) and/or [OpenOffice](https://www.openoffice.org/download/index.html) extensions allowing to offer you innovative services in these office suites.  
 This extension gives you access to your phone contacts in LibreOffice / OpenOffice (the contacts of your Android phone).
 
 Being free software I encourage you:
 - To duplicate its [source code](https://github.com/prrvchr/gContactOOo).
 - To make changes, corrections, improvements.
+- To open [issue](https://github.com/prrvchr/gContactOOo/issues/new) if needed.
 
 In short, to participate in the development of this extension.
 Because it is together that we can make Free Software smarter.
@@ -74,7 +75,7 @@ Then:
 
 ![gContactOOo screenshot 5](gContactOOo-5.png)
 
-After authorizing the OAuthOOo application to access your Contacts, normally you should see: Connection Test: The connection was established successfully.
+After authorizing the [OAuthOOo](https://prrvchr.github.io/OAuthOOo) application to access your Contacts, normally you should see: Connection Test: The connection was established successfully.
 
 ![gContactOOo screenshot 6](gContactOOo-6.png)
 
