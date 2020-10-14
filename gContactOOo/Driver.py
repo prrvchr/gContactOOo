@@ -51,8 +51,8 @@ class Driver(unohelper.Base,
         self._supportedProtocol = 'sdbc:google:'
         self._supportedSubProtocols = ('people', 'peoples')
         self.event = Event()
-        print("Driver.__init__()")
-        msg = 'Driver initialization completed'
+        msg = getMessage(self.ctx, __name__, 101)
+        print(msg)
         logMessage(self.ctx, INFO, msg, 'Driver', '__init__()')
 
     @property
@@ -81,66 +81,64 @@ class Driver(unohelper.Base,
     # XDriver
     def connect(self, url, infos):
         try:
-            msg = 'Loading the driver for the url: %s' % url
+            msg = getMessage(self.ctx, __name__, 111) % url
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 1")
             protocols = url.strip().split(':')
             username, password = self._getUserCredential(infos)
             if len(protocols) != 3 or not all(protocols):
-                state = getMessage(self.ctx, 1001)
-                msg = getMessage(self.ctx, 1101, url)
+                state = getMessage(self.ctx, __name__, 112)
+                msg = getMessage(self.ctx, __name__, 1101, url)
                 raise getSqlException(state, 1101, msg, self)
             elif not self._isSupportedSubProtocols(protocols):
-                state = getMessage(self.ctx, 1001)
-                msg = getMessage(self.ctx, 1102, self._getSubProtocols(protocols))
-                msg += getMessage(self.ctx, 1103, self._getSupportedSubProtocols())
+                state = getMessage(self.ctx, __name__, 112)
+                msg = getMessage(self.ctx, __name__, 1102, self._getSubProtocols(protocols))
+                msg += getMessage(self.ctx, __name__, 1103, self._getSupportedSubProtocols())
                 raise getSqlException(state, 1103, msg, self)
             elif not username:
-                state = getMessage(self.ctx, 1002)
-                msg = getMessage(self.ctx, 1104)
+                state = getMessage(self.ctx, __name__, 113)
+                msg = getMessage(self.ctx, __name__, 1104)
                 raise getSqlException(state, 1104, msg, self)
             level = INFO
             print("Driver.connect() 2")
             dbname = self.DataSource.Provider.Host
-            msg = 'Loading the hsqldb database: %s' % dbname
+            msg = getMessage(self.ctx, __name__, 114, dbname)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
-            msg = getMessage(self.ctx, 100, dbname)
             print("Driver.connect() 3")
             if not self.DataSource.isValid():
-                msg = 'The loading of the Hsqldb database: %s failed' % dbname
-                logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
-                state = getMessage(self.ctx, 1005)
+                state = getMessage(self.ctx, __name__, 115)
                 msg = self.DataSource.Error
+                logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
                 raise getSqlException(state, 1104, msg, self)
-            msg = 'Loading of the hsqldb database: %s completed' % dbname
+            msg = getMessage(self.ctx, __name__, 116, dbname)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             user = self.DataSource.getUser(username, password)
             print("Driver.connect() 4")
             if user is None:
-                msg = 'The creation / recovery of the user: %s failed' % username
+                msg = getMessage(self.ctx, __name__, 117, username)
                 logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
                 raise self.DataSource.getWarnings()
-            msg = 'Connection of user: %s to the database' % username
+            msg = getMessage(self.ctx, __name__, 118, username)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             datasource = self.DataSource.DataBase.getDataSource()
             connection = user.getConnection(datasource, password)
             print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()
-            msg = 'Connection of user: %s to the database completed' % username
+            msg = getMessage(self.ctx, __name__, 119, username)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 6 %s" % connection.isClosed())
             version = connection.getMetaData().getDriverVersion()
-            msg = 'Hsqldb version: %s database is loaded, the user: %s is connected' % (version, username)
+            msg = getMessage(self.ctx, __name__, 120, (version, username))
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 7 %s" % version)
-            msg += getMessage(self.ctx, 102)
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             return Connection(self.ctx, connection, protocols, user.Account, self.event)
         except SQLException as e:
             raise e
         except Exception as e:
-            print("Driver.connect() ERROR: %s - %s" % (e, traceback.print_exc()))
+            msg = getMessage(self.ctx, __name__, 121, (e, traceback.print_exc()))
+            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            print(msg)
 
     def acceptsURL(self, url):
         msg = 'Load request for url: %s' % url
