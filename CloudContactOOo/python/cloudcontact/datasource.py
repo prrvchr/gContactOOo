@@ -129,7 +129,7 @@ class DataSource(unohelper.Base,
         return False
 
     def _getWarning(self, state, code, format):
-        state = getMessage(self.ctx, state)
-        msg = getMessage(self.ctx, code, format)
+        state = getMessage(self.ctx, __name__, state)
+        msg = getMessage(self.ctx, __name__, code, format)
         warning = getSqlException(state, code, msg, self)
         return warning
