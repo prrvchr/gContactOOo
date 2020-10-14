@@ -9,6 +9,7 @@ from .configuration import g_member
 
 from .logger import logMessage
 from .logger import getMessage
+g_message = 'dbqueries'
 
 
 def getSqlQuery(ctx, name, format=None):
@@ -618,6 +619,6 @@ CREATE PROCEDURE "MergeConnection"(IN "GroupPrefix" VARCHAR(50),
 # Queries don't exist!!!
     else:
         query = None
-        msg = getMessage(ctx, __name__, 101, name)
+        msg = getMessage(ctx, g_message, 101, name)
         logMessage(ctx, SEVERE, msg, 'dbqueries', 'getSqlQuery()')
     return query

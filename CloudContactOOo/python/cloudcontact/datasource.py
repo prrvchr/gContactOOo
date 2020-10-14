@@ -29,6 +29,7 @@ from .dbtools import getSqlException
 
 from .logger import logMessage
 from .logger import getMessage
+g_message = 'datasource'
 
 import traceback
 
@@ -129,7 +130,7 @@ class DataSource(unohelper.Base,
         return False
 
     def _getWarning(self, state, code, format):
-        state = getMessage(self.ctx, __name__, state)
-        msg = getMessage(self.ctx, __name__, code, format)
+        state = getMessage(self.ctx, g_message, state)
+        msg = getMessage(self.ctx, g_message, code, format)
         warning = getSqlException(state, code, msg, self)
         return warning
