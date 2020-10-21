@@ -24,7 +24,7 @@ class DataParser(unohelper.Base,
         #        map[key][k]= km.getValue(k)
         #print("dbpaser.DataParser(): %s\n%s" % (self.keys, map))
 
-    def jsonParser(self, pairs):
+    def parseResponse(self, pairs):
         data = KeyMap()
         for key, value in pairs:
             if value is None:
