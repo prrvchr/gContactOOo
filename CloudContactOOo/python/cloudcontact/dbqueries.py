@@ -383,9 +383,9 @@ CREATE PROCEDURE "SelectGroup"(IN "Prefix" VARCHAR(50),
       SELECT "Prefix"||"Resource" FROM "Groups" FOR SYSTEM_TIME FROM 
       TO_TIMESTAMP('%(Start)s','%(Format)s') TO TO_TIMESTAMP('%(End)s','%(Format)s')
       WHERE "People"="PeopleId" AND "Resource"<>"ResourceName" FOR READ ONLY;
-    SET "Time" = LOCALTIMESTAMP(6)
-    SET "TmpTime" = "Time" - 10 MINUTE
-    SET "Format" = 'YYYY-MM-DDTHH24:MI:SS.FFFZ'
+    SET "Time" = LOCALTIMESTAMP(6);
+    SET "TmpTime" = "Time" - 10 MINUTE;
+    SET "Format" = 'YYYY-MM-DDTHH24:MI:SS.FFFZ';
     SET "EndTime" = TO_CHAR("Time","Format");
     SET "StartTime" = TO_CHAR("TmpTime","Format");
     SET "Time" = "EndTime";
