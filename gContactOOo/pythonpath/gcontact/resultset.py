@@ -1,1 +1,1 @@
-../../../CloudContactOOo/OAuth2OOo/python/resultset.py
+../../../CloudContactOOo/OAuth2OOo/python/database/resultset.py

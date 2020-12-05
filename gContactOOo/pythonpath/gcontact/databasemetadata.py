@@ -1,1 +1,1 @@
-../../../CloudContactOOo/OAuth2OOo/python/databasemetadata.py
+../../../CloudContactOOo/OAuth2OOo/python/database/databasemetadata.py
