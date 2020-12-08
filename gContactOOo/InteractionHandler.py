@@ -88,11 +88,11 @@ class InteractionHandler(unohelper.Base,
         # TODO: IDL file of com.sun.star.auth.OAuth2Request Exception who is normally returned...
         print("InteractionHandler.handleInteractionRequest() 1")
         request = interaction.getRequest()
-        print("InteractionHandler.handleInteractionRequest() 2 %s" % type(request))
-        mri = createService(self.ctx, 'mytools.Mri')
-        if mri:
-            print("InteractionHandler.handleInteractionRequest() 3")
-            mri.inspect(interaction)
+        print("InteractionHandler.handleInteractionRequest() 2 %s" % (dir(request), ))
+        #mri = createService(self.ctx, 'mytools.Mri')
+        #if mri:
+        #    print("InteractionHandler.handleInteractionRequest() 3")
+        #    mri.inspect(interaction)
         print("InteractionHandler.handleInteractionRequest() 4")
 
     # XServiceInfo
