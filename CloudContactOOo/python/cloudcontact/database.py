@@ -51,6 +51,7 @@ from .dbtools import createStaticTable
 from .dbtools import executeSqlQueries
 from .dbtools import getDataSourceCall
 from .dbtools import executeQueries
+from .dbtools import getDictFromResult
 from .dbtools import getKeyMapFromResult
 from .dbtools import getSequenceFromResult
 from .dbtools import getKeyMapKeyMapFromResult
@@ -127,17 +128,12 @@ class DataBase(unohelper.Base,
 
     def selectUser(self, account):
         user = None
-        print("DataBase.selectUser() %s - %s" % (account, user))
-        try:
-            call = self._getCall('getPerson')
-            call.setString(1, account)
-            result = call.executeQuery()
-            if result.next():
-                user = getKeyMapFromResult(result)
-            call.close()
-            print("DataBase.selectUser() %s - %s" % (account, user))
-        except SQLException as e:
-            self.Warnings = e
+        call = self._getCall('getPerson')
+        call.setString(1, account)
+        result = call.executeQuery()
+        if result.next():
+            user = getKeyMapFromResult(result)
+        call.close()
         return user
 
     def truncatGroup(self, start):
@@ -162,10 +158,17 @@ class DataBase(unohelper.Base,
         result = call.executeQuery()
         fields = getSequenceFromResult(result)
         call.close()
-        print("DataBase.getUserFields() %s" % (fields, ))
         return tuple(fields)
 
 # Procedures called by the Replicator
+    def getDefaultType(self):
+        default = {}
+        call = self._getCall('getDefaultType')
+        result = call.executeQuery()
+        default = getDictFromResult(result)
+        call.close()
+        return default
+
     def setLoggingChanges(self, state):
         query = getSqlQuery(self.ctx, 'loggingChanges', state)
         self._statement.execute(query)

@@ -318,6 +318,18 @@ GRANT SELECT ON "%(View)s" TO "%(User)s";
         p = (s, ' '.join(f), w1, s, f1, w2)
         query = 'SELECT %s FROM %s WHERE %s UNION SELECT %s FROM %s WHERE %s' % p
 
+    elif name == 'getDefaultType':
+        s1 = '"Tables"."Name" AS "Table"'
+        s2 = '"Types"."Name" AS "Type"'
+        s = (s1, s2)
+        f1 = '"Tables"'
+        f2 = 'JOIN "TableType" ON "Tables"."Table"="TableType"."Table"'
+        f3 = 'JOIN "Types" ON "TableType"."Type"="Types"."Type"'
+        w = '"TableType"."Default"=TRUE'
+        f = (f1, f2 , f3 )
+        p = (','.join(s), ' '.join(f), w)
+        query = 'SELECT %s FROM %s WHERE %s' % p
+
     elif name == 'getFieldsMap':
         s1 = '"F"."Name" AS "Value"'
         s2 = 'COALESCE("Tables"."Name","Columns"."Name","Labels"."Name","Fields"."Name") AS "Name"'

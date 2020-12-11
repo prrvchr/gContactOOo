@@ -65,6 +65,7 @@ class Replicator(unohelper.Base,
         sync.clear()
         self.error = None
         self.count = 0
+        self.default = self.DataBase.getDefaultType()
         self.start()
 
     # XRestReplicator
@@ -283,7 +284,8 @@ class Replicator(unohelper.Base,
                 update += self._mergePeopleData(method, map, resource, key, d, timestamp, f)
         elif field == 'Tables':
             if self._filterResponse(data, *method['Filter']):
-                typename = data.getDefaultValue('Type', None)
+                default = self.default.get(key, None)
+                typename = data.getDefaultValue('Type', default)
                 for label in data.getKeys():
                     if label in method['Skip']:
                         continue
