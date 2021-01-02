@@ -1,6 +1,6 @@
-**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation](https://prrvchr.github.io/OAuth2OOo/OAuth2OOo/registration/TermsOfUse_fr).**
+**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr).**
 
-Concernant l'installation, la configuration et l'utilisation, veuillez consulter la [documentation](https://prrvchr.github.io/OAuth2OOo/README_fr).
+Concernant l'installation, la configuration et l'utilisation, veuillez consulter la [documentation](https://prrvchr.github.io/gContactOOo/README_fr).
 
 # Politique de protection des données
 

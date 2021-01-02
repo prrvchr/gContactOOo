@@ -1,6 +1,6 @@
 **Use of this software also subjects you to our [Data Protection Policy](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en).**
 
-Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/gContactOOo).
+Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/gContactOOo/).
 
 # Terms Of Use for [gContactOOo](https://github.com/prrvchr/gContactOOo)
 
