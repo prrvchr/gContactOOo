@@ -2,7 +2,7 @@
 
 Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/gContactOOo/).
 
-# Terms Of Use for [gContactOOo](https://github.com/prrvchr/gContactOOo)
+# Terms Of Use
 
 ## Introduction:
 
