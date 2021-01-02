@@ -36,7 +36,7 @@ from com.sun.star.ucb.ConnectionMode import OFFLINE
 from com.sun.star.ucb.ConnectionMode import ONLINE
 from com.sun.star.sdbc import XRestUser
 
-from unolib import getRequest
+from oauth2lib import getRequest
 
 from .database import DataBase
 

@@ -39,7 +39,7 @@ from com.sun.star.sdb.CommandType import QUERY
 
 from com.sun.star.sdbc import XRestDataSource
 
-from unolib import g_oauth2
+from oauth2lib import g_oauth2
 
 from .configuration import g_identifier
 from .configuration import g_group

@@ -55,6 +55,7 @@ from gcontact import logMessage
 from gcontact import getMessage
 g_message = 'Driver'
 
+import validators
 import traceback
 
 # pythonloader looks for a static g_ImplementationHelper variable
@@ -116,9 +117,10 @@ class Driver(unohelper.Base,
                 msg = getMessage(self.ctx, g_message, 1101, url)
                 raise getSqlException(state, 1101, msg, self)
             username = protocols[3]
-            if not username:
+            if not validators.email(username):
                 state = getMessage(self.ctx, g_message, 113)
-                msg = getMessage(self.ctx, g_message, 1104)
+                msg = getMessage(self.ctx, g_message, 1102, username)
+                msg += getMessage(self.ctx, g_message, 1103)
                 raise getSqlException(state, 1104, msg, self)
             level = INFO
             print("Driver.connect() 2")
