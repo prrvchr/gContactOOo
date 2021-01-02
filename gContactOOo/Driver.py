@@ -75,8 +75,7 @@ class Driver(unohelper.Base,
 
     def __init__(self, ctx):
         self.ctx = ctx
-        self._supportedProtocol = 'sdbc:google:'
-        self._supportedSubProtocols = ('people', 'peoples')
+        self._supportedProtocol = 'sdbc:address:google'
         self.event = Event()
         msg = getMessage(self.ctx, g_message, 101)
         print(msg)
@@ -112,17 +111,12 @@ class Driver(unohelper.Base,
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 1")
             protocols = url.strip().split(':')
-            username, password = self._getUserCredential(infos)
-            if len(protocols) != 3 or not all(protocols):
+            if len(protocols) != 4 or not all(protocols):
                 state = getMessage(self.ctx, g_message, 112)
                 msg = getMessage(self.ctx, g_message, 1101, url)
                 raise getSqlException(state, 1101, msg, self)
-            elif not self._isSupportedSubProtocols(protocols):
-                state = getMessage(self.ctx, g_message, 112)
-                msg = getMessage(self.ctx, g_message, 1102, self._getSubProtocols(protocols))
-                msg += getMessage(self.ctx, g_message, 1103, self._getSupportedSubProtocols())
-                raise getSqlException(state, 1103, msg, self)
-            elif not username:
+            username = protocols[3]
+            if not username:
                 state = getMessage(self.ctx, g_message, 113)
                 msg = getMessage(self.ctx, g_message, 1104)
                 raise getSqlException(state, 1104, msg, self)
@@ -139,7 +133,7 @@ class Driver(unohelper.Base,
                 raise getSqlException(state, 1104, msg, self)
             msg = getMessage(self.ctx, g_message, 116, dbname)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
-            user = self.DataSource.getUser(username, password)
+            user = self.DataSource.getUser(username, '')
             print("Driver.connect() 4")
             if user is None:
                 msg = getMessage(self.ctx, g_message, 117, username)
@@ -148,7 +142,7 @@ class Driver(unohelper.Base,
             msg = getMessage(self.ctx, g_message, 118, username)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             datasource = self.DataSource.DataBase.getDataSource()
-            connection = user.getConnection(datasource, password)
+            connection = user.getConnection(datasource, '')
             print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()
@@ -159,7 +153,7 @@ class Driver(unohelper.Base,
             msg = getMessage(self.ctx, g_message, 120, (version, username))
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 7 %s" % version)
-            return Connection(self.ctx, connection, protocols, user.Account, self.event)
+            return Connection(self.ctx, connection, url, username, self.event)
         except SQLException as e:
             raise e
         except Exception as e:
@@ -200,27 +194,6 @@ class Driver(unohelper.Base,
     def getMinorVersion(self):
         print("Driver.getMinorVersion()")
         return 0
-
-    def _getUserCredential(self, infos):
-        username = ''
-        password = ''
-        for info in infos:
-            if info.Name == 'user':
-                username = info.Value.strip()
-            elif info.Name == 'password':
-                password = info.Value.strip()
-            if username and password:
-                break
-        return username, password
-
-    def _getSubProtocols(self, protocols):
-        return protocols[2]
-
-    def _getSupportedSubProtocols(self):
-        return ', '.join(self._supportedSubProtocols).title()
-
-    def _isSupportedSubProtocols(self, protocols):
-        return protocols[2].lower() in self._supportedSubProtocols
 
     def _getSupplierWarnings(self, supplier, error):
         self._getWarnings(supplier, error)

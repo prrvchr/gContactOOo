@@ -2,7 +2,7 @@
 
 **The use of this software subjects you to our** [**Terms Of Use**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en) **and** [**Data Protection Policy**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_en)
 
-# version [0.0.5](https://prrvchr.github.io/gContactOOo#historical)
+# version [0.0.6](https://prrvchr.github.io/gContactOOo#historical)
 
 ## Introduction:
 
@@ -61,15 +61,12 @@ In step: 2. Connection Settings:
 ![gContactOOo screenshot 3](gContactOOo-3.png)
 
 In Database type list:
-- select: Google People API
+- select: Google Contacts
 - click on: Next(Button)
 
 ![gContactOOo screenshot 4](gContactOOo-4.png)
 
 In General: Datasource Url:
-- put: people
-
-In User Authentication: user name:
 - put: your Google account (ie: your_account@gmail.com)
 
 Then:
@@ -115,7 +112,15 @@ I will try to solve it ;-)
 
 - Many other fix...
 
-### What remains to be done for version 0.0.5:
+### What has been done for version 0.0.6:
+
+- Driver has a new name: **Google Contacts**
+
+- Driver is now registred for a new protocol: **sdbc:address:google:your_account@gmail.com**
+
+- Many other fix...
+
+### What remains to be done for version 0.0.6:
 
 - Write the implementation Pull Change and Push Change in the new [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) interface.
 

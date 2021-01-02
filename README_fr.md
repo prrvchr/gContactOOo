@@ -2,7 +2,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
 
-# version [0.0.5](https://prrvchr.github.io/gContactOOo/README_fr#historique)
+# version [0.0.6](https://prrvchr.github.io/gContactOOo/README_fr#historique)
 
 ## Introduction:
 
@@ -61,15 +61,12 @@ Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de donn�
 ![gContactOOo screenshot 3](gContactOOo-3.png)
 
 Dans Type de base de données:
-- sélectionner: Google People API
+- sélectionner: Contacts Google
 - cliquez sur: Suivant (bouton)
 
 ![gContactOOo screenshot 4](gContactOOo-4.png)
 
 Dans Général: URL de la source de données:
-- mettre: people
-
-Dans Authentification de l'utilisateur: Nom d'utilisateur:
 - mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
 
 Puis:
@@ -115,7 +112,15 @@ J'essaierai de le résoudre ;-)
 
 - Beaucoup d'autres correctifs...
 
-### Que reste-t-il à faire pour la version 0.0.5:
+### Ce qui a été fait pour la version 0.0.6:
+
+- Le pilote a un nouveau nom: **Contacts Google**
+
+- Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
+
+- Beaucoup d'autres correctifs...
+
+### Que reste-t-il à faire pour la version 0.0.6:
 
 - Écriture de l'implémentation des changements Pull et Push dans la nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
 
