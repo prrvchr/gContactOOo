@@ -14,14 +14,13 @@ Being free software I encourage you:
 - To make changes, corrections, improvements.
 - To open [issue](https://github.com/prrvchr/gContactOOo/issues/new) if needed.
 
-In short, to participate in the development of this extension.
+In short, to participate in the development of this extension.  
 Because it is together that we can make Free Software smarter.
 
 ## Requirement:
 
-gContactOOo uses a local HsqlDB database of version 2.5.1.  
-The use of HsqlDB requires the installation and configuration within  
-LibreOffice / OpenOffice of a **JRE version 1.8 minimum** (ie: Java version 8)
+gContactOOo uses a local [HsqlDB](http://hsqldb.org/) database of version 2.5.1.  
+The use of HsqlDB requires the installation and configuration within LibreOffice / OpenOffice of a **JRE version 1.8 minimum** (ie: Java version 8)
 
 Sometimes it may be necessary for LibreOffice users must have no HsqlDB driver installed with LibreOffice  
 (check your Installed Application under Windows or your Packet Manager under Linux).  
