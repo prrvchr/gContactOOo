@@ -51,12 +51,16 @@ from gcontact import getLoggerSetting
 from gcontact import setLoggerSetting
 from gcontact import clearLogger
 from gcontact import logMessage
+from gcontact import getMessage
+g_message = 'OptionsDialog'
 
 from gcontact import g_extension
 from gcontact import g_identifier
 from gcontact import g_path
 from gcontact import g_host
 
+import os
+import sys
 import traceback
 
 # pythonloader looks for a static g_ImplementationHelper variable
@@ -102,13 +106,16 @@ class OptionsDialog(unohelper.Base,
         elif method == 'ClearLog':
             self._clearLog(dialog)
             handled = True
+        elif method == 'LogInfo':
+            self._logInfo(dialog)
+            handled = True
         elif method == 'ViewData':
             self._viewData(dialog)
             handled = True
         return handled
     def getSupportedMethodNames(self):
         return ('external_event', 'ToggleLogger', 'EnableViewer', 'DisableViewer',
-                'ViewLog', 'ClearLog', 'ViewData')
+                'ViewLog', 'ClearLog', 'LogInfo', 'ViewData')
 
     def _loadSetting(self, dialog):
         self._loadLoggerSetting(dialog)
@@ -144,6 +151,16 @@ class OptionsDialog(unohelper.Base,
         except Exception as e:
             msg = "Error: %s - %s" % (e, traceback.print_exc())
             logMessage(self.ctx, SEVERE, msg, "OptionsDialog", "_doClearLog()")
+
+    def _logInfo(self, dialog):
+        version  = ' '.join(sys.version.split())
+        msg = getMessage(self.ctx, g_message, 111, version)
+        logMessage(self.ctx, INFO, msg, "OptionsDialog", "_logInfo()")
+        path = os.pathsep.join(sys.path)
+        msg = getMessage(self.ctx, g_message, 112, path)
+        logMessage(self.ctx, INFO, msg, "OptionsDialog", "_logInfo()")
+        url = getLoggerUrl(self.ctx)
+        self._setDialogText(dialog, url)
 
     def _setDialogText(self, dialog, url):
         length, sequence = getFileSequence(self.ctx, url)
