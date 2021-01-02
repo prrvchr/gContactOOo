@@ -47,24 +47,24 @@ Redémarrez LibreOffice / OpenOffice après l'installation.
 
 Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de données des adresses...:
 
-![gContactOOo screenshot 1](gContactOOo-1.png)
+![gContactOOo screenshot 1](gContactOOo-1_fr.png)
 
 À l'étape: 1. Type de carnet d'adresses:
 - sélectionner: Autre source de données externes
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 2](gContactOOo-2.png)
+![gContactOOo screenshot 2](gContactOOo-2_fr.png)
 
 À l'étape: 2. Paramètres de Connexion:
 - cliquez sur: Paramètres (bouton)
 
-![gContactOOo screenshot 3](gContactOOo-3.png)
+![gContactOOo screenshot 3](gContactOOo-3_fr.png)
 
 Dans Type de base de données:
 - sélectionner: Contacts Google
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 4](gContactOOo-4.png)
+![gContactOOo screenshot 4](gContactOOo-4_fr.png)
 
 Dans Général: URL de la source de données:
 - mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
@@ -72,11 +72,11 @@ Dans Général: URL de la source de données:
 Puis:
 - cliquez sur: Tester la connexion (bouton)
 
-![gContactOOo screenshot 5](gContactOOo-5.png)
+![gContactOOo screenshot 5](gContactOOo-5_fr.png)
 
 Après avoir autorisé l'application [OAuth2OOo](https://prrvchr.github.io/OAuth2OOo/README_fr) à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
-![gContactOOo screenshot 6](gContactOOo-6.png)
+![gContactOOo screenshot 6](gContactOOo-6_fr.png)
 
 Maintenant à vous d'en profiter...
 
