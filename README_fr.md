@@ -39,7 +39,7 @@ Si nécessaire, renommez-le avant de l'installer.
 
 Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) version 0.0.5.
+- Installer l'extension [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) version 0.0.6.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
