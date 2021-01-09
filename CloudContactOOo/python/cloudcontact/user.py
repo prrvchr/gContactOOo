@@ -38,7 +38,7 @@ from com.sun.star.sdbc import XRestUser
 
 from oauth2lib import getRequest
 
-from .database import DataBase
+from .connection import Connection
 
 from .configuration import g_identifier
 from .dbinit import getDataSourceUrl
@@ -95,9 +95,9 @@ class User(unohelper.Base,
     def clearWarnings(self):
         self._Warnings = None
 
-    def getConnection(self, datasource, password):
+    def getConnection(self, datasource, url, password, event):
         name, password = self.getCredential(password)
-        connection = datasource.getConnection(name, password)
+        connection = Connection(self.ctx, datasource, url, username, password, event)
         return connection
 
     def getCredential(self, password):

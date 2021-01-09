@@ -108,7 +108,7 @@ class Driver(unohelper.Base,
     # XDriver
     def connect(self, url, infos):
         try:
-            msg = getMessage(self.ctx, g_message, 111) % url
+            msg = getMessage(self.ctx, g_message, 111, url)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 1")
             protocols = url.strip().split(':')
@@ -117,6 +117,7 @@ class Driver(unohelper.Base,
                 msg = getMessage(self.ctx, g_message, 1101, url)
                 raise getSqlException(state, 1101, msg, self)
             username = protocols[3]
+            password = ''
             if not validators.email(username):
                 state = getMessage(self.ctx, g_message, 113)
                 msg = getMessage(self.ctx, g_message, 1102, username)
@@ -135,7 +136,7 @@ class Driver(unohelper.Base,
                 raise getSqlException(state, 1104, msg, self)
             msg = getMessage(self.ctx, g_message, 116, dbname)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
-            user = self.DataSource.getUser(username, '')
+            user = self.DataSource.getUser(username, password)
             print("Driver.connect() 4")
             if user is None:
                 msg = getMessage(self.ctx, g_message, 117, username)
@@ -144,7 +145,7 @@ class Driver(unohelper.Base,
             msg = getMessage(self.ctx, g_message, 118, username)
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             datasource = self.DataSource.DataBase.getDataSource()
-            connection = user.getConnection(datasource, '')
+            connection = user.getConnection(datasource, url, password, self.event)
             print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()
@@ -155,7 +156,7 @@ class Driver(unohelper.Base,
             msg = getMessage(self.ctx, g_message, 120, (version, username))
             logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 7 %s" % version)
-            return Connection(self.ctx, connection, url, username, self.event)
+            return connection
         except SQLException as e:
             raise e
         except Exception as e:
