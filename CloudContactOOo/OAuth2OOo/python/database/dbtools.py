@@ -61,6 +61,16 @@ import traceback
 def getDataSource(ctx, dbname, plugin, register):
     location = getResourceLocation(ctx, plugin, g_path)
     url = '%s/%s.odb' % (location, dbname)
+    created = not getSimpleFile(ctx).exists(url)
+    dbcontext = createService(ctx, 'com.sun.star.sdb.DatabaseContext')
+    datasource = createDataSource(dbcontext, location, dbname)
+    if register:
+        registerDataSource(dbcontext, dbname, url)
+    return datasource, url, created
+
+def getDataSource1(ctx, dbname, plugin, register):
+    location = getResourceLocation(ctx, plugin, g_path)
+    url = '%s/%s.odb' % (location, dbname)
     dbcontext = createService(ctx, 'com.sun.star.sdb.DatabaseContext')
     if getSimpleFile(ctx).exists(url):
         odb = dbname if dbcontext.hasByName(dbname) else url
@@ -105,6 +115,16 @@ def getDataSourceCall(ctx, connection, name, format=None):
     return call
 
 def createDataSource(dbcontext, location, dbname, shutdown=False):
+    datasource = dbcontext.createInstance()
+    url = getDataSourceLocation(location, dbname, shutdown)
+    datasource.URL = url
+    datasource.Settings.JavaDriverClass = g_class
+    path = '%s/%s' % (location, g_jar)
+    datasource.Settings.JavaDriverClassPath = '%s/%s' % (location, g_jar)
+    print("dbtools.createDataSource() %s - %s" % (url, path))
+    return datasource
+
+def createDataSource1(dbcontext, location, dbname, shutdown=False):
     datasource = dbcontext.createInstance()
     datasource.URL = getDataSourceLocation(location, dbname, shutdown)
     datasource.Info = getDataSourceInfo() + getDataSourceJavaInfo(location)
@@ -204,6 +224,10 @@ def getDriverInfo():
     return info
 
 def getDataSourceLocation(location, dbname, shutdown=False):
+    format = (g_protocol, location, dbname, g_options, g_shutdown if shutdown else '')
+    return '%s%s/%s%s%s' % format
+
+def getDataSourceLocation1(location, dbname, shutdown=False):
     url = uno.fileUrlToSystemPath('%s/%s' % (location, dbname))
     return '%sfile:%s%s%s' % (g_protocol, url, g_options, g_shutdown if shutdown else '')
 

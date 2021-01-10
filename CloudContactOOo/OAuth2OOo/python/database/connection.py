@@ -128,6 +128,7 @@ class Connection(unohelper.Base,
     def createTableName(self):
         return self._connection.createTableName()
     def getObjectNames(self):
+        print("Connection.getObjectNames()")
         return self._connection.getObjectNames()
     def getDataSourceMetaData(self):
         print("Connection.getDataSourceMetaData()")

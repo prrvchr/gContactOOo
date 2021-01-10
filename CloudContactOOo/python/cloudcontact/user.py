@@ -97,7 +97,8 @@ class User(unohelper.Base,
 
     def getConnection(self, datasource, url, password, event):
         name, password = self.getCredential(password)
-        connection = Connection(self.ctx, datasource, url, username, password, event)
+        #connection = Connection(self.ctx, datasource, url, name, password, event)
+        connection = datasource.getConnection(name, password)
         return connection
 
     def getCredential(self, password):

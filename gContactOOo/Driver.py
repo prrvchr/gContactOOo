@@ -45,7 +45,6 @@ from unolib import getConfiguration
 
 from gcontact import User
 from gcontact import DataSource
-from gcontact import Connection
 
 from gcontact import g_identifier
 from gcontact import getDataBaseInfo
