@@ -104,6 +104,9 @@ class Connection(unohelper.Base,
         self._url = url
         self._username = user
         self._event = event
+        # TODO: sometime we cannot use: connection.prepareStatement(sql)
+        # TODO: it trow a: java.lang.IncompatibleClassChangeError
+        # TODO: if self._patched: fallback to connection.prepareCall(sql)
         self._patched = patched
 
     # XComponent
@@ -159,11 +162,11 @@ class Connection(unohelper.Base,
                 query = self.getQueries().getByName(command).Command
         elif commandtype == COMMAND:
             query = command
+        # TODO: sometime we cannot use: connection.prepareStatement(sql)
+        # TODO: it trow a: java.lang.IncompatibleClassChangeError
+        # TODO: if self._patched: fallback to connection.prepareCall(sql)
         if query is not None:
-            if self._patched:
-                return CallableStatement(self, query)
-            else:
-                return PreparedStatement(self, query)
+            return PreparedStatement(self, query, self._patched)
         raise SQLException()
 
     # XQueriesSupplier
@@ -233,6 +236,9 @@ class Connection(unohelper.Base,
     def createStatement(self):
         return Statement(self)
     def prepareStatement(self, sql):
+        # TODO: sometime we cannot use: connection.prepareStatement(sql)
+        # TODO: it trow a: java.lang.IncompatibleClassChangeError
+        # TODO: if self._patched: fallback to connection.prepareCall(sql)
         return PreparedStatement(self, sql, self._patched)
     def prepareCall(self, sql):
         return CallableStatement(self, sql)
