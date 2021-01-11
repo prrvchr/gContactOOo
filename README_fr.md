@@ -22,12 +22,12 @@ Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 gContactOOo utilise une base de données locale [HsqlDB](http://hsqldb.org/) version 2.5.1.  
 L'utilisation de HsqlDB nécessite l'installation et la configuration dans LibreOffice / OpenOffice d'un **JRE version 1.8 minimum** (c'est-à-dire: Java version 8)
 
-Parfois, il peut être nécessaire pour les utilisateurs de LibreOffice de ne pas avoir de pilote HsqlDB installé avec LibreOffice  
-(vérifiez vos applications installées sous Windows ou votre gestionnaire de paquets sous Linux)  
+Parfois, il peut être nécessaire pour les utilisateurs de LibreOffice sous Linux de ne pas avoir de pilote HsqlDB installé avec LibreOffice  
+(vérifiez votre gestionnaire de paquets sous Linux)  
 ~~Il semble que les versions 6.4.x et 7.x de LibreOffice aient résolu ce problème et sont capables de fonctionner simultanément avec différentes versions de pilote de HsqlDB.~~  
-Après de nombreux tests, il semble que LibreOffice (6.4.x et 7.x) ne puisse pas charger un pilote HsqlDB fourni (hsqldb.jar v2.5.1), si le pilote HsqlDB intégré est installé (et même la solution est parfois de renommer le fichier hsqldb.jar dans /usr/share/java, la désinstallation du paquet libreoffice-sdbc-hsqldb ne semble pas suffisante...)  
-Pour surmonter cette limitation et si vous souhaitez utiliser HsqlDB intégré, supprimez le pilote HsqlDB intégré (hsqldb.jar v1.8.0) et installez cette extension: [HsqlDBembeddedOOo](https://prrvchr.github.io/HsqlDBembeddedOOo/README_fr) pour remplacer le pilote HsqlDB intégré disfonctionnant de LibreOffice.  
-OpenOffice ne semble pas avoir besoin de cette solution de contournement.
+Après de nombreux tests, il semble que LibreOffice (6.4.x et 7.x) sous Linux ne puisse pas charger un pilote HsqlDB fourni (hsqldb.jar v2.5.1), si le pilote HsqlDB intégré est installé (et même parfois la désinstallation du paquet: libreoffice-sdbc-hsqldb ne semble pas suffisante... Il faut aussi désintaller le paquet: libhsqldb1.8.0-java)  
+Pour surmonter cette limitation et si vous souhaitez utiliser HsqlDB intégré avec LibreOffice sous Linux, supprimez le pilote HsqlDB intégré (paquets: libreoffice-sdbc-hsqldb et libhsqldb1.8.0-java) et installez cette extension: [HsqlDBembeddedOOo](https://prrvchr.github.io/HsqlDBembeddedOOo/README_fr) pour remplacer le pilote HsqlDB intégré disfonctionnant de LibreOffice.  
+OpenOffice et LibreOffice sous Windows, ne semble pas avoir besoin de cette solution de contournement.
 
 ## Installation:
 
