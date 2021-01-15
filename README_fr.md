@@ -87,7 +87,7 @@ Maintenant à vous d'en profiter...
 
 * LibreOffice 7.0.0.0.alpha1 - Ubuntu 20.04 -  LxQt 0.14.1
 
-* OpenOffice 4.1.5 x86_64 - Ubuntu 20.04 - LxQt 0.14.1
+* OpenOffice 4.1.8 x86_64 - Ubuntu 20.04 - LxQt 0.14.1
 
 * OpenOffice 4.2.0.Build:9820 x86_64 - Ubuntu 20.04 - LxQt 0.14.1
 
