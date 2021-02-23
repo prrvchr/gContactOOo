@@ -56,9 +56,9 @@ import json
 class Provider(unohelper.Base,
                XRestProvider):
     def __init__(self, ctx):
-        self.ctx = ctx
-        self.SessionMode = OFFLINE
+        self._ctx = ctx
         self._Error = ''
+        self.SessionMode = OFFLINE
 
     @property
     def Host(self):
@@ -68,9 +68,9 @@ class Provider(unohelper.Base,
         return g_url
 
     def isOnLine(self):
-        return getConnectionMode(self.ctx, self.Host) != OFFLINE
+        return getConnectionMode(self._ctx, self.Host) != OFFLINE
     def isOffLine(self):
-        return getConnectionMode(self.ctx, self.Host) != ONLINE
+        return getConnectionMode(self._ctx, self.Host) != ONLINE
 
     def getRequestParameter(self, method, data=None):
         parameter = uno.createUnoStruct('com.sun.star.auth.RestRequestParameter')

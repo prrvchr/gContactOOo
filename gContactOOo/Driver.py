@@ -74,17 +74,17 @@ class Driver(unohelper.Base,
     _dataSource = None
 
     def __init__(self, ctx):
-        self.ctx = ctx
+        self._ctx = ctx
         self._supportedProtocol = 'sdbc:address:google'
         self.event = Event()
-        msg = getMessage(self.ctx, g_message, 101)
+        msg = getMessage(ctx, g_message, 101)
         print(msg)
-        logMessage(self.ctx, INFO, msg, 'Driver', '__init__()')
+        logMessage(ctx, INFO, msg, 'Driver', '__init__()')
 
     @property
     def DataSource(self):
         if Driver._dataSource is None:
-            Driver._dataSource = DataSource(self.ctx, self.event)
+            Driver._dataSource = DataSource(self._ctx, self.event)
         return Driver._dataSource
 
     # XDataDefinitionSupplier
@@ -107,65 +107,65 @@ class Driver(unohelper.Base,
     # XDriver
     def connect(self, url, infos):
         try:
-            msg = getMessage(self.ctx, g_message, 111, url)
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            msg = getMessage(self._ctx, g_message, 111, url)
+            logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 1")
             protocols = url.strip().split(':')
             if len(protocols) != 4 or not all(protocols):
-                state = getMessage(self.ctx, g_message, 112)
-                msg = getMessage(self.ctx, g_message, 1101, url)
+                state = getMessage(self._ctx, g_message, 112)
+                msg = getMessage(self._ctx, g_message, 1101, url)
                 raise getSqlException(state, 1101, msg, self)
             username = protocols[3]
             password = ''
             if not validators.email(username):
-                state = getMessage(self.ctx, g_message, 113)
-                msg = getMessage(self.ctx, g_message, 1102, username)
-                msg += getMessage(self.ctx, g_message, 1103)
+                state = getMessage(self._ctx, g_message, 113)
+                msg = getMessage(self._ctx, g_message, 1102, username)
+                msg += getMessage(self._ctx, g_message, 1103)
                 raise getSqlException(state, 1104, msg, self)
             level = INFO
             print("Driver.connect() 2")
             dbname = self.DataSource.Provider.Host
-            msg = getMessage(self.ctx, g_message, 114, dbname)
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            msg = getMessage(self._ctx, g_message, 114, dbname)
+            logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 3")
             if not self.DataSource.isValid():
-                state = getMessage(self.ctx, g_message, 115)
+                state = getMessage(self._ctx, g_message, 115)
                 msg = self.DataSource.Error
-                logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+                logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
                 raise getSqlException(state, 1104, msg, self)
-            msg = getMessage(self.ctx, g_message, 116, dbname)
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            msg = getMessage(self._ctx, g_message, 116, dbname)
+            logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             user = self.DataSource.getUser(username, password)
             print("Driver.connect() 4")
             if user is None:
-                msg = getMessage(self.ctx, g_message, 117, username)
-                logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+                msg = getMessage(self._ctx, g_message, 117, username)
+                logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
                 raise self.DataSource.getWarnings()
-            msg = getMessage(self.ctx, g_message, 118, username)
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            msg = getMessage(self._ctx, g_message, 118, username)
+            logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             datasource = self.DataSource.DataBase.getDataSource()
             connection = user.getConnection(datasource, url, password, self.event)
             print("Driver.connect() 5")
             if connection is None:
                 raise user.getWarnings()
-            msg = getMessage(self.ctx, g_message, 119, username)
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            msg = getMessage(self._ctx, g_message, 119, username)
+            logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 6 %s" % connection.isClosed())
             version = connection.getMetaData().getDriverVersion()
-            msg = getMessage(self.ctx, g_message, 120, (version, username))
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            msg = getMessage(self._ctx, g_message, 120, (version, username))
+            logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             print("Driver.connect() 7 %s" % version)
             return connection
         except SQLException as e:
             raise e
         except Exception as e:
-            msg = getMessage(self.ctx, g_message, 121, (e, traceback.print_exc()))
-            logMessage(self.ctx, INFO, msg, 'Driver', 'connect()')
+            msg = getMessage(self._ctx, g_message, 121, (e, traceback.print_exc()))
+            logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             print(msg)
 
     def acceptsURL(self, url):
         msg = 'Load request for url: %s' % url
-        logMessage(self.ctx, INFO, msg, 'Driver', 'acceptsURL()')
+        logMessage(self._ctx, INFO, msg, 'Driver', 'acceptsURL()')
         print("Driver.acceptsURL() %s" % url)
         value = url.startswith(self._supportedProtocol)
         print("Driver.acceptsURL() %s" % value)

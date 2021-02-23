@@ -58,7 +58,7 @@ g_message = 'dbtools'
 import traceback
 
 
-def getDataSource(ctx, dbname, plugin, register):
+def getDataSource1(ctx, dbname, plugin, register):
     location = getResourceLocation(ctx, plugin, g_path)
     url = '%s/%s.odb' % (location, dbname)
     created = not getSimpleFile(ctx).exists(url)
@@ -68,7 +68,7 @@ def getDataSource(ctx, dbname, plugin, register):
         registerDataSource(dbcontext, dbname, url)
     return datasource, url, created
 
-def getDataSource1(ctx, dbname, plugin, register):
+def getDataSource(ctx, dbname, plugin, register):
     location = getResourceLocation(ctx, plugin, g_path)
     url = '%s/%s.odb' % (location, dbname)
     dbcontext = createService(ctx, 'com.sun.star.sdb.DatabaseContext')

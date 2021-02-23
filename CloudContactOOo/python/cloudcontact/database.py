@@ -39,6 +39,7 @@ from com.sun.star.sdbc import XRestDataBase
 
 from unolib import KeyMap
 from unolib import parseDateTime
+from unolib import createService
 
 from .configuration import g_admin
 
@@ -66,16 +67,22 @@ from .logger import getMessage
 
 from collections import OrderedDict
 import traceback
+from time import sleep
 
 
 class DataBase(unohelper.Base,
                XRestDataBase):
     def __init__(self, ctx, datasource, name='', password='', sync=None):
-        self.ctx = ctx
-        self._statement = datasource.getConnection(name, password).createStatement()
+        self._ctx = ctx
+        print("DataBase.init() 1")
+        connection = datasource.getConnection(name, password)
+        print("DataBase.init() 2")
+        self._statement = connection.createStatement()
+        print("DataBase.init() 3")
         self._fieldsMap = {}
         self._batchedCalls = OrderedDict()
         self.sync = sync
+        print("DataBase.init() 4")
 
     @property
     def Connection(self):
@@ -83,33 +90,42 @@ class DataBase(unohelper.Base,
 
 # Procedures called by the DataSource
     def createDataBase(self):
-        version, error = checkDataBase(self.ctx, self.Connection)
+        version, error = checkDataBase(self._ctx, self.Connection)
         if error is None:
-            createStaticTable(self.ctx, self._statement, getStaticTables())
-            tables, queries = getTablesAndStatements(self.ctx, self._statement, version)
+            createStaticTable(self._ctx, self._statement, getStaticTables())
+            tables, queries = getTablesAndStatements(self._ctx, self._statement, version)
             executeSqlQueries(self._statement, tables)
-            executeQueries(self.ctx, self._statement, getQueries())
+            executeQueries(self._ctx, self._statement, getQueries())
             executeSqlQueries(self._statement, queries)
-            views, triggers = getViewsAndTriggers(self.ctx, self._statement)
+            views, triggers = getViewsAndTriggers(self._ctx, self._statement)
             executeSqlQueries(self._statement, views)
         return error
 
     def getDataSource(self):
-        return self.Connection.getParent().DatabaseDocument.DataSource
+        return self.Connection.getParent()
 
     def storeDataBase(self, url):
         self.Connection.getParent().DatabaseDocument.storeAsURL(url, ())
 
     def addCloseListener(self, listener):
-        self.Connection.Parent.DatabaseDocument.addCloseListener(listener)
+        print("DataBase.addCloseListener() 1")
+        #mri = createService(self._ctx, 'mytools.Mri')
+        #mri.inspect(listener)
+        #sleep(2)
+        datasource = self.Connection.getParent()
+        print("DataBase.addCloseListener() 2")
+        document = datasource.DatabaseDocument
+        print("DataBase.addCloseListener() 3")
+        document.addCloseListener(listener)
+        print("DataBase.addCloseListener() 4")
 
     def shutdownDataBase(self, compact=False):
-        query = getSqlQuery(self.ctx, 'shutdown', compact)
+        query = getSqlQuery(self._ctx, 'shutdown', compact)
         self._statement.execute(query)
 
     def createUser(self, name, password):
         format = {'User': name, 'Password': password, 'Admin': g_admin}
-        query = getSqlQuery(self.ctx, 'createUser', format)
+        query = getSqlQuery(self._ctx, 'createUser', format)
         status = self._statement.executeUpdate(query)
         print("DataBase.createUser() %s" % status)
         return status == 0
@@ -138,12 +154,12 @@ class DataBase(unohelper.Base,
 
     def truncatGroup(self, start):
         format = {'TimeStamp': unparseTimeStamp(start)}
-        query = getSqlQuery(self.ctx, 'truncatGroup', format)
+        query = getSqlQuery(self._ctx, 'truncatGroup', format)
         self._statement.execute(query)
 
     def createSynonym(self, user, name):
         format = {'Schema': user.Resource, 'View': name.title()}
-        query = getSqlQuery(self.ctx, 'createSynonym', format)
+        query = getSqlQuery(self._ctx, 'createSynonym', format)
         self._statement.execute(query)
 
     def createGroupView(self, user, name, group):
@@ -170,11 +186,11 @@ class DataBase(unohelper.Base,
         return default
 
     def setLoggingChanges(self, state):
-        query = getSqlQuery(self.ctx, 'loggingChanges', state)
+        query = getSqlQuery(self._ctx, 'loggingChanges', state)
         self._statement.execute(query)
 
     def saveChanges(self, compact=False):
-        query = getSqlQuery(self.ctx, 'saveChanges', compact)
+        query = getSqlQuery(self._ctx, 'saveChanges', compact)
         self._statement.execute(query)
 
     def getFieldsMap(self, method, reverse):
@@ -283,15 +299,15 @@ class DataBase(unohelper.Base,
         format = {'User': account,
                   'View': '%s.%s' % (user.Name, name.title()),
                   'Group': group}
-        return getSqlQuery(self.ctx, query, format)
+        return getSqlQuery(self._ctx, query, format)
 
     def _getCall(self, name, format=None):
-        return getDataSourceCall(self.ctx, self.Connection, name, format)
+        return getDataSourceCall(self._ctx, self.Connection, name, format)
 
     def _getBatchedCall(self, key, name=None, format=None):
         if key not in self._batchedCalls:
             name = key if name is None else name
-            self._batchedCalls[key] = getDataSourceCall(self.ctx, self.Connection, name, format)
+            self._batchedCalls[key] = getDataSourceCall(self._ctx, self.Connection, name, format)
         return self._batchedCalls[key]
 
     def _getPreparedCall(self, name):

@@ -30,75 +30,36 @@
 import uno
 import unohelper
 
+from com.sun.star.util import XCloseListener
+
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
-from com.sun.star.ucb.ConnectionMode import OFFLINE
-from com.sun.star.ucb.ConnectionMode import ONLINE
-from com.sun.star.sdbc import XRestUser
 
-from oauth2lib import getRequest
+from .configuration import g_compact
 
-from .connection import Connection
-
-from .configuration import g_identifier
-from .dbinit import getDataSourceUrl
-from .dbtools import getDataSourceConnection
-from .dbtools import getDataBaseConnection
+from .logger import logMessage
+from .logger import getMessage
 
 import traceback
 
 
-class User(unohelper.Base,
-           XRestUser):
-    def __init__(self, ctx, datasource, name):
+class DataBaseListener(unohelper.Base,
+                       XCloseListener):
+    def __init__(self, ctx, replicator):
+        print("DataBaseListener.__init__() 1")
         self._ctx = ctx
-        self._Warnings = None
-        self.MetaData = datasource.DataBase.selectUser(name)
-        self.Fields = datasource.DataBase.getUserFields()
-        self.Provider = datasource.Provider
-        self.Request = getRequest(ctx, self.Provider.Host, name)
+        self._replicator = replicator
+        print("DataBaseListener.__init__() 2")
 
-    @property
-    def People(self):
-        return self.MetaData.getDefaultValue('People', None)
-    @property
-    def Group(self):
-        return self.MetaData.getDefaultValue('Group', None)
-    @property
-    def Resource(self):
-        return self.MetaData.getDefaultValue('Resource', None)
-    @property
-    def Account(self):
-        return self.MetaData.getDefaultValue('Account', None)
-    @property
-    def Name(self):
-        account = self.MetaData.getDefaultValue('Account', '')
-        return account.split('@').pop(0)
-    @property
-    def PeopleSync(self):
-        return self.MetaData.getDefaultValue('PeopleSync', None)
-    @property
-    def GroupSync(self):
-        return self.MetaData.getDefaultValue('GroupSync', None)
-    @property
-    def Warnings(self):
-        return self._Warnings
-    @Warnings.setter
-    def Warnings(self, warning):
-        if warning is None:
-            return
-        warning.NextException = self._Warnings
-        self._Warnings = warning
-
-    def getWarnings(self):
-        return self._Warnings
-    def clearWarnings(self):
-        self._Warnings = None
-
-    def getConnection(self, datasource, url, password, event):
-        name, password = self.getCredential(password)
-        connection = Connection(self._ctx, datasource, url, name, password, event, True)
-        return connection
-
-    def getCredential(self, password):
-        return self.Account, password
+    # XCloseListener
+    def queryClosing(self, source, ownership):
+        if self._replicator.is_alive():
+            self._replicator.cancel()
+            self._replicator.join()
+        compact = self._replicator.count >= g_compact
+        self._replicator.DataBase.shutdownDataBase(compact)
+        msg = "DataSource queryClosing: Scheme: %s ... Done" % self._replicator.Provider.Host
+        logMessage(self._ctx, INFO, msg, 'DataBaseListener', 'queryClosing()')
+        print(msg)
+    def notifyClosing(self, source):
+        pass

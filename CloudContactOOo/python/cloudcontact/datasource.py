@@ -61,25 +61,23 @@ import traceback
 
 
 class DataSource(unohelper.Base,
-                 XCloseListener,
                  XRestDataSource):
     def __init__(self, ctx, sync):
         print("DataSource.__init__() 1")
-        self.ctx = ctx
+        self._ctx = ctx
         self._Warnings = None
         self._Users = {}
         self.sync = sync
         self.Error = None
-        self.Provider = Provider(self.ctx)
+        self.Provider = Provider(ctx)
         dbname = self.Provider.Host
-        datasource, url, created = getDataSource(self.ctx, dbname, g_identifier, True)
-        self.DataBase = DataBase(self.ctx, datasource)
+        datasource, url, created = getDataSource(ctx, dbname, g_identifier, True)
+        self.DataBase = DataBase(ctx, datasource)
         if created:
             self.Error = self.DataBase.createDataBase()
             if self.Error is None:
                 self.DataBase.storeDataBase(url)
-        self.DataBase.addCloseListener(self)
-        self.Replicator = Replicator(self.ctx, datasource, self.Provider, self._Users, self.sync)
+        self.Replicator = Replicator(ctx, datasource, self.Provider, self._Users, self.sync)
         print("DataSource.__init__() 2")
 
     @property
@@ -99,25 +97,12 @@ class DataSource(unohelper.Base,
     def clearWarnings(self):
         self._Warnings = None
 
-    # XCloseListener
-    def queryClosing(self, source, ownership):
-        if self.Replicator.is_alive():
-            self.Replicator.cancel()
-            self.Replicator.join()
-        compact = self.Replicator.count >= g_compact
-        self.DataBase.shutdownDataBase(compact)
-        msg = "DataSource queryClosing: Scheme: %s ... Done" % self.Provider.Host
-        logMessage(self.ctx, INFO, msg, 'DataSource', 'queryClosing()')
-        print(msg)
-    def notifyClosing(self, source):
-        pass
-
     # XRestDataSource
     def getUser(self, name, password):
         if name in self._Users:
             user = self._Users[name]
         else:
-            user = User(self.ctx, self, name)
+            user = User(self._ctx, self, name)
             if not self._initializeUser(user, name, password):
                 return None
             self._Users[name] = user
@@ -156,7 +141,7 @@ class DataSource(unohelper.Base,
         return False
 
     def _getWarning(self, state, code, format):
-        state = getMessage(self.ctx, g_message, state)
-        msg = getMessage(self.ctx, g_message, code, format)
+        state = getMessage(self._ctx, g_message, state)
+        msg = getMessage(self._ctx, g_message, code, format)
         warning = getSqlException(state, code, msg, self)
         return warning

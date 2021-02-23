@@ -39,6 +39,7 @@ from unolib import getDateTime
 
 from .database import DataBase
 from .dataparser import DataParser
+from .databaselistener import DataBaseListener
 
 from .configuration import g_sync
 from .configuration import g_filter
@@ -55,8 +56,8 @@ class Replicator(unohelper.Base,
                  Thread):
     def __init__(self, ctx, datasource, provider, users, sync):
         Thread.__init__(self)
-        self.ctx = ctx
-        self.DataBase = DataBase(self.ctx, datasource)
+        self._ctx = ctx
+        self.DataBase = DataBase(ctx, datasource)
         self.Provider = provider
         self.Users = users
         self.canceled = False
@@ -66,6 +67,8 @@ class Replicator(unohelper.Base,
         self.error = None
         self.count = 0
         self.default = self.DataBase.getDefaultType()
+        listener = DataBaseListener(ctx, self)
+        self.DataBase.addCloseListener(listener)
         self.start()
 
     # XRestReplicator
@@ -90,8 +93,8 @@ class Replicator(unohelper.Base,
     def _synchronize(self):
         timestamp = getDateTime(False)
         if self.Provider.isOffLine():
-            msg = getMessage(self.ctx, g_message, 101)
-            logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
+            msg = getMessage(self._ctx, g_message, 101)
+            logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
         elif not self.canceled:
             self._syncData(timestamp)
 
@@ -102,11 +105,11 @@ class Replicator(unohelper.Base,
         self.DataBase.Connection.setAutoCommit(False)
         for user in self.Users.values():
             if not self.canceled:
-                msg = getMessage(self.ctx, g_message, 111, user.Account)
-                logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
+                msg = getMessage(self._ctx, g_message, 111, user.Account)
+                logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
                 result.setValue(user.Account, self._syncUser(user, timestamp))
-                msg = getMessage(self.ctx, g_message, 112, user.Account)
-                logMessage(self.ctx, INFO, msg, 'Replicator', '_synchronize()')
+                msg = getMessage(self._ctx, g_message, 112, user.Account)
+                logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
         if not self.canceled:
             self.DataBase.executeBatchCall()
             self.DataBase.Connection.commit()
@@ -131,8 +134,8 @@ class Replicator(unohelper.Base,
                 return result
             result += self._syncGroup(user, timestamp)
         except Exception as e:
-            msg = getMessage(self.ctx, g_message, 121, (e, traceback.print_exc()))
-            logMessage(self.ctx, SEVERE, msg, 'Replicator', '_synchronize()')
+            msg = getMessage(self._ctx, g_message, 121, (e, traceback.print_exc()))
+            logMessage(self._ctx, SEVERE, msg, 'Replicator', '_synchronize()')
         return result
 
     def _syncPeople(self, user, timestamp):
@@ -158,8 +161,8 @@ class Replicator(unohelper.Base,
                 delete += d
                 token = t
         format = (pages, update, delete)
-        msg = getMessage(self.ctx, g_message, 131, format)
-        logMessage(self.ctx, INFO, msg, 'Replicator', '_syncPeople()')
+        msg = getMessage(self._ctx, g_message, 131, format)
+        logMessage(self._ctx, INFO, msg, 'Replicator', '_syncPeople()')
         self.count += update + delete
         print("replicator._syncPeople() 1 %s" % method['PrimaryKey'])
         return token
@@ -185,8 +188,8 @@ class Replicator(unohelper.Base,
                 delete += d
                 token = t
         format = (pages, update, delete)
-        msg = getMessage(self.ctx, g_message, 141, format)
-        logMessage(self.ctx, INFO, msg, 'Replicator', '_syncGroup()')
+        msg = getMessage(self._ctx, g_message, 141, format)
+        logMessage(self._ctx, INFO, msg, 'Replicator', '_syncGroup()')
         self.count += update + delete
         return token
 
@@ -213,8 +216,8 @@ class Replicator(unohelper.Base,
         else:
             print("replicator._syncConnection(): nothing to sync")
         format = (pages, len(groups), update)
-        msg = getMessage(self.ctx, g_message, 151, format)
-        logMessage(self.ctx, INFO, msg, 'Replicator', '_syncConnection()')
+        msg = getMessage(self._ctx, g_message, 151, format)
+        logMessage(self._ctx, INFO, msg, 'Replicator', '_syncConnection()')
         self.count += update
         return token
 
