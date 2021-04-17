@@ -53,11 +53,14 @@ class DataBaseListener(unohelper.Base,
 
     # XCloseListener
     def queryClosing(self, source, ownership):
+        print("DataBaseListener.queryClosing() 1")
         if self._replicator.is_alive():
             self._replicator.cancel()
             self._replicator.join()
+        print("DataBaseListener.queryClosing() 2")
         compact = self._replicator.count >= g_compact
         self._replicator.DataBase.shutdownDataBase(compact)
+        print("DataBaseListener.queryClosing() 3")
         msg = "DataSource queryClosing: Scheme: %s ... Done" % self._replicator.Provider.Host
         logMessage(self._ctx, INFO, msg, 'DataBaseListener', 'queryClosing()')
         print(msg)

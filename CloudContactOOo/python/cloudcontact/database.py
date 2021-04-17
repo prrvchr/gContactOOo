@@ -297,7 +297,7 @@ class DataBase(unohelper.Base,
         query = '%sGroupView' % method
         account, pwd = user.getCredential('')
         format = {'User': account,
-                  'View': '%s.%s' % (user.Name, name.title()),
+                  'View': '%s.%s' % (user.Name.title(), name.title()),
                   'Group': group}
         return getSqlQuery(self._ctx, query, format)
 

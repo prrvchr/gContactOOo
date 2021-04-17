@@ -83,23 +83,24 @@ class Replicator(unohelper.Base,
             while not self.canceled:
                 self.sync.wait(g_sync)
                 print("replicator.run()2")
-                self._synchronize()
-                self.sync.clear()
+                if not self.canceled:
+                    self._synchronize()
+                    self.sync.clear()
             print("replicator.run()3 query=%s" % self.count)
         except Exception as e:
             msg = "Replicator run(): Error: %s - %s" % (e, traceback.print_exc())
             print(msg)
 
     def _synchronize(self):
-        timestamp = getDateTime(False)
         if self.Provider.isOffLine():
             msg = getMessage(self._ctx, g_message, 101)
             logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
-        elif not self.canceled:
-            self._syncData(timestamp)
+        else:
+            self._syncData()
 
-    def _syncData(self, timestamp):
+    def _syncData(self):
         result = KeyMap()
+        timestamp = getDateTime(False)
         self.DataBase.setLoggingChanges(False)
         self.DataBase.saveChanges()
         self.DataBase.Connection.setAutoCommit(False)

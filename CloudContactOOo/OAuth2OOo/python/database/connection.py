@@ -98,12 +98,12 @@ class Connection(unohelper.Base,
                  XTableUIProvider,
                  XConnectionTools,
                  XWeak):
-    def __init__(self, ctx, datasource, url, user, password, event=None, patched=False):
+    def __init__(self, ctx, datasource, url, user, password, replicator=None, patched=True):
         self.ctx = ctx
         self._connection = datasource.getConnection(user, password)
         self._url = url
         self._username = user
-        self._event = event
+        self._replicator = replicator
         # TODO: sometime we cannot use: connection.prepareStatement(sql)
         # TODO: it trow a: java.lang.IncompatibleClassChangeError
         # TODO: if self._patched: fallback to connection.prepareCall(sql)
@@ -148,8 +148,9 @@ class Connection(unohelper.Base,
         print("Connection.close()********* 1")
         if not self._connection.isClosed():
             self._connection.close()
-        if self._event is not None:
-            self._event.set()
+        if self._replicator is not None:
+            pass
+            #self._replicator.cancel()
         print("Connection.close()********* 2")
 
     # XCommandPreparation

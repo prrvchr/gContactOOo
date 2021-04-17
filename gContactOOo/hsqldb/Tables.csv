@@ -8,8 +8,8 @@ Table|Name|Identity|View|Versioned
 6|Connections||false|false
 7|Locales||false|true
 8|Names||true|true
-9|Addresses||true|true
-10|Emails||true|true
+9|Emails||true|true
+10|Addresses||true|true
 11|Phones||true|true
 12|Organisations||true|true
 13|Sips||true|true

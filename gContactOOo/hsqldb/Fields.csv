@@ -3,8 +3,8 @@ Field|Method|Name|Type|Table|Column
 1|People|connections|Sequence|Tables|6
 2|People|locales|Sequence|Tables|7
 3|People|names|Sequence|Tables|8
-4|People|addresses|Sequence|Tables|9
-5|People|emailAddresses|Sequence|Tables|10
+4|People|emailAddresses|Sequence|Tables|9
+5|People|addresses|Sequence|Tables|10
 6|People|phoneNumbers|Sequence|Tables|11
 7|People|organizations|Sequence|Tables|12
 8|People|sipAddresses|Sequence|Tables|13
