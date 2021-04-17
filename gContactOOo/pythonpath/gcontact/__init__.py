@@ -29,6 +29,13 @@
 
 import traceback
 try:
+    from .logger import getLoggerSetting
+    from .logger import getLoggerUrl
+    from .logger import setLoggerSetting
+    from .logger import clearLogger
+    from .logger import logMessage
+    from .logger import getMessage
+
     from .user import User
     from .datasource import DataSource
     from .dataparser import DataParser
@@ -45,18 +52,13 @@ try:
 
     from .dbconfig import g_path
 
-    from .dbtools import getDataSourceConnection
-    from .dbtools import getDataBaseInfo
-    from .dbtools import getDataSourceLocation
-    from .dbtools import getDataSourceJavaInfo
-    from .dbtools import getSqlException
+    from .dbtool import getDataSourceConnection
+    from .dbtool import getDataBaseInfo
+    from .dbtool import getDataSourceLocation
+    from .dbtool import getDataSourceJavaInfo
+    from .dbtool import getSqlException
 
-    from .logger import getLoggerSetting
-    from .logger import getLoggerUrl
-    from .logger import setLoggerSetting
-    from .logger import clearLogger
-    from .logger import logMessage
-    from .logger import getMessage
+
 
 except Exception as e:
     print("gcontact.__init__() ERROR: %s - %s" % (e, traceback.print_exc()))
