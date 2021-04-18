@@ -36,14 +36,11 @@ from com.sun.star.awt import XDialogEventHandler
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
-from unolib import getFileSequence
-from unolib import getStringResource
-from unolib import getResourceLocation
-from unolib import getDialog
-from unolib import createService
+from gcontact import getFileSequence
+from gcontact import getStringResource
+from gcontact import getDialog
+from gcontact import createService
 
-from gcontact import getDataSourceLocation
-from gcontact import getDataSourceJavaInfo
 from gcontact import getDataSourceUrl
 
 from gcontact import getLoggerUrl
@@ -56,7 +53,6 @@ g_message = 'OptionsDialog'
 
 from gcontact import g_extension
 from gcontact import g_identifier
-from gcontact import g_path
 from gcontact import g_host
 
 import os

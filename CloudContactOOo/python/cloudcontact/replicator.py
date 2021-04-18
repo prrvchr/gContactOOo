@@ -34,8 +34,8 @@ from com.sun.star.util import XCancellable
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
-from unolib import KeyMap
-from unolib import getDateTime
+from .unotool import KeyMap
+from .unotool import getDateTime
 
 from .database import DataBase
 from .dataparser import DataParser
@@ -54,10 +54,10 @@ import traceback
 
 class Replicator(unohelper.Base,
                  Thread):
-    def __init__(self, ctx, datasource, provider, users, sync):
+    def __init__(self, ctx, database, provider, users, sync):
         Thread.__init__(self)
         self._ctx = ctx
-        self.DataBase = DataBase(ctx, datasource)
+        self.DataBase = database
         self.Provider = provider
         self.Users = users
         self.canceled = False
@@ -67,8 +67,8 @@ class Replicator(unohelper.Base,
         self.error = None
         self.count = 0
         self.default = self.DataBase.getDefaultType()
-        listener = DataBaseListener(ctx, self)
-        self.DataBase.addCloseListener(listener)
+        #listener = DataBaseListener(ctx, self)
+        #self.DataBase.addCloseListener(listener)
         self.start()
 
     # XRestReplicator
@@ -86,6 +86,7 @@ class Replicator(unohelper.Base,
                 if not self.canceled:
                     self._synchronize()
                     self.sync.clear()
+                self.DataBase.Connection.dispose()
             print("replicator.run()3 query=%s" % self.count)
         except Exception as e:
             msg = "Replicator run(): Error: %s - %s" % (e, traceback.print_exc())

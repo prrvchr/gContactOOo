@@ -29,36 +29,30 @@
 
 import traceback
 try:
+
+    from .logger import clearLogger
     from .logger import getLoggerSetting
     from .logger import getLoggerUrl
-    from .logger import setLoggerSetting
-    from .logger import clearLogger
-    from .logger import logMessage
     from .logger import getMessage
-
-    from .user import User
-    from .datasource import DataSource
-    from .dataparser import DataParser
-    from .connection import Connection
-    from .provider import Provider
-    from .replicator import Replicator
+    from .logger import logMessage
+    from .logger import setLoggerSetting
 
     from .configuration import g_identifier
     from .configuration import g_extension
     from .configuration import g_host
-    from .configuration import g_url
+
+    from .user import User
+    from .datasource import DataSource
+
+    from .dbtool import getDataBaseInfo
+    from .dbtool import getSqlException
 
     from .dbinit import getDataSourceUrl
 
-    from .dbconfig import g_path
-
-    from .dbtool import getDataSourceConnection
-    from .dbtool import getDataBaseInfo
-    from .dbtool import getDataSourceLocation
-    from .dbtool import getDataSourceJavaInfo
-    from .dbtool import getSqlException
-
-
+    from .unotool import createService
+    from .unotool import getDialog
+    from .unotool import getFileSequence
+    from .unotool import getStringResource
 
 except Exception as e:
     print("gcontact.__init__() ERROR: %s - %s" % (e, traceback.print_exc()))

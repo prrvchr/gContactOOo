@@ -41,8 +41,6 @@ from com.sun.star.sdbc import SQLException
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
-from unolib import getConfiguration
-
 from gcontact import User
 from gcontact import DataSource
 

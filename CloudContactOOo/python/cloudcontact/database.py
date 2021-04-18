@@ -37,25 +37,31 @@ from com.sun.star.sdb.CommandType import QUERY
 
 from com.sun.star.sdbc import XRestDataBase
 
-from unolib import KeyMap
-from unolib import parseDateTime
-from unolib import createService
+from .unotool import KeyMap
+from .unotool import parseDateTime
+from .unotool import createService
+from .unotool import getResourceLocation
+from .unotool import getSimpleFile
 
 from .configuration import g_admin
 
 from .dbqueries import getSqlQuery
+
+from .dbconfig import g_folder
 from .dbconfig import g_role
 from .dbconfig import g_dba
 
-from .dbtools import checkDataBase
-from .dbtools import createStaticTable
-from .dbtools import executeSqlQueries
-from .dbtools import getDataSourceCall
-from .dbtools import executeQueries
-from .dbtools import getDictFromResult
-from .dbtools import getKeyMapFromResult
-from .dbtools import getSequenceFromResult
-from .dbtools import getKeyMapKeyMapFromResult
+from .dbtool import checkDataBase
+from .dbtool import createStaticTable
+from .dbtool import getDataBaseConnection
+from .dbtool import getDataBaseUrl
+from .dbtool import executeSqlQueries
+from .dbtool import getDataSourceCall
+from .dbtool import executeQueries
+from .dbtool import getDictFromResult
+from .dbtool import getKeyMapFromResult
+from .dbtool import getSequenceFromResult
+from .dbtool import getKeyMapKeyMapFromResult
 
 from .dbinit import getStaticTables
 from .dbinit import getQueries
@@ -72,24 +78,47 @@ from time import sleep
 
 class DataBase(unohelper.Base,
                XRestDataBase):
-    def __init__(self, ctx, datasource, name='', password='', sync=None):
+    def __init__(self, ctx, dbname, name='', password=''):
+        print("DataBase.init() start")
         self._ctx = ctx
-        print("DataBase.init() 1")
-        connection = datasource.getConnection(name, password)
-        print("DataBase.init() 2")
-        self._statement = connection.createStatement()
-        print("DataBase.init() 3")
+        self._dbname = dbname
+        self._shutdown = True
+        self._statement = None
         self._fieldsMap = {}
         self._batchedCalls = OrderedDict()
-        self.sync = sync
-        print("DataBase.init() 4")
+        folder = g_folder + '/' + dbname
+        self._url = getResourceLocation(ctx, g_identifier, folder)
+        url = self._url + '.odb'
+        exist = getSimpleFile(ctx).exists(url)
+        if not exist:
+            error = self._createDataBase()
+            if error is None:
+                self._storeDataBase(url)
+            else:
+                raise error
+        print("DataBase.init() end")
 
     @property
     def Connection(self):
+        if self._statement is None:
+            url = getDataBaseUrl(self._url, self._shutdown)
+            connection = getDataBaseConnection(self._ctx, url)
+            self._statement = connection.createStatement()
         return self._statement.getConnection()
 
+    def getConnection(self, user, password):
+        url = getDataBaseUrl(self._url, self._shutdown)
+        return getDataBaseConnection(self._ctx, url, user, password)
+
+    def dispose(self):
+        if self._statement is not None:
+            connection = self._statement.getConnection()
+            self._statement = None
+            connection.dispose()
+            print("DataBase.dispose() ***************** database: %s closed!!!" % self._dbname)
+
 # Procedures called by the DataSource
-    def createDataBase(self):
+    def _createDataBase(self):
         version, error = checkDataBase(self._ctx, self.Connection)
         if error is None:
             createStaticTable(self._ctx, self._statement, getStaticTables())
@@ -104,7 +133,7 @@ class DataBase(unohelper.Base,
     def getDataSource(self):
         return self.Connection.getParent()
 
-    def storeDataBase(self, url):
+    def _storeDataBase(self, url):
         self.Connection.getParent().DatabaseDocument.storeAsURL(url, ())
 
     def addCloseListener(self, listener):

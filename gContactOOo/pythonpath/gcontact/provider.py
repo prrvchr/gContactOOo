@@ -41,7 +41,7 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 
 from com.sun.star.sdbc import XRestProvider
 
-from unolib import getConnectionMode
+from .unotool import getConnectionMode
 
 from .configuration import g_host
 from .configuration import g_url

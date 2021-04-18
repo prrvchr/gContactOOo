@@ -50,8 +50,8 @@ from .provider import Provider
 from .user import User
 from .replicator import Replicator
 
-from .dbtools import getDataSource
-from .dbtools import getSqlException
+from .dbtool import getDataSource
+from .dbtool import getSqlException
 
 from .logger import logMessage
 from .logger import getMessage
@@ -71,13 +71,8 @@ class DataSource(unohelper.Base,
         self.Error = None
         self.Provider = Provider(ctx)
         dbname = self.Provider.Host
-        datasource, url, created = getDataSource(ctx, dbname, g_identifier, True)
-        self.DataBase = DataBase(ctx, datasource)
-        if created:
-            self.Error = self.DataBase.createDataBase()
-            if self.Error is None:
-                self.DataBase.storeDataBase(url)
-        self.Replicator = Replicator(ctx, datasource, self.Provider, self._Users, self.sync)
+        self.DataBase = DataBase(ctx, dbname)
+        self.Replicator = Replicator(ctx, self.DataBase, self.Provider, self._Users, self.sync)
         print("DataSource.__init__() 2")
 
     @property
