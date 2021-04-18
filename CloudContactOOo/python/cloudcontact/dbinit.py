@@ -29,11 +29,12 @@
 
 from com.sun.star.sdbc import SQLException
 
-from .unotool import KeyMap
+from .unolib import KeyMap
+
 from .unotool import getResourceLocation
 from .unotool import getSimpleFile
 
-from .dbconfig import g_path
+from .dbconfig import g_folder
 from .dbconfig import g_version
 
 from .dbqueries import getSqlQuery
@@ -55,7 +56,7 @@ import traceback
 
 def getDataSourceUrl(ctx, dbname, plugin, register):
     error = None
-    url = getResourceLocation(ctx, plugin, g_path)
+    url = getResourceLocation(ctx, plugin, g_folder)
     odb = '%s/%s.odb' % (url, dbname)
     if not getSimpleFile(ctx).exists(odb):
         dbcontext = ctx.ServiceManager.createInstance('com.sun.star.sdb.DatabaseContext')

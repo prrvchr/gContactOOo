@@ -1,1 +1,1 @@
-../../CloudContactOOo/OAuth2OOo/python/decorator.py
+../../uno/lib/python/decorator.py

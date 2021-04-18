@@ -32,8 +32,8 @@ import unohelper
 
 from com.sun.star.auth import XRestDataParser
 
+from .unolib import KeyMap
 from .unotool import getNamedValue
-from .unotool import KeyMap
 
 
 class DataParser(unohelper.Base,

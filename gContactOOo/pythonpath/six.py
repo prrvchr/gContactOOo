@@ -1,1 +1,1 @@
-../../CloudContactOOo/OAuth2OOo/python/six.py
+../../uno/lib/python/six.py

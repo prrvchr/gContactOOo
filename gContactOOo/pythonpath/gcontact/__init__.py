@@ -27,33 +27,26 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import traceback
-try:
+from .configuration import g_identifier
+from .configuration import g_extension
+from .configuration import g_host
 
-    from .logger import clearLogger
-    from .logger import getLoggerSetting
-    from .logger import getLoggerUrl
-    from .logger import getMessage
-    from .logger import logMessage
-    from .logger import setLoggerSetting
+from .logger import clearLogger
+from .logger import getLoggerSetting
+from .logger import getLoggerUrl
+from .logger import getMessage
+from .logger import logMessage
+from .logger import setLoggerSetting
 
-    from .configuration import g_identifier
-    from .configuration import g_extension
-    from .configuration import g_host
+from .user import User
+from .datasource import DataSource
 
-    from .user import User
-    from .datasource import DataSource
+from .dbtool import getDataBaseInfo
+from .dbtool import getSqlException
 
-    from .dbtool import getDataBaseInfo
-    from .dbtool import getSqlException
+from .dbinit import getDataSourceUrl
 
-    from .dbinit import getDataSourceUrl
-
-    from .unotool import createService
-    from .unotool import getDialog
-    from .unotool import getFileSequence
-    from .unotool import getStringResource
-
-except Exception as e:
-    print("gcontact.__init__() ERROR: %s - %s" % (e, traceback.print_exc()))
-
+from .unotool import createService
+from .unotool import getDialog
+from .unotool import getFileSequence
+from .unotool import getStringResource

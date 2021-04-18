@@ -37,7 +37,8 @@ from com.sun.star.sdb.CommandType import QUERY
 
 from com.sun.star.sdbc import XRestDataBase
 
-from .unotool import KeyMap
+from .unolib import KeyMap
+
 from .unotool import parseDateTime
 from .unotool import createService
 from .unotool import getResourceLocation

@@ -34,12 +34,12 @@ from com.sun.star.util import XCancellable
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
-from .unotool import KeyMap
+from .unolib import KeyMap
+
 from .unotool import getDateTime
 
 from .database import DataBase
 from .dataparser import DataParser
-from .databaselistener import DataBaseListener
 
 from .configuration import g_sync
 from .configuration import g_filter
@@ -67,9 +67,6 @@ class Replicator(unohelper.Base,
         self._lock = Condition()
         self._count = 0
         self._default = self.DataBase.getDefaultType()
-        #listener = DataBaseListener(ctx, self)
-        #self.DataBase.addCloseListener(listener)
-        #self.start()
 
     # XRestReplicator
     def cancel(self):
