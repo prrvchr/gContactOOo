@@ -39,7 +39,7 @@ from com.sun.star.sdb.CommandType import QUERY
 
 from com.sun.star.sdbc import XRestDataSource
 
-from oauth2lib import g_oauth2
+from .oauth2lib import g_oauth2
 
 from .configuration import g_identifier
 from .configuration import g_group
@@ -69,6 +69,7 @@ class DataSource(unohelper.Base,
         self._Users = {}
         self.sync = sync
         self.Error = None
+        self._connections = 0
         self.Provider = Provider(ctx)
         dbname = self.Provider.Host
         self.DataBase = DataBase(ctx, dbname)
@@ -93,6 +94,17 @@ class DataSource(unohelper.Base,
         self._Warnings = None
 
     # XRestDataSource
+    def disposing(self, source):
+        self._connections -= 1
+        if self._connections == 0:
+            self.Replicator.cancel()
+
+    def getConnection(self, user, password):
+        connection = self.DataBase.getConnection(user, password)
+        connection.addEventListener(self)
+        self._connections += 1
+        return connection
+
     def getUser(self, name, password):
         if name in self._Users:
             user = self._Users[name]
@@ -103,7 +115,7 @@ class DataSource(unohelper.Base,
             self._Users[name] = user
             # User has been initialized and the connection to the database is done...
             # We can start the database replication in a background task.
-            self.sync.set()
+            self.Replicator.start()
         return user
 
     def _initializeUser(self, user, name, password):

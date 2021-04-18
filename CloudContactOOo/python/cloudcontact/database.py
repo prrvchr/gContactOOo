@@ -78,7 +78,7 @@ from time import sleep
 
 class DataBase(unohelper.Base,
                XRestDataBase):
-    def __init__(self, ctx, dbname, name='', password=''):
+    def __init__(self, ctx, dbname, name='SA', password=''):
         print("DataBase.init() start")
         self._ctx = ctx
         self._dbname = dbname

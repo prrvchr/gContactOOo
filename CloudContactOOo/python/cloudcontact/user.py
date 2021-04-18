@@ -36,14 +36,7 @@ from com.sun.star.ucb.ConnectionMode import OFFLINE
 from com.sun.star.ucb.ConnectionMode import ONLINE
 from com.sun.star.sdbc import XRestUser
 
-from .unotool import createService
-
 from .oauth2lib import getRequest
-
-from .dbinit import getDataSourceUrl
-
-from .dbtool import getDataSourceConnection
-from .dbtool import getDataBaseConnection
 
 from .configuration import g_identifier
 
@@ -99,7 +92,7 @@ class User(unohelper.Base,
 
     def getConnection(self, datasource, url, password, replicator):
         name, password = self.getCredential(password)
-        connection = datasource.DataBase.getConnection(name, password)
+        connection = datasource.getConnection(name, password)
         return connection
 
     def getCredential(self, password):

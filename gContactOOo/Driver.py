@@ -59,8 +59,6 @@ import traceback
 g_ImplementationHelper = unohelper.ImplementationHelper()
 g_ImplementationName = '%s.Driver' % g_identifier
 
-from threading import Event
-
 
 class Driver(unohelper.Base,
              XServiceInfo,

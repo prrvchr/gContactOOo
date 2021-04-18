@@ -49,45 +49,51 @@ from .logger import getMessage
 g_message = 'replicator'
 
 from threading import Thread
+from threading import Event
+from threading import Condition
 import traceback
 
 
 class Replicator(unohelper.Base,
                  Thread):
-    def __init__(self, ctx, database, provider, users, sync):
+    def __init__(self, ctx, database, provider, users):
         Thread.__init__(self)
         self._ctx = ctx
         self.DataBase = database
         self.Provider = provider
         self.Users = users
-        self.canceled = False
-        self.fullPull = False
-        self.sync = sync
-        sync.clear()
-        self.error = None
-        self.count = 0
-        self.default = self.DataBase.getDefaultType()
+        self._canceled = True
+        self._sync = Event()
+        self._lock = Condition()
+        self._count = 0
+        self._default = self.DataBase.getDefaultType()
         #listener = DataBaseListener(ctx, self)
         #self.DataBase.addCloseListener(listener)
-        self.start()
+        #self.start()
 
     # XRestReplicator
     def cancel(self):
-        self.canceled = True
-        self.sync.set()
+        self._canceled = True
+        self._sync.set()
         self.join()
 
     def run(self):
         print("replicator.run()1")
         try:
-            while not self.canceled:
-                self.sync.wait(g_sync)
-                print("replicator.run()2")
-                if not self.canceled:
-                    self._synchronize()
-                    self.sync.clear()
-                self.DataBase.Connection.dispose()
-            print("replicator.run()3 query=%s" % self.count)
+            if self._canceled:
+                print("replicator.run()1 start")
+                self._canceled = False
+                while not self._canceled:
+                    self._sync.wait(g_sync)
+                    
+                    if not self._canceled:
+                        self._count = 0
+                        self._synchronize()
+                        self._sync.clear()
+                        self.DataBase.Connection.close()
+                        self.DataBase.Connection.dispose()
+                        print("replicator.run()2 synchronize ended query=%s" % self._count)
+            print("replicator.run()3 canceled")
         except Exception as e:
             msg = "Replicator run(): Error: %s - %s" % (e, traceback.print_exc())
             print(msg)
@@ -106,13 +112,13 @@ class Replicator(unohelper.Base,
         self.DataBase.saveChanges()
         self.DataBase.Connection.setAutoCommit(False)
         for user in self.Users.values():
-            if not self.canceled:
+            if not self._canceled:
                 msg = getMessage(self._ctx, g_message, 111, user.Account)
                 logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
                 result.setValue(user.Account, self._syncUser(user, timestamp))
                 msg = getMessage(self._ctx, g_message, 112, user.Account)
                 logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
-        if not self.canceled:
+        if not self._canceled:
             self.DataBase.executeBatchCall()
             self.DataBase.Connection.commit()
             for account in result.getKeys():
@@ -129,10 +135,10 @@ class Replicator(unohelper.Base,
     def _syncUser(self, user, timestamp):
         result = KeyMap()
         try:
-            if self.canceled:
+            if self._canceled:
                 return result
             result += self._syncPeople(user, timestamp)
-            if self.canceled:
+            if self._canceled:
                 return result
             result += self._syncGroup(user, timestamp)
         except Exception as e:
@@ -153,7 +159,7 @@ class Replicator(unohelper.Base,
         parser = DataParser(self.DataBase, self.Provider, method['Name'])
         map = self.DataBase.getFieldsMap(method['Name'], False)
         enumerator = user.Request.getEnumeration(parameter, parser)
-        while not self.canceled and enumerator.hasMoreElements():
+        while not self._canceled and enumerator.hasMoreElements():
             response = enumerator.nextElement()
             status = response.IsPresent
             if status:
@@ -165,7 +171,7 @@ class Replicator(unohelper.Base,
         format = (pages, update, delete)
         msg = getMessage(self._ctx, g_message, 131, format)
         logMessage(self._ctx, INFO, msg, 'Replicator', '_syncPeople()')
-        self.count += update + delete
+        self._count += update + delete
         print("replicator._syncPeople() 1 %s" % method['PrimaryKey'])
         return token
 
@@ -180,7 +186,7 @@ class Replicator(unohelper.Base,
         parser = DataParser(self.DataBase, self.Provider, method['Name'])
         map = self.DataBase.getFieldsMap(method['Name'], False)
         enumerator = user.Request.getEnumeration(parameter, parser)
-        while not self.canceled and enumerator.hasMoreElements():
+        while not self._canceled and enumerator.hasMoreElements():
             response = enumerator.nextElement()
             status = response.IsPresent
             if status:
@@ -192,7 +198,7 @@ class Replicator(unohelper.Base,
         format = (pages, update, delete)
         msg = getMessage(self._ctx, g_message, 141, format)
         logMessage(self._ctx, INFO, msg, 'Replicator', '_syncGroup()')
-        self.count += update + delete
+        self._count += update + delete
         return token
 
     def _syncConnection(self, user, timestamp):
@@ -220,7 +226,7 @@ class Replicator(unohelper.Base,
         format = (pages, len(groups), update)
         msg = getMessage(self._ctx, g_message, 151, format)
         logMessage(self._ctx, INFO, msg, 'Replicator', '_syncConnection()')
-        self.count += update
+        self._count += update
         return token
 
     def _syncResponse(self, method, user, map, data, timestamp):
@@ -289,7 +295,7 @@ class Replicator(unohelper.Base,
                 update += self._mergePeopleData(method, map, resource, key, d, timestamp, f)
         elif field == 'Tables':
             if self._filterResponse(data, *method['Filter']):
-                default = self.default.get(key, None)
+                default = self._default.get(key, None)
                 typename = data.getDefaultValue('Type', default)
                 for label in data.getKeys():
                     if label in method['Skip']:
