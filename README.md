@@ -40,6 +40,10 @@ If necessary, rename it before installing it.
 
 You must first install this extension, if it is not already installed.
 
+- Install [HsqlDBDriverOOo.oxt](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) extension version 0.0.4.
+
+You must install this extension, if it is not already installed.
+
 - Install [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) extension version 0.0.6.
 
 Restart LibreOffice / OpenOffice after installation.

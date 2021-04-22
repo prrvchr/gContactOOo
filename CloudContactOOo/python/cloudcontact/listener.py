@@ -27,71 +27,44 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import uno
 import unohelper
 
-from com.sun.star.logging.LogLevel import INFO
-from com.sun.star.logging.LogLevel import SEVERE
+from com.sun.star.frame import XTerminateListener
 
-from com.sun.star.sdb.CommandType import QUERY
-
-from com.sun.star.sdbc import XRestDataSource
-
-from .configuration import g_identifier
-from .configuration import g_group
-from .configuration import g_compact
-
-from .database import DataBase
-from .provider import Provider
-from .user import User
-from .replicator import Replicator
-
-from .listener import EventListener
-from .listener import TerminateListener
-
-from .unotool import getDesktop
-
-from .logger import logMessage
-from .logger import getMessage
-g_message = 'datasource'
+from com.sun.star.lang import XEventListener
 
 import traceback
 
 
-class DataSource(unohelper.Base,
-                 XRestDataSource):
-    def __init__(self, ctx):
-        print("DataSource.__init__() 1")
-        self._ctx = ctx
-        self._users = {}
-        self._connections = 0
-        self._provider = Provider(ctx)
-        self._database = DataBase(ctx)
-        self._listener = EventListener(self)
-        self._replicator = Replicator(ctx, self._database, self._provider, self._users)
-        listener = TerminateListener(self._replicator)
-        desktop = getDesktop(ctx)
-        desktop.addTerminateListener(listener)
-        print("DataSource.__init__() 2")
+class EventListener(unohelper.Base,
+                    XEventListener):
+    def __init__(self, datasource):
+        self._datasource = datasource
 
-# XRestDataSource
-    def getConnection(self, user, password):
-        connection = self._database.getConnection(user, password)
-        connection.addEventListener(self._listener)
-        self._connections += 1
-        return connection
+# XEventListener
+    def disposing(self, source):
+        try:
+            self._datasource.closeConnection()
+        except Exception as e:
+            msg = "EventListener Error: %s" % traceback.print_exc()
+            print(msg)
 
-    def closeConnection(self):
-        self._connections -= 1
-        if self._connections == 0:
-            self._replicator.stop()
 
-    def setUser(self, name, password):
-        new = False
-        if name not in self._users:
-            user = User(self._ctx, self._database, self._provider, name, password)
-            new = user.isNew()
-            self._users[name] = user
-        # User has been initialized and the connection to the database is done...
-        # We can start the database replication in a background task.
-        self._replicator.start(new)
+class TerminateListener(unohelper.Base,
+                        XTerminateListener):
+    def __init__(self, replicator):
+        self._replicator = replicator
+
+# XTerminateListener
+    def queryTermination(self, event):
+        try:
+            self._replicator.dispose()
+        except Exception as e:
+            msg = "EventListener Error: %s" % traceback.print_exc()
+            print(msg)
+
+    def notifyTermination(self, event):
+        pass
+
+    def disposing(self, source):
+        pass

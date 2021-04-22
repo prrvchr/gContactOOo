@@ -44,8 +44,11 @@ from .unotool import createService
 from .unotool import getResourceLocation
 from .unotool import getSimpleFile
 
-from .configuration import g_admin
+from .configuration import g_identifier
 
+from .configuration import g_admin
+from .configuration import g_group
+from .configuration import g_host
 from .dbqueries import getSqlQuery
 
 from .dbconfig import g_folder
@@ -79,15 +82,14 @@ from time import sleep
 
 class DataBase(unohelper.Base,
                XRestDataBase):
-    def __init__(self, ctx, dbname, name='SA', password=''):
+    def __init__(self, ctx):
         print("DataBase.init() start")
         self._ctx = ctx
-        self._dbname = dbname
         self._shutdown = True
         self._statement = None
         self._fieldsMap = {}
         self._batchedCalls = OrderedDict()
-        folder = g_folder + '/' + dbname
+        folder = g_folder + '/' + g_host
         self._url = getResourceLocation(ctx, g_identifier, folder)
         url = self._url + '.odb'
         exist = getSimpleFile(ctx).exists(url)
@@ -95,19 +97,17 @@ class DataBase(unohelper.Base,
             error = self._createDataBase()
             if error is None:
                 self._storeDataBase(url)
-            else:
-                raise error
+            self.dispose()
         print("DataBase.init() end")
 
     @property
     def Connection(self):
         if self._statement is None:
-            url = getDataBaseUrl(self._url, self._shutdown)
-            connection = getDataBaseConnection(self._ctx, url)
+            connection = self.getConnection()
             self._statement = connection.createStatement()
         return self._statement.getConnection()
 
-    def getConnection(self, user, password):
+    def getConnection(self, user='', password=''):
         url = getDataBaseUrl(self._url, self._shutdown)
         return getDataBaseConnection(self._ctx, url, user, password)
 
@@ -115,10 +115,11 @@ class DataBase(unohelper.Base,
         if self._statement is not None:
             connection = self._statement.getConnection()
             self._statement = None
+            connection.close()
             connection.dispose()
-            print("DataBase.dispose() ***************** database: %s closed!!!" % self._dbname)
+            print("DataBase.dispose() ***************** database: %s closed!!!" % g_host)
 
-# Procedures called by the DataSource
+# Procedures called by Initialization
     def _createDataBase(self):
         version, error = checkDataBase(self._ctx, self.Connection)
         if error is None:
@@ -131,11 +132,14 @@ class DataBase(unohelper.Base,
             executeSqlQueries(self._statement, views)
         return error
 
+    def _storeDataBase(self, url):
+        self.Connection.getParent().DatabaseDocument.storeAsURL(url, ())
+
     def getDataSource(self):
         return self.Connection.getParent()
 
-    def _storeDataBase(self, url):
-        self.Connection.getParent().DatabaseDocument.storeAsURL(url, ())
+    def getDatabaseDocument(self):
+        return self.getDataSource().DatabaseDocument
 
     def addCloseListener(self, listener):
         print("DataBase.addCloseListener() 1")
@@ -160,12 +164,12 @@ class DataBase(unohelper.Base,
         print("DataBase.createUser() %s" % status)
         return status == 0
 
-    def insertUser(self, userid, account, group):
+    def insertUser(self, userid, account):
         user = KeyMap()
         call = self._getCall('insertUser')
         call.setString(1, userid)
         call.setString(2, account)
-        call.setString(3, group)
+        call.setString(3, g_group)
         result = call.executeQuery()
         if result.next():
             user = getKeyMapFromResult(result)
@@ -192,9 +196,9 @@ class DataBase(unohelper.Base,
         query = getSqlQuery(self._ctx, 'createSynonym', format)
         self._statement.execute(query)
 
-    def createGroupView(self, user, name, group):
-        self._dropGroupView(user, name)
-        query = self._getGroupViewQuery('create', user, name, group)
+    def createGroupView(self, account, name, group):
+        self._dropGroupView(account, name)
+        query = self._getGroupViewQuery('create', account, name, group)
         self._statement.execute(query)
 
 # Procedures called by the User
@@ -319,15 +323,14 @@ class DataBase(unohelper.Base,
         call.close()
         return tuple(map)
 
-    def _dropGroupView(self, user, name):
-        query = self._getGroupViewQuery('drop', user, name)
+    def _dropGroupView(self, account, name):
+        query = self._getGroupViewQuery('drop', account, name)
         self._statement.execute(query)
 
-    def _getGroupViewQuery(self, method, user, name, group=0):
+    def _getGroupViewQuery(self, method, account, name, group=0):
         query = '%sGroupView' % method
-        account, pwd = user.getCredential('')
         format = {'User': account,
-                  'View': '%s.%s' % (user.Name.title(), name.title()),
+                  'View': '%s.%s' % (name.title(), g_group.title()),
                   'Group': group}
         return getSqlQuery(self._ctx, query, format)
 

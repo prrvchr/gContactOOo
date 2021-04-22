@@ -31,6 +31,8 @@ from .configuration import g_identifier
 from .configuration import g_extension
 from .configuration import g_host
 
+from .dbconfig  import g_folder
+
 from .logger import clearLogger
 from .logger import getLoggerSetting
 from .logger import getLoggerUrl
@@ -38,15 +40,15 @@ from .logger import getMessage
 from .logger import logMessage
 from .logger import setLoggerSetting
 
-from .user import User
 from .datasource import DataSource
 
 from .dbtool import getDataBaseInfo
 from .dbtool import getSqlException
 
-from .dbinit import getDataSourceUrl
-
 from .unotool import createService
+from .unotool import getDesktop
 from .unotool import getDialog
 from .unotool import getFileSequence
+from .unotool import getResourceLocation
+from .unotool import getSimpleFile
 from .unotool import getStringResource

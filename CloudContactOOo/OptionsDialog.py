@@ -36,24 +36,26 @@ from com.sun.star.awt import XDialogEventHandler
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
-from gcontact import getFileSequence
-from gcontact import getStringResource
-from gcontact import getDialog
 from gcontact import createService
+from gcontact import getDesktop
+from gcontact import getDialog
+from gcontact import getFileSequence
+from gcontact import getSimpleFile
+from gcontact import getStringResource
+from gcontact import getResourceLocation
 
-from gcontact import getDataSourceUrl
-
-from gcontact import getLoggerUrl
-from gcontact import getLoggerSetting
-from gcontact import setLoggerSetting
 from gcontact import clearLogger
-from gcontact import logMessage
+from gcontact import getLoggerSetting
+from gcontact import getLoggerUrl
 from gcontact import getMessage
+from gcontact import logMessage
+from gcontact import setLoggerSetting
 g_message = 'OptionsDialog'
 
 from gcontact import g_extension
 from gcontact import g_identifier
 from gcontact import g_host
+from gcontact import g_folder
 
 import os
 import sys
@@ -69,9 +71,9 @@ class OptionsDialog(unohelper.Base,
                     XContainerWindowEventHandler,
                     XDialogEventHandler):
     def __init__(self, ctx):
-        self.ctx = ctx
-        self.stringResource = getStringResource(self.ctx, g_identifier, g_extension, 'OptionsDialog')
-        logMessage(self.ctx, INFO, "Initialization completed", 'OptionsDialog', '__init__()')
+        self._ctx = ctx
+        self.stringResource = getStringResource(ctx, g_identifier, g_extension, 'OptionsDialog')
+        logMessage(ctx, INFO, "Initialization completed", 'OptionsDialog', '__init__()')
 
     # XContainerWindowEventHandler, XDialogEventHandler
     def callHandlerMethod(self, dialog, event, method):
@@ -131,8 +133,8 @@ class OptionsDialog(unohelper.Base,
         dialog.getControl('CommandButton1').Model.Enabled = enabled
 
     def _viewLog(self, window):
-        dialog = getDialog(self.ctx, g_extension, 'LogDialog', self, window.Peer)
-        url = getLoggerUrl(self.ctx)
+        dialog = getDialog(self._ctx, g_extension, 'LogDialog', self, window.Peer)
+        url = getLoggerUrl(self._ctx)
         dialog.Title = url
         self._setDialogText(dialog, url)
         dialog.execute()
@@ -141,29 +143,29 @@ class OptionsDialog(unohelper.Base,
     def _clearLog(self, dialog):
         try:
             clearLogger()
-            logMessage(self.ctx, INFO, "ClearingLog ... Done", 'OptionsDialog', '_doClearLog()')
-            url = getLoggerUrl(self.ctx)
+            logMessage(self._ctx, INFO, "ClearingLog ... Done", 'OptionsDialog', '_doClearLog()')
+            url = getLoggerUrl(self._ctx)
             self._setDialogText(dialog, url)
         except Exception as e:
             msg = "Error: %s - %s" % (e, traceback.print_exc())
-            logMessage(self.ctx, SEVERE, msg, "OptionsDialog", "_doClearLog()")
+            logMessage(self._ctx, SEVERE, msg, "OptionsDialog", "_doClearLog()")
 
     def _logInfo(self, dialog):
         version  = ' '.join(sys.version.split())
-        msg = getMessage(self.ctx, g_message, 111, version)
-        logMessage(self.ctx, INFO, msg, "OptionsDialog", "_logInfo()")
+        msg = getMessage(self._ctx, g_message, 111, version)
+        logMessage(self._ctx, INFO, msg, "OptionsDialog", "_logInfo()")
         path = os.pathsep.join(sys.path)
-        msg = getMessage(self.ctx, g_message, 112, path)
-        logMessage(self.ctx, INFO, msg, "OptionsDialog", "_logInfo()")
-        url = getLoggerUrl(self.ctx)
+        msg = getMessage(self._ctx, g_message, 112, path)
+        logMessage(self._ctx, INFO, msg, "OptionsDialog", "_logInfo()")
+        url = getLoggerUrl(self._ctx)
         self._setDialogText(dialog, url)
 
     def _setDialogText(self, dialog, url):
-        length, sequence = getFileSequence(self.ctx, url)
+        length, sequence = getFileSequence(self._ctx, url)
         dialog.getControl('TextField1').Text = sequence.value.decode('utf-8')
 
     def _loadLoggerSetting(self, dialog):
-        enabled, index, handler = getLoggerSetting(self.ctx)
+        enabled, index, handler = getLoggerSetting(self._ctx)
         dialog.getControl('CheckBox1').State = int(enabled)
         dialog.getControl('ListBox1').selectItemPos(index, True)
         dialog.getControl('OptionButton%s' % handler).State = 1
@@ -173,15 +175,15 @@ class OptionsDialog(unohelper.Base,
         enabled = bool(dialog.getControl('CheckBox1').State)
         index = dialog.getControl('ListBox1').getSelectedItemPos()
         handler = dialog.getControl('OptionButton1').State
-        setLoggerSetting(self.ctx, enabled, index, handler)
+        setLoggerSetting(self._ctx, enabled, index, handler)
 
     def _viewData(self, dialog):
-        dbcontext = createService(self.ctx, 'com.sun.star.sdb.DatabaseContext')
-        url, error = getDataSourceUrl(self.ctx, dbcontext, g_host, g_identifier, False)
-        if error is not None:
-            return
-        desktop = createService(self.ctx, 'com.sun.star.frame.Desktop')
-        desktop.loadComponentFromURL(url, '_default', 0, ())
+        folder = g_folder + '/' + g_host
+        location = getResourceLocation(self._ctx, g_identifier, folder)
+        url = location + '.odb'
+        if getSimpleFile(self._ctx).exists(url):
+            desktop = getDesktop(self._ctx)
+            desktop.loadComponentFromURL(url, '_default', 0, ())
 
     # XServiceInfo
     def supportsService(self, service):

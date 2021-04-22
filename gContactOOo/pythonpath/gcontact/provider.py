@@ -79,7 +79,7 @@ class Provider(unohelper.Base,
         if method == 'getUser':
             parameter.Method = 'GET'
             parameter.Url += '/people/me'
-            parameter.Query = '{"personFields": "%s"}' % ','.join(data.Fields)
+            parameter.Query = '{"personFields": "%s"}' % ','.join(data)
         elif method == 'People':
             parameter.Method = 'GET'
             parameter.Url += '/people/me/connections'
@@ -136,8 +136,8 @@ class Provider(unohelper.Base,
         #    value = value.split('/').pop()
         return value
 
-    def getUser(self, request, user):
-        parameter = self.getRequestParameter('getUser', user)
+    def getUser(self, request, fields):
+        parameter = self.getRequestParameter('getUser', fields)
         return request.execute(parameter)
     def getUserId(self, user):
         return user.getValue('resourceName').split('/').pop()

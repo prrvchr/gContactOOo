@@ -32,68 +32,95 @@ import unohelper
 
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
+
 from com.sun.star.ucb.ConnectionMode import OFFLINE
 from com.sun.star.ucb.ConnectionMode import ONLINE
+
 from com.sun.star.sdbc import XRestUser
 
 from .oauth2lib import getRequest
+from .oauth2lib import g_oauth2
 
-from .configuration import g_identifier
+from .dbtool import getSqlException
+
+from .logger import getMessage
+g_message = 'datasource'
 
 import traceback
 
 
 class User(unohelper.Base,
            XRestUser):
-    def __init__(self, ctx, datasource, name):
+    def __init__(self, ctx, database, provider, name, password):
         self._ctx = ctx
-        self._Warnings = None
-        self.MetaData = datasource.DataBase.selectUser(name)
-        self.Fields = datasource.DataBase.getUserFields()
-        self.Provider = datasource.Provider
-        self.Request = getRequest(ctx, self.Provider.Host, name)
+        self.Fields = database.getUserFields()
+        self.Request = getRequest(ctx, provider.Host, name)
+        self._new = False
+        data = database.selectUser(name)
+        if data is None:
+            self._new = True
+            data = self._getMetaData(database, provider, name, password)
+        self.MetaData = data
 
     @property
     def People(self):
         return self.MetaData.getDefaultValue('People', None)
     @property
-    def Group(self):
-        return self.MetaData.getDefaultValue('Group', None)
-    @property
     def Resource(self):
         return self.MetaData.getDefaultValue('Resource', None)
     @property
+    def Group(self):
+        return self._getGroup(self.MetaData)
+    @property
     def Account(self):
-        return self.MetaData.getDefaultValue('Account', None)
+        return self._getAccount(self.MetaData)
     @property
     def Name(self):
-        account = self.MetaData.getDefaultValue('Account', '')
-        return account.split('@').pop(0)
+        return self._getName(self.MetaData)
     @property
     def PeopleSync(self):
         return self.MetaData.getDefaultValue('PeopleSync', None)
     @property
     def GroupSync(self):
         return self.MetaData.getDefaultValue('GroupSync', None)
-    @property
-    def Warnings(self):
-        return self._Warnings
-    @Warnings.setter
-    def Warnings(self, warning):
-        if warning is None:
-            return
-        warning.NextException = self._Warnings
-        self._Warnings = warning
 
-    def getWarnings(self):
-        return self._Warnings
-    def clearWarnings(self):
-        self._Warnings = None
+    def isNew(self):
+        return self._new
 
-    def getConnection(self, datasource, url, password, replicator):
-        name, password = self.getCredential(password)
-        connection = datasource.getConnection(name, password)
-        return connection
+    def _getMetaData(self, database, provider, name, password):
+        if self.Request is None:
+            raise self._getSqlException(1003, 1105, g_oauth2)
+        if provider.isOffLine():
+            raise self._getSqlException(1004, 1108, name)
+        data = provider.getUser(self.Request, self.Fields)
+        if not data.IsPresent:
+            raise self._getSqlException(1006, 1107, name)
+        userid = provider.getUserId(data.Value)
+        metadata = database.insertUser(userid, name)
+        credential = self._getCredential(metadata, password)
+        if not database.createUser(*credential):
+            raise self._getSqlException(1005, 1106, name)
+        account = self._getAccount(metadata)
+        name = self._getName(metadata)
+        group = self._getGroup(metadata)
+        database.createGroupView(account, name, group)
+        return metadata
 
-    def getCredential(self, password):
-        return self.Account, password
+    def _getAccount(self, metadata):
+        return metadata.getDefaultValue('Account', '')
+
+    def _getName(self, metadata):
+        account = self._getAccount(metadata)
+        return account.split('@').pop(0)
+
+    def _getGroup(self, metadata):
+        return metadata.getDefaultValue('Group', None)
+
+    def _getSqlException(self, state, code, format):
+        state = getMessage(self._ctx, g_message, state)
+        msg = getMessage(self._ctx, g_message, code, format)
+        error = getSqlException(state, code, msg, self)
+        return error
+
+    def _getCredential(self, metadata, password):
+        return self._getAccount(metadata), password
