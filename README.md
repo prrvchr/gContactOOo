@@ -38,7 +38,7 @@ If necessary, rename it before installing it.
 
 - Install [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extension version 0.0.5.
 
-You must first install this extension, if it is not already installed.
+You must install this extension, if it is not already installed.
 
 - Install [HsqlDBDriverOOo.oxt](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) extension version 0.0.4.
 
@@ -122,6 +122,8 @@ I will try to solve it ;-)
 - Driver has a new name: **Google Contacts**
 
 - Driver is now registred for a new protocol: **sdbc:address:google:your_account@gmail.com**
+
+- The **HsqlDBDriverOOo** extension now provides the driver for accessing the HsqlDB database used by gContactOOo.
 
 - Many other fix...
 

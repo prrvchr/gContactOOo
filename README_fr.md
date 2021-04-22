@@ -38,11 +38,11 @@ Si nécessaire, renommez-le avant de l'installer.
 
 - Installer l'extension [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) version 0.0.5.
 
-Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
+Vous devez installer cette extension, si elle n'est pas déjà installée.
 
 - Installer l'extension [HsqlDBDriverOOo.oxt](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) version 0.0.4.
 
-Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
+Vous devez installer cette extension, si elle n'est pas déjà installée.
 
 - Installer l'extension [gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt) version 0.0.6.
 
@@ -122,6 +122,8 @@ J'essaierai de le résoudre ;-)
 - Le pilote a un nouveau nom: **Contacts Google**
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
+
+- L'extension **HsqlDBDriverOOo** fournit désormais le pilote pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
 - Beaucoup d'autres correctifs...
 
