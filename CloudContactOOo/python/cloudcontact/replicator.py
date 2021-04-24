@@ -83,6 +83,7 @@ class Replicator(unohelper.Base):
         print("replicator.stop() 1")
         #if not self._full.is_set():
         self._started.clear()
+        self._paused.set()
         print("replicator.stop() 2")
 
     def start(self, new):
@@ -107,17 +108,18 @@ class Replicator(unohelper.Base):
             while not self._disposed.is_set():
                 print("replicator.run()2 wait to start ****************************************")
                 self._started.wait()
-                print("replicator.run()3 started ****************************************")
                 if not self._disposed.is_set():
+                    print("replicator.run()3 synchronize started ****************************************")
                     self._count = 0
                     self._synchronize()
                     self.DataBase.dispose()
                     self._full.clear()
-                print("replicator.run()4 synchronize ended query=%s *******************************************" % self._count)
+                    print("replicator.run()4 synchronize ended query=%s *******************************************" % self._count)
                 if self._wait():
+                    print("replicator.run()5 start waitting *******************************************")
                     self._paused.clear()
                     self._paused.wait(g_sync)
-                print("replicator.run()5 synchronize wait ended *******************************************")
+                    print("replicator.run()5 wait ended *******************************************")
             print("replicator.run()6 canceled *******************************************")
         except Exception as e:
             msg = "Replicator run(): Error: %s" % traceback.print_exc()
