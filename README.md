@@ -105,6 +105,14 @@ I will try to solve it ;-)
 
 ## Historical:
 
+### Introduction:
+
+This extension was written in order to make usable in free software (LibreOffice or OpenOffice) your personal data (your address book) stored in your Android phone.
+
+When the [smtpMailerOOo](https://github.com/prrvchr/smtpMailerOOo/blob/master/smtpMailerOOo.oxt) extension is finally available, it will be the data source for mailings by email, to your correspondents contained in your phone.
+
+It will give you access to an information system that only companies are today capable of possessing. 
+
 ### What has been done for version 0.0.5:
 
 - Integration and use of the new Hsqldb v2.5.1.
@@ -123,14 +131,21 @@ I will try to solve it ;-)
 
 - Driver is now registred for a new protocol: **sdbc:address:google:your_account@gmail.com**
 
-- The **HsqlDBDriverOOo** extension now provides the driver for accessing the HsqlDB database used by gContactOOo.
+- The [HsqlDBDriverOOo](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) extension now provides the driver for accessing the HsqlDB database used by gContactOOo.
+
+- Modifying the [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) in order to: 
+    - To open and close the database at each replication.
+    - Go on hold after the last closing of the address book.
+    - Unload when closing LibreOffice / OpenOffice.
+
+- Possibility to open the local HsqlDB database by: Tools -> Options -> Internet -> gContactOOo -> View DataBase
 
 - Many other fix...
 
 ### What remains to be done for version 0.0.6:
 
-- Write the implementation Pull Change and Push Change in the new [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) interface.
+- Make the address book locally editable with replication of changes.
 
-- Add new language for internationalization...
+- Add new languages for internationalization...
 
 - Anything welcome...

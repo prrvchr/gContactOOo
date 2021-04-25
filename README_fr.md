@@ -105,6 +105,14 @@ J'essaierai de le résoudre ;-)
 
 ## Historique:
 
+### Inroduction:
+
+Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
+
+Lorsque l'extension [smtpMailerOOo](https://github.com/prrvchr/smtpMailerOOo/blob/master/smtpMailerOOo.oxt) sera enfin disponible, elle sera la source de données pour des publipostages par courriel, à vos correspondants contenus dans votre téléphone.
+
+Elle vous donnera accès à un système d'information que seules les entreprises sont aujourd'hui capables de posséder.
+
 ### Ce qui a été fait pour la version 0.0.5:
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
@@ -123,14 +131,21 @@ J'essaierai de le résoudre ;-)
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
 
-- L'extension **HsqlDBDriverOOo** fournit désormais le pilote pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+- L'extension [HsqlDBDriverOOo](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) fournit désormais le pilote pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+
+- Modification du [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) afin de:
+    - Ouvrir et fermer la base de données à chaque réplication.
+    - Se mettre en attente après la dernière fermeture du carnet d'adresses.
+    - Se décharger lors de la fermeture de LibreOffice / OpenOffice.
+
+- Possibilité d'ouvrir la base de données HsqlDB locale par: Outils -> Options -> Internet -> gContactOOo -> Voir la base de données
 
 - Beaucoup d'autres correctifs...
 
 ### Que reste-t-il à faire pour la version 0.0.6:
 
-- Écriture de l'implémentation des changements Pull et Push dans la nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py)
+- Rendre le carnet d'adresses modifiable localement avec la réplication des modifications.
 
-- Ajouter de nouvelles langue pour l'internationalisation...
+- Ajouter de nouvelles langues pour l'internationalisation...
 
 - Tout ce qui est bienvenu...
