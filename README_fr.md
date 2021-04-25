@@ -131,7 +131,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
 
-- L'extension [HsqlDBDriverOOo](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) fournit désormais le pilote pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+- L'extension [HsqlDBDriverOOo](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
 - Modification du [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) afin de:
     - Ouvrir et fermer la base de données à chaque réplication.
