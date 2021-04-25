@@ -109,9 +109,9 @@ I will try to solve it ;-)
 
 This extension was written in order to make usable in free software (LibreOffice or OpenOffice) your personal data (your address book) stored in your Android phone.
 
-When the [smtpMailerOOo](https://github.com/prrvchr/smtpMailerOOo/blob/master/smtpMailerOOo.oxt) extension is finally available, it will be the data source for mailings by email, to your correspondents contained in your phone.
+When the [smtpMailerOOo](https://github.com/prrvchr/smtpMailerOOo/blob/master/smtpMailerOOo.oxt) extension is finally available, it will be the data source for [mail merge](https://en.wikipedia.org/wiki/Mail_merge) by email, to your correspondents contained in your phone.
 
-It will give you access to an information system that only companies are today capable of possessing. 
+It will give you access to an information system that only larges companies are able, today, to implement.
 
 ### What has been done for version 0.0.5:
 
@@ -134,7 +134,7 @@ It will give you access to an information system that only companies are today c
 - The [HsqlDBDriverOOo](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) extension now provides the driver for accessing the HsqlDB database used by gContactOOo.
 
 - Modifying the [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) in order to: 
-    - To open and close the database at each replication.
+    - Open and close the database at each replication.
     - Go on hold after the last closing of the address book.
     - Unload when closing LibreOffice / OpenOffice.
 
