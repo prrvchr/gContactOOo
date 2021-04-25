@@ -98,9 +98,6 @@ class Replicator(unohelper.Base):
     def _canceled1(self):
         return self._disposed.is_set() or not self._started.is_set()
 
-    def _wait(self):
-        return not self._disposed.is_set() and self._started.is_set()
-
     def _replicate(self):
         print("replicator.run()1")
         try:
@@ -115,11 +112,11 @@ class Replicator(unohelper.Base):
                     self.DataBase.dispose()
                     self._full.clear()
                     print("replicator.run()4 synchronize ended query=%s *******************************************" % self._count)
-                if self._wait():
-                    print("replicator.run()5 start waitting *******************************************")
-                    self._paused.clear()
-                    self._paused.wait(g_sync)
-                    print("replicator.run()5 wait ended *******************************************")
+                    if self._started.is_set():
+                        print("replicator.run()5 start waitting *******************************************")
+                        self._paused.clear()
+                        self._paused.wait(g_sync)
+                        print("replicator.run()5 end waitting *******************************************")
             print("replicator.run()6 canceled *******************************************")
         except Exception as e:
             msg = "Replicator run(): Error: %s" % traceback.print_exc()
