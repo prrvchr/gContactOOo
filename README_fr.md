@@ -105,7 +105,7 @@ J'essaierai de le résoudre ;-)
 
 ## Historique:
 
-### Inroduction:
+### Introduction:
 
 Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
 
