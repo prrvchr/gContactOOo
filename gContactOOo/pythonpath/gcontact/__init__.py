@@ -42,7 +42,7 @@ from .logger import setLoggerSetting
 
 from .datasource import DataSource
 
-from .dbtool import getDataBaseInfo
+from .dbtool import getDriverPropertyInfos
 from .dbtool import getSqlException
 
 from .unotool import createService

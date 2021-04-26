@@ -31,21 +31,22 @@ import uno
 import unohelper
 
 from com.sun.star.lang import XServiceInfo
-from com.sun.star.sdbc import XDriver
-from com.sun.star.sdbcx import XDataDefinitionSupplier
-from com.sun.star.sdbcx import XCreateCatalog
-from com.sun.star.sdbcx import XDropCatalog
-
-from com.sun.star.sdbc import SQLException
 
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
+
+from com.sun.star.sdbc import SQLException
+from com.sun.star.sdbc import XDriver
+
+from com.sun.star.sdbcx import XCreateCatalog
+from com.sun.star.sdbcx import XDataDefinitionSupplier
+from com.sun.star.sdbcx import XDropCatalog
 
 from gcontact import DataSource
 
 from gcontact import g_identifier
 from gcontact import g_host
-from gcontact import getDataBaseInfo
+from gcontact import getDriverPropertyInfos
 from gcontact import getSqlException
 
 from gcontact import logMessage
@@ -61,11 +62,11 @@ g_ImplementationName = '%s.Driver' % g_identifier
 
 
 class Driver(unohelper.Base,
-             XServiceInfo,
-             XDataDefinitionSupplier,
              XCreateCatalog,
+             XDataDefinitionSupplier,
+             XDriver,
              XDropCatalog,
-             XDriver):
+             XServiceInfo):
     def __init__(self, ctx):
         self._ctx = ctx
         self._supportedProtocol = 'sdbc:address:google'
@@ -80,25 +81,20 @@ class Driver(unohelper.Base,
             Driver._dataSource = DataSource(self._ctx)
         return Driver._dataSource
 
-    # XDataDefinitionSupplier
+# XCreateCatalog
+    def createCatalog(self, info):
+        pass
+
+# XDataDefinitionSupplier
     def getDataDefinitionByConnection(self, connection):
         return connection
     def getDataDefinitionByURL(self, url, infos):
         connection = self.connect(url, infos)
         return self.getDataDefinitionByConnection(connection)
 
-    # XCreateCatalog
-    def createCatalog(self, info):
-        pass
-
-    # XDropCatalog
-    def dropCatalog(self, name, info):
-        pass
-
-    # XDriver
+# XDriver
     def connect(self, url, infos):
         try:
-            print("Driver.connect() 1")
             msg = getMessage(self._ctx, g_message, 111, url)
             logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             protocols = url.strip().split(':')
@@ -108,28 +104,22 @@ class Driver(unohelper.Base,
                 raise getSqlException(state, 1101, msg, self)
             username = protocols[3]
             password = ''
-            print("Driver.connect() 2")
             if not validators.email(username):
                 state = getMessage(self._ctx, g_message, 113)
                 msg = getMessage(self._ctx, g_message, 1102, username)
                 msg += getMessage(self._ctx, g_message, 1103)
                 raise getSqlException(state, 1104, msg, self)
-            print("Driver.connect() 3")
             msg = getMessage(self._ctx, g_message, 114, g_host)
             logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
-            print("Driver.connect() 4")
             self.DataSource.setUser(username, password)
-            print("Driver.connect() 5")
             msg = getMessage(self._ctx, g_message, 118, username)
             logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             connection = self.DataSource.getConnection(username, password)
-            print("Driver.connect() 6")
             msg = getMessage(self._ctx, g_message, 119, username)
             logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             version = connection.getMetaData().getDriverVersion()
             msg = getMessage(self._ctx, g_message, 120, (version, username))
             logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
-            print("Driver.connect() 7")
             return connection
         except SQLException as e:
             raise e
@@ -139,63 +129,25 @@ class Driver(unohelper.Base,
             print(msg)
 
     def acceptsURL(self, url):
-        msg = 'Load request for url: %s' % url
-        logMessage(self._ctx, INFO, msg, 'Driver', 'acceptsURL()')
-        value = url.startswith(self._supportedProtocol)
-        return value
+        accept = url.startswith(self._supportedProtocol)
+        return accept
 
     def getPropertyInfo(self, url, infos):
-        try:
-            #for info in infos:
-            #    print("Driver.getPropertyInfo():   %s - '%s'" % (info.Name, info.Value))
-            drvinfo = []
-            dbinfo = getDataBaseInfo()
-            for info in dbinfo:
-                drvinfo.append(self._getDriverPropertyInfo(info, dbinfo[info]))
-            for info in infos:
-                if info.Name not in dbinfo:
-                    drvinfo.append(self._getDriverPropertyInfo(info.Name, info.Value))
-            #for info in drvinfo:
-            #    print("Driver.getPropertyInfo():   %s - %s" % (info.Name, info.Value))
-            return tuple(drvinfo)
-        except Exception as e:
-            print("Driver.getPropertyInfo() ERROR: %s - %s" % (e, traceback.print_exc()))
+        properties = ()
+        if self.acceptsURL(url):
+            properties = getDriverPropertyInfos()
+        return properties
 
     def getMajorVersion(self):
         return 1
     def getMinorVersion(self):
         return 0
 
-    def _getSupplierWarnings(self, supplier, error):
-        self._getWarnings(supplier, error)
-        supplier.clearWarnings()
+# XDropCatalog
+    def dropCatalog(self, name, info):
+        pass
 
-    def _getWarnings(self, supplier, error):
-        warning = supplier.getWarnings()
-        if warning:
-            error.NextException = warning
-            self._getWarnings(supplier, warning)
-
-    def _getException(self, state, code, message, context=None, exception=None):
-        error = SQLException()
-        error.SQLState = state
-        error.ErrorCode = code
-        error.NextException = exception
-        error.Message = message
-        error.Context = context
-        return error
-
-    def _getDriverPropertyInfo(self, name, value):
-        info = uno.createUnoStruct('com.sun.star.sdbc.DriverPropertyInfo')
-        info.Name = name
-        required = value is not None and not isinstance(value, tuple)
-        info.IsRequired = required
-        if required:
-            info.Value = value
-        info.Choices = ()
-        return info
-
-    # XServiceInfo
+# XServiceInfo
     def supportsService(self, service):
         return g_ImplementationHelper.supportsService(g_ImplementationName, service)
     def getImplementationName(self):
