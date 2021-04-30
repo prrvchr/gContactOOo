@@ -31,7 +31,8 @@ import unohelper
 
 from com.sun.star.frame import XTerminateListener
 
-from com.sun.star.util import XCloseListener
+from com.sun.star.lang import XEventListener
+
 
 import traceback
 
@@ -56,22 +57,16 @@ class TerminateListener(unohelper.Base,
         pass
 
 
-class CloseListener(unohelper.Base,
-                    XCloseListener):
+class EventListener(unohelper.Base,
+                    XEventListener):
     def __init__(self, datasource):
         self._datasource = datasource
 
-# XCloseListener
-    def queryClosing(self, source, ownership):
-        pass
-
-    def notifyClosing(self, source):
-        pass
-
+# XEventListener
     def disposing(self, source):
         try:
-            print("CloseListener.disposing() ******************")
-            self._datasource.closeConnection()
+            print("EventListener.disposing() ******************")
+            self._datasource.disposeConnection()
         except Exception as e:
-            msg = "CloseListener Error: %s" % traceback.print_exc()
+            msg = "EventListener Error: %s" % traceback.print_exc()
             print(msg)

@@ -46,7 +46,7 @@ from .provider import Provider
 from .user import User
 from .replicator import Replicator
 
-from .listener import CloseListener
+from .listener import EventListener
 from .listener import TerminateListener
 
 from .unotool import getDesktop
@@ -65,7 +65,7 @@ class DataSource(unohelper.Base,
         self._ctx = ctx
         self._users = {}
         self._connections = 0
-        self._listener = CloseListener(self)
+        self._listener = EventListener(self)
         self._provider = Provider(ctx)
         self._database = DataBase(ctx)
         self._replicator = Replicator(ctx, self._database, self._provider, self._users)
@@ -77,13 +77,14 @@ class DataSource(unohelper.Base,
 # XRestDataSource
     def getConnection(self, user, password):
         connection = self._database.getConnection(user, password)
-        connection.addCloseListener(self._listener)
+        connection.addEventListener(self._listener)
         self._connections += 1
         return connection
 
-    def closeConnection(self):
-        self._connections -= 1
-        print("DataSource.closeConnection() %s" % self._connections)
+    def disposeConnection(self):
+        if self._connections > 0:
+            self._connections -= 1
+        print("DataSource.disposeConnection() %s" % self._connections)
         if self._connections == 0:
             self._replicator.stop()
 

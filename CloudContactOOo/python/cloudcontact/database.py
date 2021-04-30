@@ -51,12 +51,15 @@ from .configuration import g_group
 from .configuration import g_host
 from .dbqueries import getSqlQuery
 
-from .dbconfig import g_folder
-from .dbconfig import g_role
 from .dbconfig import g_dba
+from .dbconfig import g_folder
+from .dbconfig import g_jar
+from .dbconfig import g_role
 
 from .dbtool import checkDataBase
+from .dbtool import createDataSource
 from .dbtool import createStaticTable
+from .dbtool import getConnectionInfo
 from .dbtool import getDataBaseConnection
 from .dbtool import getDataBaseUrl
 from .dbtool import executeSqlQueries
@@ -85,19 +88,22 @@ class DataBase(unohelper.Base,
     def __init__(self, ctx):
         print("DataBase.init() start")
         self._ctx = ctx
-        self._shutdown = True
         self._statement = None
         self._fieldsMap = {}
         self._batchedCalls = OrderedDict()
-        folder = g_folder + '/' + g_host
-        self._url = getResourceLocation(ctx, g_identifier, folder)
-        url = self._url + '.odb'
-        exist = getSimpleFile(ctx).exists(url)
+        url = getResourceLocation(ctx, g_identifier, g_folder)
+        self._url = url + '/' + g_host
+        self._path = url + '/' + g_jar
+        odb = self._url + '.odb'
+        exist = getSimpleFile(ctx).exists(odb)
         if not exist:
-            error = self._createDataBase()
+            datasource = createDataSource(self._ctx, self._url, self._path)
+            connection = datasource.getConnection('', '')
+            error = self._createDataBase(connection)
             if error is None:
-                self._storeDataBase(url)
-            self.dispose()
+                datasource.DatabaseDocument.storeAsURL(odb, ())
+            datasource.dispose()
+            connection.close()
         print("DataBase.init() end")
 
     @property
@@ -108,8 +114,8 @@ class DataBase(unohelper.Base,
         return self._statement.getConnection()
 
     def getConnection(self, user='', password=''):
-        url = getDataBaseUrl(self._url, self._shutdown)
-        return getDataBaseConnection(self._ctx, url, user, password)
+        info = getConnectionInfo(user, password, self._path)
+        return getDataBaseConnection(self._ctx, self._url, info)
 
     def dispose(self):
         if self._statement is not None:
@@ -120,20 +126,19 @@ class DataBase(unohelper.Base,
             print("DataBase.dispose() ***************** database: %s closed!!!" % g_host)
 
 # Procedures called by Initialization
-    def _createDataBase(self):
-        version, error = checkDataBase(self._ctx, self.Connection)
+    def _createDataBase(self, connection):
+        version, error = checkDataBase(self._ctx, connection)
         if error is None:
-            createStaticTable(self._ctx, self._statement, getStaticTables())
-            tables, queries = getTablesAndStatements(self._ctx, self._statement, version)
-            executeSqlQueries(self._statement, tables)
-            executeQueries(self._ctx, self._statement, getQueries())
-            executeSqlQueries(self._statement, queries)
-            views, triggers = getViewsAndTriggers(self._ctx, self._statement)
-            executeSqlQueries(self._statement, views)
+            statement = connection.createStatement()
+            createStaticTable(self._ctx, statement, getStaticTables())
+            tables, queries = getTablesAndStatements(self._ctx, statement, version)
+            executeSqlQueries(statement, tables)
+            executeQueries(self._ctx, statement, getQueries())
+            executeSqlQueries(statement, queries)
+            views, triggers = getViewsAndTriggers(self._ctx, statement)
+            executeSqlQueries(statement, views)
+            statement.close()
         return error
-
-    def _storeDataBase(self, url):
-        self.Connection.getParent().DatabaseDocument.storeAsURL(url, ())
 
     def getDataSource(self):
         return self.Connection.getParent()
