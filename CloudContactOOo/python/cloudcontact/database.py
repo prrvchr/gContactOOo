@@ -120,9 +120,9 @@ class DataBase(unohelper.Base,
     def dispose(self):
         if self._statement is not None:
             connection = self._statement.getConnection()
+            self._statement.close()
             self._statement = None
             connection.close()
-            connection.dispose()
             print("DataBase.dispose() ***************** database: %s closed!!!" % g_host)
 
 # Procedures called by Initialization
@@ -159,13 +159,17 @@ class DataBase(unohelper.Base,
         print("DataBase.addCloseListener() 4")
 
     def shutdownDataBase(self, compact=False):
+        statement = self.Connection.createStatement()
         query = getSqlQuery(self._ctx, 'shutdown', compact)
-        self._statement.execute(query)
+        statement.execute(query)
+        statement.close()
 
     def createUser(self, name, password):
+        statement = self.Connection.createStatement()
         format = {'User': name, 'Password': password, 'Admin': g_admin}
         query = getSqlQuery(self._ctx, 'createUser', format)
-        status = self._statement.executeUpdate(query)
+        status = statement.executeUpdate(query)
+        statement.close()
         print("DataBase.createUser() %s" % status)
         return status == 0
 
@@ -192,19 +196,25 @@ class DataBase(unohelper.Base,
         return user
 
     def truncatGroup(self, start):
+        statement = self.Connection.createStatement()
         format = {'TimeStamp': unparseTimeStamp(start)}
         query = getSqlQuery(self._ctx, 'truncatGroup', format)
-        self._statement.execute(query)
+        statement.execute(query)
+        statement.close()
 
     def createSynonym(self, user, name):
+        statement = self.Connection.createStatement()
         format = {'Schema': user.Resource, 'View': name.title()}
         query = getSqlQuery(self._ctx, 'createSynonym', format)
-        self._statement.execute(query)
+        statement.execute(query)
+        statement.close()
 
     def createGroupView(self, account, name, group):
+        statement = self.Connection.createStatement()
         self._dropGroupView(account, name)
         query = self._getGroupViewQuery('create', account, name, group)
-        self._statement.execute(query)
+        statement.execute(query)
+        statement.close()
 
 # Procedures called by the User
     def getUserFields(self):
@@ -225,12 +235,16 @@ class DataBase(unohelper.Base,
         return default
 
     def setLoggingChanges(self, state):
+        statement = self.Connection.createStatement()
         query = getSqlQuery(self._ctx, 'loggingChanges', state)
-        self._statement.execute(query)
+        statement.execute(query)
+        statement.close()
 
     def saveChanges(self, compact=False):
+        statement = self.Connection.createStatement()
         query = getSqlQuery(self._ctx, 'saveChanges', compact)
-        self._statement.execute(query)
+        statement.execute(query)
+        statement.close()
 
     def getFieldsMap(self, method, reverse):
         if method not in self._fieldsMap:
@@ -329,8 +343,10 @@ class DataBase(unohelper.Base,
         return tuple(map)
 
     def _dropGroupView(self, account, name):
+        statement = self.Connection.createStatement()
         query = self._getGroupViewQuery('drop', account, name)
-        self._statement.execute(query)
+        statement.execute(query)
+        statement.close()
 
     def _getGroupViewQuery(self, method, account, name, group=0):
         query = '%sGroupView' % method

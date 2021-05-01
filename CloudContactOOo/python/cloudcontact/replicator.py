@@ -132,9 +132,11 @@ class Replicator(unohelper.Base):
     def _syncData(self):
         result = KeyMap()
         timestamp = getDateTime(False)
-        #self.DataBase.setLoggingChanges(False)
-        #self.DataBase.saveChanges()
-        #self.DataBase.Connection.setAutoCommit(False)
+
+        self.DataBase.setLoggingChanges(False)
+        self.DataBase.saveChanges()
+        self.DataBase.Connection.setAutoCommit(False)
+
         for user in self.Users.values():
             if not self._canceled():
                 msg = getMessage(self._ctx, g_message, 111, user.Account)
@@ -144,17 +146,20 @@ class Replicator(unohelper.Base):
                 logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
         if not self._canceled():
             self.DataBase.executeBatchCall()
-            #self.DataBase.Connection.commit()
+
+            self.DataBase.Connection.commit()
+
             for account in result.getKeys():
                 user = self.Users[account]
                 user.MetaData += result.getValue(account)
                 print("Replicator._syncData(): %s" % (user.MetaData, ))
                 self._syncConnection(user, timestamp)
         self.DataBase.executeBatchCall()
-        #self.DataBase.Connection.commit()
-        #self.DataBase.setLoggingChanges(True)
-        #self.DataBase.saveChanges()
-        #self.DataBase.Connection.setAutoCommit(True)
+
+        self.DataBase.Connection.commit()
+        self.DataBase.setLoggingChanges(True)
+        self.DataBase.saveChanges()
+        self.DataBase.Connection.setAutoCommit(True)
 
     def _syncUser(self, user, timestamp):
         result = KeyMap()

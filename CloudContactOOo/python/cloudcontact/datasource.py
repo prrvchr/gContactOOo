@@ -81,7 +81,7 @@ class DataSource(unohelper.Base,
         self._connections += 1
         return connection
 
-    def disposeConnection(self):
+    def stopReplicator(self):
         if self._connections > 0:
             self._connections -= 1
         print("DataSource.disposeConnection() %s" % self._connections)
