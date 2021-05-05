@@ -86,25 +86,28 @@ from time import sleep
 class DataBase(unohelper.Base,
                XRestDataBase):
     def __init__(self, ctx):
-        print("DataBase.init() start")
+        print("gContact.DataBase.init() start")
         self._ctx = ctx
         self._statement = None
+        self._embedded = False
         self._fieldsMap = {}
         self._batchedCalls = OrderedDict()
         url = getResourceLocation(ctx, g_identifier, g_folder)
         self._url = url + '/' + g_host
-        self._path = url + '/' + g_jar
+        if self._embedded:
+            self._path = url + '/' + g_jar
+        else:
+            self._path = None
         odb = self._url + '.odb'
         exist = getSimpleFile(ctx).exists(odb)
         if not exist:
-            datasource = createDataSource(self._ctx, self._url, self._path)
-            connection = datasource.getConnection('', '')
+            connection = self.getConnection()
             error = self._createDataBase(connection)
             if error is None:
-                datasource.DatabaseDocument.storeAsURL(odb, ())
-            datasource.dispose()
+                connection.getParent().DatabaseDocument.storeAsURL(odb, ())
+            connection.getParent().dispose()
             connection.close()
-        print("DataBase.init() end")
+        print("gContact.DataBase.init() end")
 
     @property
     def Connection(self):
@@ -120,10 +123,11 @@ class DataBase(unohelper.Base,
     def dispose(self):
         if self._statement is not None:
             connection = self._statement.getConnection()
-            self._statement.close()
+            self._statement.dispose()
             self._statement = None
+            connection.getParent().dispose()
             connection.close()
-            print("DataBase.dispose() ***************** database: %s closed!!!" % g_host)
+            print("gContact.DataBase.dispose() ***************** database: %s closed!!!" % g_host)
 
 # Procedures called by Initialization
     def _createDataBase(self, connection):
