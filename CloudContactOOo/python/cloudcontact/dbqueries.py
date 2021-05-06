@@ -184,21 +184,45 @@ def getSqlQuery(ctx, name, format=None):
     elif name == 'createView':
         query = 'CREATE VIEW "%s"(%s) AS SELECT %s FROM %s' % format
 
-    elif name == 'createGroupView':
-        q = '''\
-CREATE VIEW IF NOT EXISTS "%(View)s" AS
-  SELECT "AddressBook".* FROM "AddressBook"
+    elif name == 'getViewName':
+        query = 'AddressBook'
+
+    elif name == 'getPrimaryColumnName':
+        query = 'Resource'
+
+    elif name == 'getBookmarkColumnName':
+        query = 'Bookmark'
+
+    elif name == 'getBookmarkCommand':
+        query = 'ROW_NUMBER() OVER()'
+
+    elif name == 'createUserView':
+        view = '''\
+CREATE VIEW IF NOT EXISTS "%(Name)s" AS
+  SELECT ROW_NUMBER() OVER() AS "Bookmark", "AddressBook".* FROM "AddressBook"
   JOIN "Peoples" ON "AddressBook"."Resource"="Peoples"."Resource"
   JOIN "Connections" ON "Peoples"."People"="Connections"."People"
   JOIN "Groups" ON "Connections"."Group"="Groups"."Group"
-  WHERE "Groups"."Group"=%(Group)s ORDER BY "Peoples"."People";
-GRANT SELECT ON "%(View)s" TO "%(User)s";
+  WHERE "Groups"."Group"=%(Id)s ORDER BY "Peoples"."People";
+GRANT SELECT ON "%(Name)s" TO "%(User)s";
 '''
-        query = q % format
+        query = view % format
+
+    elif name == 'createGroupView':
+        view = '''\
+CREATE VIEW IF NOT EXISTS "%(Name)s" AS
+  SELECT "%(View)s".* FROM "%(View)s"
+  JOIN "Peoples" ON "%(View)s"."Resource"="Peoples"."Resource"
+  JOIN "Connections" ON "Peoples"."People"="Connections"."People"
+  JOIN "Groups" ON "Connections"."Group"="Groups"."Group"
+  WHERE "Groups"."Group"=%(Id)s ORDER BY "Peoples"."People";
+GRANT SELECT ON "%(Name)s" TO "%(User)s";
+'''
+        query = view % format
 
 # Drop Dynamic View Queries
     elif name == 'dropGroupView':
-        query = 'DROP VIEW IF EXISTS "%(View)s"' % format
+        query = 'DROP VIEW IF EXISTS "%s"' % format
 
 # Create Trigger Query
     elif name == 'createTriggerUpdateAddressBook':
@@ -252,10 +276,10 @@ GRANT SELECT ON "%(View)s" TO "%(User)s";
         query = "SET PASSWORD '%s'" % format
 
 # Select Queries
-    elif name == 'getTableName':
+    elif name == 'getTableNames':
         query = 'SELECT "Name" FROM "Tables" WHERE "View" IS NOT NULL ORDER BY "Table"'
 
-    elif name == 'getViewName':
+    elif name == 'getViewNames':
         query = 'SELECT "Name" FROM "Tables" WHERE "View"=TRUE ORDER BY "Table"'
 
     elif name == 'getTables':

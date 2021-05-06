@@ -236,7 +236,9 @@ class Replicator(unohelper.Base):
         groups = self.DataBase.getUpdatedGroups(user, 'contactGroups/')
         if groups.Count > 0:
             for group in groups:
-                self.DataBase.createGroupView(user.Account, group.getValue('Name'), group.getValue('Group'))
+                name = group.getValue('Name')
+                group = group.getValue('Group')
+                self.DataBase.createGroupView(user, name, group)
             print("replicator._syncConnection(): %s" % ','.join(groups.getKeys()))
             method = {'Name': 'Connection',
                       'PrimaryKey': 'Group',
@@ -282,8 +284,7 @@ class Replicator(unohelper.Base):
         elif data.hasValue(method['PrimaryKey']):
             if self._filterResponse(data, *method['ResourceFilter']):
                 resource = data.getValue(method['PrimaryKey'])
-                func = getattr(self, '_merge%s' % method['Name'])
-                update, delete = func(method, resource, user, map, data, timestamp)
+                update, delete = self._getMerge(method, resource, user, map, data, timestamp)
         return update, delete
 
     def _filterResponse(self, data, filters=(), value=None, index=0):
@@ -293,6 +294,16 @@ class Replicator(unohelper.Base):
                 return self._filterResponse(data.getValue(filter), filters, value, index + 1)
             return False
         return data if value is None else data == value
+
+    def _getMerge(self, method, resource, user, map, data, timestamp):
+        name = method['Name']
+        if name == 'People':
+            update, delete = self._mergePeople(method, resource, user, map, data, timestamp)
+        elif name == 'Group':
+            update, delete = self._mergeGroup(method, resource, user, map, data, timestamp)
+        elif name == 'Connection':
+            update, delete = self._mergeConnection(method, resource, user, map, data, timestamp)
+        return update, delete
 
     def _mergePeople(self, method, resource, user, map, data, timestamp):
         update = delete = 0

@@ -51,7 +51,7 @@ import traceback
 
 class User(unohelper.Base,
            XRestUser):
-    def __init__(self, ctx, database, provider, name, password):
+    def __init__(self, ctx, database, provider, name):
         self._ctx = ctx
         self.Fields = database.getUserFields()
         self.Request = getRequest(ctx, provider.Host, name)
@@ -59,7 +59,7 @@ class User(unohelper.Base,
         data = database.selectUser(name)
         if data is None:
             self._new = True
-            data = self._getMetaData(database, provider, name, password)
+            data = self._getMetaData(database, provider, name)
         self.MetaData = data
 
     @property
@@ -70,13 +70,13 @@ class User(unohelper.Base,
         return self.MetaData.getDefaultValue('Resource', None)
     @property
     def Group(self):
-        return self._getGroup(self.MetaData)
+        return self.MetaData.getDefaultValue('Group', None)
     @property
     def Account(self):
-        return self._getAccount(self.MetaData)
+        return self.MetaData.getDefaultValue('Account', '')
     @property
     def Name(self):
-        return self._getName(self.MetaData)
+        return self.Account.split('@').pop(0)
     @property
     def PeopleSync(self):
         return self.MetaData.getDefaultValue('PeopleSync', None)
@@ -84,10 +84,15 @@ class User(unohelper.Base,
     def GroupSync(self):
         return self.MetaData.getDefaultValue('GroupSync', None)
 
-    def isNew(self):
+    def initUser(self, database, password):
+        if self._new:
+            credential = self._getCredential(password)
+            if not database.createUser(*credential):
+                raise self._getSqlException(1005, 1106, name)
+            database.createUserView(self)
         return self._new
 
-    def _getMetaData(self, database, provider, name, password):
+    def _getMetaData(self, database, provider, name):
         if self.Request is None:
             raise self._getSqlException(1003, 1105, g_oauth2)
         if provider.isOffLine():
@@ -96,31 +101,14 @@ class User(unohelper.Base,
         if not data.IsPresent:
             raise self._getSqlException(1006, 1107, name)
         userid = provider.getUserId(data.Value)
-        metadata = database.insertUser(userid, name)
-        credential = self._getCredential(metadata, password)
-        if not database.createUser(*credential):
-            raise self._getSqlException(1005, 1106, name)
-        account = self._getAccount(metadata)
-        name = self._getName(metadata)
-        group = self._getGroup(metadata)
-        database.createGroupView(account, name, group)
-        return metadata
+        data = database.insertUser(userid, name)
+        return data
 
-    def _getAccount(self, metadata):
-        return metadata.getDefaultValue('Account', '')
-
-    def _getName(self, metadata):
-        account = self._getAccount(metadata)
-        return account.split('@').pop(0)
-
-    def _getGroup(self, metadata):
-        return metadata.getDefaultValue('Group', None)
+    def _getCredential(self, password):
+        return self.Account, password
 
     def _getSqlException(self, state, code, format):
         state = getMessage(self._ctx, g_message, state)
         msg = getMessage(self._ctx, g_message, code, format)
         error = getSqlException(state, code, msg, self)
         return error
-
-    def _getCredential(self, metadata, password):
-        return self._getAccount(metadata), password

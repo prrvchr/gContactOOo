@@ -125,7 +125,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
     tables = []
     statements = []
     call = getDataSourceCall(ctx, statement.getConnection(), 'getTables')
-    for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableName'))):
+    for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableNames'))):
         view = False
         versioned = False
         columns = []
@@ -193,7 +193,7 @@ def getViewsAndTriggers(ctx, statement):
     triggers = []
     triggercore = []
     call = getDataSourceCall(ctx, statement.getConnection(), 'getViews')
-    tables = getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getViewName')))
+    tables = getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getViewNames')))
     for table in tables:
         call.setString(1, table)
         result = call.executeQuery()
@@ -228,14 +228,14 @@ def getViewsAndTriggers(ctx, statement):
             triggercore.append(getSqlQuery(ctx, 'createTriggerUpdateAddressBookCore', data))
     call.close()
     if queries:
-        column = 'Resource'
+        column = getSqlQuery(ctx, 'getPrimaryColumnName')
         c1.insert(0, '"%s"' % column)
         s1.insert(0, '"%s"."%s"' % (ptable, column))
         f1.insert(0, '"%s"' % ptable)
         f1.append('ORDER BY "%s"."%s"' % (ptable, pcolumn))
+        name = getSqlQuery(ctx, 'getViewName')
         format = ('AddressBook', ','.join(c1), ','.join(s1), ' '.join(f1))
         query = getSqlQuery(ctx, 'createView', format)
-        #print("dbinit._getViewsAndTriggers() %s"  % query)
         queries.append(query)
         trigger = getSqlQuery(ctx, 'createTriggerUpdateAddressBook', ' '.join(triggercore))
         triggers.append(trigger)

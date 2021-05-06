@@ -213,10 +213,22 @@ class DataBase(unohelper.Base,
         statement.execute(query)
         statement.close()
 
-    def createGroupView(self, account, name, group):
+    def createUserView(self, user):
         statement = self.Connection.createStatement()
-        self._dropGroupView(account, name)
-        query = self._getGroupViewQuery('create', account, name, group)
+        name = self._getGroupViewName(user.Name, g_group)
+        format = {'User': user.Account, 'Name': name, 'Id': user.Group}
+        query = getSqlQuery(self._ctx, 'createUserView', format)
+        statement.execute(query)
+        statement.close()
+
+    def createGroupView(self, user, group, groupid):
+        statement = self.Connection.createStatement()
+        name = self._getGroupViewName(user.Name, group)
+        query = getSqlQuery(self._ctx, 'dropGroupView', name)
+        statement.execute(query)
+        view = self._getGroupViewName(user.Name, g_group)
+        format = {'User': user.Account, 'Name': name, 'View': view, 'Id': groupid}
+        query = getSqlQuery(self._ctx, 'createGroupView', format)
         statement.execute(query)
         statement.close()
 
@@ -346,18 +358,21 @@ class DataBase(unohelper.Base,
         call.close()
         return tuple(map)
 
-    def _dropGroupView(self, account, name):
-        statement = self.Connection.createStatement()
-        query = self._getGroupViewQuery('drop', account, name)
+    def _createGroupView(self, statement, user, group, groupid):
+        name = self._getGroupViewName(user.Name, group)
+        query = getSqlQuery(self._ctx, 'dropGroupView', view)
         statement.execute(query)
-        statement.close()
+        view = self._getGroupViewName(user.Name, user.Group)
+        format = {'User': user.Account, 'Name': name, 'View': view, 'Id': groupid}
+        query = getSqlQuery(self._ctx, 'createGroupView', format)
+        statement.execute(query)
 
-    def _getGroupViewQuery(self, method, account, name, group=0):
-        query = '%sGroupView' % method
-        format = {'User': account,
-                  'View': '%s.%s' % (name.title(), g_group.title()),
-                  'Group': group}
-        return getSqlQuery(self._ctx, query, format)
+    def _getGroupViewName(self, name, group):
+        return '%s%s' % (name.title(), group.title())
+
+    def _dropGroupView(self, statement, view):
+        query = getSqlQuery(self._ctx, 'dropGroupView', view)
+        statement.execute(query)
 
     def _getCall(self, name, format=None):
         return getDataSourceCall(self._ctx, self.Connection, name, format)
