@@ -64,6 +64,7 @@ from .dbtool import getDataBaseConnection
 from .dbtool import getDataBaseUrl
 from .dbtool import executeSqlQueries
 from .dbtool import getDataSourceCall
+from .dbtool import getDataSourceConnection
 from .dbtool import executeQueries
 from .dbtool import getDictFromResult
 from .dbtool import getKeyMapFromResult
@@ -101,11 +102,12 @@ class DataBase(unohelper.Base,
         odb = self._url + '.odb'
         exist = getSimpleFile(ctx).exists(odb)
         if not exist:
-            connection = self.getConnection()
+            connection = getDataSourceConnection(ctx, self._url)
             error = self._createDataBase(connection)
             if error is None:
-                connection.getParent().DatabaseDocument.storeAsURL(odb, ())
-            connection.getParent().dispose()
+                datasource = connection.getParent()
+                datasource.DatabaseDocument.storeAsURL(odb, ())
+                datasource.dispose()
             connection.close()
         print("gContact.DataBase.init() end")
 
@@ -117,15 +119,15 @@ class DataBase(unohelper.Base,
         return self._statement.getConnection()
 
     def getConnection(self, user='', password=''):
-        info = getConnectionInfo(user, password, self._path)
-        return getDataBaseConnection(self._ctx, self._url, info)
+        #info = getConnectionInfo(user, password, self._path)
+        return getDataSourceConnection(self._ctx, self._url, user, password, False)
 
     def dispose(self):
         if self._statement is not None:
             connection = self._statement.getConnection()
             self._statement.dispose()
             self._statement = None
-            connection.getParent().dispose()
+            #connection.getParent().dispose()
             connection.close()
             print("gContact.DataBase.dispose() ***************** database: %s closed!!!" % g_host)
 

@@ -199,7 +199,7 @@ def getSqlQuery(ctx, name, format=None):
     elif name == 'createUserView':
         view = '''\
 CREATE VIEW IF NOT EXISTS "%(Name)s" AS
-  SELECT ROW_NUMBER() OVER() AS "Bookmark", "AddressBook".* FROM "AddressBook"
+  SELECT "AddressBook".*, ROW_NUMBER() OVER() AS "Bookmark" FROM "AddressBook"
   JOIN "Peoples" ON "AddressBook"."Resource"="Peoples"."Resource"
   JOIN "Connections" ON "Peoples"."People"="Connections"."People"
   JOIN "Groups" ON "Connections"."Group"="Groups"."Group"
