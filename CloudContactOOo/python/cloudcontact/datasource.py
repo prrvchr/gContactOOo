@@ -61,7 +61,6 @@ import traceback
 class DataSource(unohelper.Base,
                  XRestDataSource):
     def __init__(self, ctx):
-        print("DataSource.__init__() 1")
         self._ctx = ctx
         self._users = {}
         self._connections = 0
@@ -72,7 +71,6 @@ class DataSource(unohelper.Base,
         listener = TerminateListener(self._replicator)
         desktop = getDesktop(ctx)
         desktop.addTerminateListener(listener)
-        print("DataSource.__init__() 2")
 
 # XRestDataSource
     def getConnection(self, user, password):

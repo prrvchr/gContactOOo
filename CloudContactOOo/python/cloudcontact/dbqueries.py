@@ -176,16 +176,9 @@ def getSqlQuery(ctx, name, format=None):
     elif name == 'getSystemVersioning':
         query = ' WITH SYSTEM VERSIONING'
 
-# Create Synonym Queries
-    elif name == 'createSynonym':
-        query = 'CREATE SYNONYM "PUBLIC"."%(View)s" FOR "%(Schema)s"."%(View)s"' % format
-
 # Create Dynamic View Queries
     elif name == 'createView':
         query = 'CREATE VIEW "%s"(%s) AS SELECT %s FROM %s' % format
-
-    elif name == 'getViewName':
-        query = 'AddressBook'
 
     elif name == 'getPrimaryColumnName':
         query = 'Resource'
@@ -193,36 +186,34 @@ def getSqlQuery(ctx, name, format=None):
     elif name == 'getBookmarkColumnName':
         query = 'Bookmark'
 
-    elif name == 'getBookmarkCommand':
-        query = 'ROW_NUMBER() OVER()'
+    elif name == 'getBookmarkColumn':
+        query = 'ROW_NUMBER() OVER() AS "Bookmark"'
 
-    elif name == 'createUserView':
-        view = '''\
-CREATE VIEW IF NOT EXISTS "%(Name)s" AS
-  SELECT "AddressBook".*, ROW_NUMBER() OVER() AS "Bookmark" FROM "AddressBook"
-  JOIN "Peoples" ON "AddressBook"."Resource"="Peoples"."Resource"
-  JOIN "Connections" ON "Peoples"."People"="Connections"."People"
-  JOIN "Groups" ON "Connections"."Group"="Groups"."Group"
-  WHERE "Groups"."Group"=%(Id)s ORDER BY "Peoples"."People";
-GRANT SELECT ON "%(Name)s" TO "%(User)s";
+    elif name == 'getAddressBookTable':
+        query = '''"Peoples"
+JOIN "Connections" ON "Peoples"."People"="Connections"."People"
+JOIN "Groups" ON "Connections"."Group"="Groups"."Group" AND "Groups"."GroupSync"=FALSE
+JOIN "Peoples" AS P ON "Groups"."People"=P."People"
 '''
-        query = view % format
+
+    elif name == 'getAddressBookPredicate':
+        query = '''WHERE P."Account"=CURRENT_USER OR CURRENT_USER='SA' ORDER BY "Peoples"."People"'''
 
     elif name == 'createGroupView':
         view = '''\
-CREATE VIEW IF NOT EXISTS "%(Name)s" AS
+CREATE VIEW IF NOT EXISTS "%(Schema)s"."%(Name)s" AS
   SELECT "%(View)s".* FROM "%(View)s"
   JOIN "Peoples" ON "%(View)s"."Resource"="Peoples"."Resource"
   JOIN "Connections" ON "Peoples"."People"="Connections"."People"
   JOIN "Groups" ON "Connections"."Group"="Groups"."Group"
-  WHERE "Groups"."Group"=%(Id)s ORDER BY "Peoples"."People";
-GRANT SELECT ON "%(Name)s" TO "%(User)s";
+  WHERE "Groups"."Group"=%(GroupId)s ORDER BY "Peoples"."People";
+GRANT SELECT ON "%(Schema)s"."%(Name)s" TO "%(User)s";
 '''
         query = view % format
 
 # Drop Dynamic View Queries
     elif name == 'dropGroupView':
-        query = 'DROP VIEW IF EXISTS "%s"' % format
+        query = 'DROP VIEW IF EXISTS "%s"."%s"' % format
 
 # Create Trigger Query
     elif name == 'createTriggerUpdateAddressBook':
@@ -238,30 +229,26 @@ GRANT SELECT ON "%(Name)s" TO "%(User)s";
         q += '; END IF;'
         query = q % format
 
-# Create User, Role and Schema Query
+# Create User, Schema and Synonym Query
     elif name == 'createUser':
-        q = 'CREATE USER "%(User)s" PASSWORD \'%(Password)s\''
+        q = """CREATE USER "%(User)s" PASSWORD '%(Password)s'"""
         if format.get('Admin', False):
-            q += ' ADMIN'
+            q += ' ADMIN;'
+        else:
+            q += ';'
         query = q % format
 
-    elif name == 'createRole':
-        query = 'CREATE ROLE "%(Role)s"' % format
+    elif name == 'createUserSchema':
+        query = 'CREATE SCHEMA "%(Schema)s" AUTHORIZATION DBA;' % format
 
-    elif name == 'setRole':
-        query = 'GRANT "%(Role)s" TO "%(User)s"' % format
+    elif name == 'setUserAuthorization':
+        query = 'GRANT SELECT ON PUBLIC."%(View)s" TO "%(User)s";' % format
 
-    elif name == 'createSchema':
-        query = 'CREATE SCHEMA "%(User)s" AUTHORIZATION "%(User)s"' % format
+    elif name == 'createUserSynonym':
+        query = 'CREATE SYNONYM "%(Schema)s"."%(View)s" FOR PUBLIC."%(View)s";' % format
 
     elif name == 'setUserSchema':
-        q = 'ALTER USER "%(User)s" SET INITIAL SCHEMA'
-        if format.get('Admin', False):
-            #q += ' PUBLIC'
-            q += ' "%(User)s"'
-        else:
-            q += ' "%(User)s"'
-        query = q % format
+        query = 'ALTER USER "%(User)s" SET INITIAL SCHEMA "%(Schema)s"' % format
 
 # Get last IDENTITY value that was inserted into a table by the current session
     elif name == 'getIdentity':

@@ -185,7 +185,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
     call.close()
     return tables, statements
 
-def getViewsAndTriggers(ctx, statement):
+def getViewsAndTriggers(ctx, statement, name):
     c1 = []
     s1 = []
     f1 = []
@@ -230,11 +230,12 @@ def getViewsAndTriggers(ctx, statement):
     if queries:
         column = getSqlQuery(ctx, 'getPrimaryColumnName')
         c1.insert(0, '"%s"' % column)
+        c1.append('"%s"' % getSqlQuery(ctx, 'getBookmarkColumnName'))
         s1.insert(0, '"%s"."%s"' % (ptable, column))
-        f1.insert(0, '"%s"' % ptable)
-        f1.append('ORDER BY "%s"."%s"' % (ptable, pcolumn))
-        name = getSqlQuery(ctx, 'getViewName')
-        format = ('AddressBook', ','.join(c1), ','.join(s1), ' '.join(f1))
+        s1.append(getSqlQuery(ctx, 'getBookmarkColumn'))
+        f1.insert(0, getSqlQuery(ctx, 'getAddressBookTable'))
+        f1.append(getSqlQuery(ctx, 'getAddressBookPredicate'))
+        format = (name, ','.join(c1), ','.join(s1), ' '.join(f1))
         query = getSqlQuery(ctx, 'createView', format)
         queries.append(query)
         trigger = getSqlQuery(ctx, 'createTriggerUpdateAddressBook', ' '.join(triggercore))

@@ -41,14 +41,15 @@ from .unolib import KeyMap
 
 from .unotool import parseDateTime
 from .unotool import createService
+from .unotool import getConfiguration
 from .unotool import getResourceLocation
 from .unotool import getSimpleFile
 
 from .configuration import g_identifier
-
 from .configuration import g_admin
 from .configuration import g_group
 from .configuration import g_host
+
 from .dbqueries import getSqlQuery
 
 from .dbconfig import g_dba
@@ -93,6 +94,7 @@ class DataBase(unohelper.Base,
         self._embedded = False
         self._fieldsMap = {}
         self._batchedCalls = OrderedDict()
+        self._addressbook = None
         url = getResourceLocation(ctx, g_identifier, g_folder)
         self._url = url + '/' + g_host
         if self._embedded:
@@ -142,7 +144,7 @@ class DataBase(unohelper.Base,
             executeSqlQueries(statement, tables)
             executeQueries(self._ctx, statement, getQueries())
             executeSqlQueries(statement, queries)
-            views, triggers = getViewsAndTriggers(self._ctx, statement)
+            views, triggers = getViewsAndTriggers(self._ctx, statement, self._getViewName())
             executeSqlQueries(statement, views)
             statement.close()
         return error
@@ -175,9 +177,10 @@ class DataBase(unohelper.Base,
         statement = self.Connection.createStatement()
         format = {'User': name, 'Password': password, 'Admin': g_admin}
         query = getSqlQuery(self._ctx, 'createUser', format)
+        print("DataBase.createUser(): 1 %s" % query)
         status = statement.executeUpdate(query)
         statement.close()
-        print("DataBase.createUser() %s" % status)
+        print("DataBase.createUser() 2 %s" % status)
         return status == 0
 
     def insertUser(self, userid, account):
@@ -209,28 +212,31 @@ class DataBase(unohelper.Base,
         statement.execute(query)
         statement.close()
 
-    def createSynonym(self, user, name):
+    def initUser(self, format):
         statement = self.Connection.createStatement()
-        format = {'Schema': user.Resource, 'View': name.title()}
-        query = getSqlQuery(self._ctx, 'createSynonym', format)
+        format['View'] = self._getViewName()
+        query = getSqlQuery(self._ctx, 'createUserSchema', format)
         statement.execute(query)
-        statement.close()
-
-    def createUserView(self, user):
-        statement = self.Connection.createStatement()
-        name = self._getGroupViewName(user.Name, g_group)
-        format = {'User': user.Account, 'Name': name, 'Id': user.Group}
-        query = getSqlQuery(self._ctx, 'createUserView', format)
+        query = getSqlQuery(self._ctx, 'setUserAuthorization', format)
+        statement.execute(query)
+        query = getSqlQuery(self._ctx, 'createUserSynonym', format)
+        statement.execute(query)
+        query = getSqlQuery(self._ctx, 'setUserSchema', format)
         statement.execute(query)
         statement.close()
 
     def createGroupView(self, user, group, groupid):
         statement = self.Connection.createStatement()
-        name = self._getGroupViewName(user.Name, group)
-        query = getSqlQuery(self._ctx, 'dropGroupView', name)
+        name = self._getGroupViewName(group)
+        format = (user.Resource, name)
+        query = getSqlQuery(self._ctx, 'dropGroupView', format)
         statement.execute(query)
-        view = self._getGroupViewName(user.Name, g_group)
-        format = {'User': user.Account, 'Name': name, 'View': view, 'Id': groupid}
+        view = self._getGroupViewName(g_group)
+        format = {'Schema': user.Resource,
+                  'User': user.Account,
+                  'Name': name,
+                  'View': self._getViewName(),
+                  'GroupId': groupid}
         query = getSqlQuery(self._ctx, 'createGroupView', format)
         statement.execute(query)
         statement.close()
@@ -361,21 +367,14 @@ class DataBase(unohelper.Base,
         call.close()
         return tuple(map)
 
-    def _createGroupView(self, statement, user, group, groupid):
-        name = self._getGroupViewName(user.Name, group)
-        query = getSqlQuery(self._ctx, 'dropGroupView', view)
-        statement.execute(query)
-        view = self._getGroupViewName(user.Name, user.Group)
-        format = {'User': user.Account, 'Name': name, 'View': view, 'Id': groupid}
-        query = getSqlQuery(self._ctx, 'createGroupView', format)
-        statement.execute(query)
+    def _getViewName(self):
+        if self._addressbook is None:
+            configuration = getConfiguration(self._ctx, g_identifier)
+            self._addressbook = configuration.getByName('AddressBookName')
+        return self._addressbook
 
-    def _getGroupViewName(self, name, group):
-        return '%s%s' % (name.title(), group.title())
-
-    def _dropGroupView(self, statement, view):
-        query = getSqlQuery(self._ctx, 'dropGroupView', view)
-        statement.execute(query)
+    def _getGroupViewName(self, group):
+        return group.title()
 
     def _getCall(self, name, format=None):
         return getDataSourceCall(self._ctx, self.Connection, name, format)

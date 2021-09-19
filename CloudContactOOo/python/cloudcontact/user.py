@@ -56,6 +56,7 @@ class User(unohelper.Base,
         self.Fields = database.getUserFields()
         self.Request = getRequest(ctx, provider.Host, name)
         self._new = False
+        self._addressbook = None
         data = database.selectUser(name)
         if data is None:
             self._new = True
@@ -85,11 +86,19 @@ class User(unohelper.Base,
         return self.MetaData.getDefaultValue('GroupSync', None)
 
     def initUser(self, database, password):
+        print("User.initUser() 1")
         if self._new:
             credential = self._getCredential(password)
+            print("User.initUser() 2")
             if not database.createUser(*credential):
                 raise self._getSqlException(1005, 1106, name)
-            database.createUserView(self)
+            print("User.initUser() 3")
+            format = {'Schema': self.Resource,
+                      'User': self.Account,
+                      'GroupId': self.Group}
+            database.initUser(format)
+            print("User.initUser() 4")
+        print("User.initUser() 5")
         return self._new
 
     def _getMetaData(self, database, provider, name):

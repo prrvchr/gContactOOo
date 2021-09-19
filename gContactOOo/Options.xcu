@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<oor:component-data
+  xml:lang="en-US"
+  xmlns:oor="http://openoffice.org/2001/registry"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  oor:package="com.gmail.prrvchr.extensions"
+  oor:name="gContactOOo">
+    <prop oor:name="AddressBookName">
+        <value xml:lang="en-US">My Google contacts</value>
+        <value xml:lang="fr-FR">Mes contacts Google</value>
+    </prop>
+</oor:component-data>
