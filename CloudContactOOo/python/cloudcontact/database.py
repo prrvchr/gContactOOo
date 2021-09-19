@@ -227,16 +227,13 @@ class DataBase(unohelper.Base,
 
     def createGroupView(self, user, group, groupid):
         statement = self.Connection.createStatement()
-        name = self._getGroupViewName(group)
-        format = (user.Resource, name)
-        query = getSqlQuery(self._ctx, 'dropGroupView', format)
-        statement.execute(query)
-        view = self._getGroupViewName(g_group)
         format = {'Schema': user.Resource,
                   'User': user.Account,
-                  'Name': name,
+                  'Name': group,
                   'View': self._getViewName(),
                   'GroupId': groupid}
+        query = getSqlQuery(self._ctx, 'dropGroupView', format)
+        statement.execute(query)
         query = getSqlQuery(self._ctx, 'createGroupView', format)
         statement.execute(query)
         statement.close()
@@ -372,9 +369,6 @@ class DataBase(unohelper.Base,
             configuration = getConfiguration(self._ctx, g_identifier)
             self._addressbook = configuration.getByName('AddressBookName')
         return self._addressbook
-
-    def _getGroupViewName(self, group):
-        return group.title()
 
     def _getCall(self, name, format=None):
         return getDataSourceCall(self._ctx, self.Connection, name, format)

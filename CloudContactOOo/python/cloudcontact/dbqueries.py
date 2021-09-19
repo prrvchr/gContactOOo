@@ -213,7 +213,7 @@ GRANT SELECT ON "%(Schema)s"."%(Name)s" TO "%(User)s";
 
 # Drop Dynamic View Queries
     elif name == 'dropGroupView':
-        query = 'DROP VIEW IF EXISTS "%s"."%s"' % format
+        query = 'DROP VIEW IF EXISTS "%(Schema)s"."%(Name)s"' % format
 
 # Create Trigger Query
     elif name == 'createTriggerUpdateAddressBook':
