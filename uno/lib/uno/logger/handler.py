@@ -30,27 +30,24 @@
 import uno
 import unohelper
 
-from com.sun.star.logging.LogLevel import SEVERE
-from com.sun.star.logging.LogLevel import WARNING
-from com.sun.star.logging.LogLevel import INFO
-from com.sun.star.logging.LogLevel import CONFIG
-from com.sun.star.logging.LogLevel import FINE
-from com.sun.star.logging.LogLevel import FINER
-from com.sun.star.logging.LogLevel import FINEST
 from com.sun.star.logging.LogLevel import ALL
-from com.sun.star.logging.LogLevel import OFF
 
 from com.sun.star.logging import XLogHandler
+
+from ..unotool import createService
 
 
 class LogHandler(unohelper.Base,
                  XLogHandler):
-    def __init__(self):
+    def __init__(self, ctx, callback, level=ALL):
         self._encoding = 'UTF-8'
-        self._formatter = None
-        self._level = ALL
-        self._listener = []
+        service = 'com.sun.star.logging.PlainTextFormatter'
+        self._formatter = createService(ctx, service)
+        self._level = level
+        self._listeners = []
+        self._callback = callback
 
+# XLogHandler
     @property
     def Encoding(self):
         return self._encoding
@@ -63,7 +60,6 @@ class LogHandler(unohelper.Base,
         return self._formatter
     @Formatter.setter
     def Formatter(self, value):
-        print("LogHandler.Formatter.setter()")
         self._formatter = value
 
     @property
@@ -73,12 +69,11 @@ class LogHandler(unohelper.Base,
     def Level(self, value):
         self._level = value
 
-# XLogHandler
     def flush(self):
-        print("LogHandler.flush()")
+        pass
 
     def publish(self, record):
-        print("LogHandler.publish() %s" % record.Message)
+        self._callback()
         return True
 
 # XComponent <- XLogHandler
