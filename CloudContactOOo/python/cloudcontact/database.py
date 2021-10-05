@@ -366,7 +366,7 @@ class DataBase(unohelper.Base,
 
     def _getViewName(self):
         if self._addressbook is None:
-            configuration = getConfiguration(self._ctx, g_identifier)
+            configuration = getConfiguration(self._ctx, g_identifier, False)
             self._addressbook = configuration.getByName('AddressBookName')
         return self._addressbook
 

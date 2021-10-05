@@ -7,6 +7,6 @@
   oor:package="com.gmail.prrvchr.extensions"
   oor:name="gContactOOo">
     <component>
-        <prop oor:name="AddressBookName" oor:type="xs:string" />
+        <prop oor:name="AddressBookName" oor:type="xs:string" oor:localized="true"/>
     </component>
 </oor:component-schema>
