@@ -84,13 +84,14 @@ class Provider(unohelper.Base,
             parameter.Method = 'GET'
             parameter.Url += '/people/me/connections'
             fields = '"personFields": "%s"' % ','.join(data.Fields)
+            sources = '"sources": "READ_SOURCE_TYPE_CONTACT"'
             page = '"pageSize": %s' % g_page
             sync = data.PeopleSync
             if sync:
                 token = '"syncToken": "%s"' % sync
             else:
                 token = '"requestSyncToken": true'
-            parameter.Query = '{%s, %s, %s}' % (fields, page, token)
+            parameter.Query = '{%s, %s, %s, %s}' % (fields, sources, page, token)
             token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
             token.Type = TOKEN_QUERY | TOKEN_SYNC
             token.Field = 'nextPageToken'

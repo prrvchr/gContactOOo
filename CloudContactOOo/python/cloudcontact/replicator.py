@@ -63,7 +63,6 @@ class Replicator(unohelper.Base):
         self._started = Event()
         self._paused = Event()
         self._disposed = Event()
-        self._full = Event()
         self._count = 0
         self._new = False
         self._default = self.DataBase.getDefaultType()
@@ -81,14 +80,11 @@ class Replicator(unohelper.Base):
 
     def stop(self):
         print("replicator.stop() 1")
-        #if not self._full.is_set():
         self._started.clear()
         self._paused.set()
         print("replicator.stop() 2")
 
-    def start(self, new):
-        if new:
-            self._full.set()
+    def start(self):
         self._started.set()
         self._paused.set()
 
@@ -110,7 +106,6 @@ class Replicator(unohelper.Base):
                     self._count = 0
                     self._synchronize()
                     self.DataBase.dispose()
-                    self._full.clear()
                     print("replicator.run()4 synchronize ended query=%s *******************************************" % self._count)
                     if self._started.is_set():
                         print("replicator.run()5 start waitting *******************************************")
@@ -146,9 +141,7 @@ class Replicator(unohelper.Base):
                 logMessage(self._ctx, INFO, msg, 'Replicator', '_synchronize()')
         if not self._canceled():
             self.DataBase.executeBatchCall()
-
             self.DataBase.Connection.commit()
-
             for account in result.getKeys():
                 user = self.Users[account]
                 user.MetaData += result.getValue(account)
@@ -190,8 +183,7 @@ class Replicator(unohelper.Base):
         enumerator = user.Request.getEnumeration(parameter, parser)
         while not self._canceled() and enumerator.hasMoreElements():
             response = enumerator.nextElement()
-            status = response.IsPresent
-            if status:
+            if response.IsPresent:
                 pages += 1
                 u, d, t = self._syncResponse(method, user, map, response.Value, timestamp)
                 update += u
@@ -217,8 +209,7 @@ class Replicator(unohelper.Base):
         enumerator = user.Request.getEnumeration(parameter, parser)
         while not self._canceled() and enumerator.hasMoreElements():
             response = enumerator.nextElement()
-            status = response.IsPresent
-            if status:
+            if response.IsPresent:
                 pages += 1
                 u, d, t = self._syncResponse(method, user, map, response.Value, timestamp)
                 update += u

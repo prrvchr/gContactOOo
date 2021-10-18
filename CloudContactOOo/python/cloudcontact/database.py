@@ -156,16 +156,9 @@ class DataBase(unohelper.Base,
         return self.getDataSource().DatabaseDocument
 
     def addCloseListener(self, listener):
-        print("DataBase.addCloseListener() 1")
-        #mri = createService(self._ctx, 'mytools.Mri')
-        #mri.inspect(listener)
-        #sleep(2)
         datasource = self.Connection.getParent()
-        print("DataBase.addCloseListener() 2")
         document = datasource.DatabaseDocument
-        print("DataBase.addCloseListener() 3")
         document.addCloseListener(listener)
-        print("DataBase.addCloseListener() 4")
 
     def shutdownDataBase(self, compact=False):
         statement = self.Connection.createStatement()
@@ -177,10 +170,8 @@ class DataBase(unohelper.Base,
         statement = self.Connection.createStatement()
         format = {'User': name, 'Password': password, 'Admin': g_admin}
         query = getSqlQuery(self._ctx, 'createUser', format)
-        print("DataBase.createUser(): 1 %s" % query)
         status = statement.executeUpdate(query)
         statement.close()
-        print("DataBase.createUser() 2 %s" % status)
         return status == 0
 
     def insertUser(self, userid, account):

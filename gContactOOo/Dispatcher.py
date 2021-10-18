@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+#!
+# -*- coding: utf_8 -*-
+
+"""
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
@@ -23,18 +25,67 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
--->
-<!DOCTYPE manifest:manifest PUBLIC "-//OpenOffice.org//DTD Manifest 1.0//EN" "Manifest.dtd">
-<manifest:manifest xmlns:manifest="http://openoffice.org/2001/manifest">
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-typelibrary;type=RDB" manifest:full-path="types.rdb"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.basic-library" manifest:full-path="gContactOOo/"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="Driver.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Drivers.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="OptionsDialog.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OAuth2OOo.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OptionsDialog.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-schema" manifest:full-path="Options.xcs"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Options.xcu"/>
-<!--    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="Dispatcher.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="ProtocolHandler.xcu"/> -->
-</manifest:manifest>
+"""
+
+import uno
+import unohelper
+
+from com.sun.star.frame import XDispatchProvider
+
+from com.sun.star.lang import XInitialization
+from com.sun.star.lang import XServiceInfo
+
+from com.sun.star.logging.LogLevel import INFO
+from com.sun.star.logging.LogLevel import SEVERE
+
+from gcontact import Dispatch
+
+from gcontact import g_identifier
+
+import traceback
+
+# pythonloader looks for a static g_ImplementationHelper variable
+g_ImplementationHelper = unohelper.ImplementationHelper()
+g_ImplementationName = '%s.Dispatcher' % g_identifier
+
+
+class Dispatcher(unohelper.Base,
+                 XDispatchProvider,
+                 XInitialization,
+                 XServiceInfo):
+    def __init__(self, ctx):
+        self._ctx = ctx
+        self._frame = None
+
+# XInitialization
+    def initialize(self, args):
+        if len(args) > 0:
+            self._frame = args[0]
+
+# XDispatchProvider
+    def queryDispatch(self, url, frame, flags):
+        dispatch = None
+        if url.Path in ('request', ):
+            parent = self._frame.getContainerWindow()
+            dispatch = Dispatch(self._ctx, parent)
+        return dispatch
+
+    def queryDispatches(self, requests):
+        dispatches = []
+        for request in requests:
+            dispatch = self.queryDispatch(request.FeatureURL, request.FrameName, request.SearchFlags)
+            dispatches.append(dispatch)
+        return tuple(dispatches)
+
+    # XServiceInfo
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+    def getImplementationName(self):
+        return g_ImplementationName
+    def getSupportedServiceNames(self):
+        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
+
+g_ImplementationHelper.addImplementation(Dispatcher,                                # UNO object class
+                                         g_ImplementationName,                      # Implementation name
+                                        (g_ImplementationName,))                    # List of implemented services

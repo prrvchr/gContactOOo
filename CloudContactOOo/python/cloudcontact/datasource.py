@@ -87,11 +87,9 @@ class DataSource(unohelper.Base,
             self._replicator.stop()
 
     def setUser(self, name, password):
-        new = False
         if name not in self._users:
-            user = User(self._ctx, self._database, self._provider, name)
-            new = user.initUser(self._database, password)
+            user = User(self._ctx, self._database, self._provider, name, password)
             self._users[name] = user
         # User has been initialized and the connection to the database is done...
         # We can start the database replication in a background task.
-        self._replicator.start(new)
+        self._replicator.start()

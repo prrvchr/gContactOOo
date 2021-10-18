@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+#!
+# -*- coding: utf_8 -*-
+
+"""
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
@@ -23,18 +25,69 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
--->
-<!DOCTYPE manifest:manifest PUBLIC "-//OpenOffice.org//DTD Manifest 1.0//EN" "Manifest.dtd">
-<manifest:manifest xmlns:manifest="http://openoffice.org/2001/manifest">
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-typelibrary;type=RDB" manifest:full-path="types.rdb"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.basic-library" manifest:full-path="gContactOOo/"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="Driver.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Drivers.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="OptionsDialog.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OAuth2OOo.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OptionsDialog.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-schema" manifest:full-path="Options.xcs"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Options.xcu"/>
-<!--    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="Dispatcher.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="ProtocolHandler.xcu"/> -->
-</manifest:manifest>
+"""
+
+import uno
+import unohelper
+
+from com.sun.star.frame import XNotifyingDispatch
+
+from com.sun.star.frame.DispatchResultState import SUCCESS
+from com.sun.star.frame.DispatchResultState import FAILURE
+
+from com.sun.star.ui.dialogs.ExecutableDialogResults import OK
+
+from com.sun.star.logging.LogLevel import INFO
+from com.sun.star.logging.LogLevel import SEVERE
+
+from gcontact import createService
+from gcontact import createMessageBox
+
+import traceback
+
+
+class Dispatch(unohelper.Base,
+               XNotifyingDispatch):
+    def __init__(self, ctx, parent):
+        self._ctx = ctx
+        self._parent = parent
+        self._listeners = []
+
+
+# XNotifyingDispatch
+    def dispatchWithNotification(self, url, arguments, listener):
+        state, result = self.dispatch(url, arguments)
+        struct = 'com.sun.star.frame.DispatchResultEvent'
+        notification = uno.createUnoStruct(struct, self, state, result)
+        listener.dispatchFinished(notification)
+
+    def dispatch(self, url, arguments):
+        state = SUCCESS
+        result = None
+        if url.Path == 'request':
+            state, result = self._getRequest(arguments)
+        return state, result
+
+    def addStatusListener(self, listener, url):
+        pass
+
+    def removeStatusListener(self, listener, url):
+        pass
+
+# Dispatch private methods
+    def _getRequest(self, arguments):
+        try:
+            state = FAILURE
+            result = None
+            mri = createService(self._ctx, 'mytools.Mri')
+            window = self._parent.getToolkit().getActiveTopWindow()
+            print("Dispatch._getRequest() 1 %s" % window)
+            #mri.inspect(window)
+            box = createMessageBox(self._parent, 'Test', 'Test')
+            if box.execute():
+                print("Dispatch._getRequest() 2")
+            print("Dispatch._getRequest() 3")
+            return state, result
+        except Exception as e:
+            msg = "Error: %s - %s" % (e, traceback.print_exc())
+            print(msg)

@@ -237,6 +237,7 @@ def getViewsAndTriggers(ctx, statement, name):
         f1.append(getSqlQuery(ctx, 'getAddressBookPredicate'))
         format = (name, ','.join(c1), ','.join(s1), ' '.join(f1))
         query = getSqlQuery(ctx, 'createView', format)
+        print("dbinit.getViewsAndTriggers()\n%s" % query)
         queries.append(query)
         trigger = getSqlQuery(ctx, 'createTriggerUpdateAddressBook', ' '.join(triggercore))
         triggers.append(trigger)

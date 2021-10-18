@@ -41,6 +41,8 @@ from com.sun.star.sdbc import XRestUser
 from .oauth2lib import getRequest
 from .oauth2lib import g_oauth2
 
+from .unotool import executeDispatch
+
 from .dbtool import getSqlException
 
 from .logger import getMessage
@@ -51,17 +53,16 @@ import traceback
 
 class User(unohelper.Base,
            XRestUser):
-    def __init__(self, ctx, database, provider, name):
+    def __init__(self, ctx, database, provider, name, password=''):
         self._ctx = ctx
         self.Fields = database.getUserFields()
+        #url = 'gcontact:request'
+        #executeDispatch(ctx, url)
         self.Request = getRequest(ctx, provider.Host, name)
-        self._new = False
-        self._addressbook = None
-        data = database.selectUser(name)
-        if data is None:
-            self._new = True
-            data = self._getMetaData(database, provider, name)
-        self.MetaData = data
+        self.MetaData = database.selectUser(name)
+        if self._isNew():
+            self.MetaData = self._getMetaData(database, provider, name)
+            self._initUser(database, password)
 
     @property
     def People(self):
@@ -85,21 +86,8 @@ class User(unohelper.Base,
     def GroupSync(self):
         return self.MetaData.getDefaultValue('GroupSync', None)
 
-    def initUser(self, database, password):
-        print("User.initUser() 1")
-        if self._new:
-            credential = self._getCredential(password)
-            print("User.initUser() 2")
-            if not database.createUser(*credential):
-                raise self._getSqlException(1005, 1106, name)
-            print("User.initUser() 3")
-            format = {'Schema': self.Resource,
-                      'User': self.Account,
-                      'GroupId': self.Group}
-            database.initUser(format)
-            print("User.initUser() 4")
-        print("User.initUser() 5")
-        return self._new
+    def _isNew(self):
+        return self.MetaData is None
 
     def _getMetaData(self, database, provider, name):
         if self.Request is None:
@@ -110,8 +98,16 @@ class User(unohelper.Base,
         if not data.IsPresent:
             raise self._getSqlException(1006, 1107, name)
         userid = provider.getUserId(data.Value)
-        data = database.insertUser(userid, name)
-        return data
+        return database.insertUser(userid, name)
+
+    def _initUser(self, database, password):
+        credential = self._getCredential(password)
+        if not database.createUser(*credential):
+            raise self._getSqlException(1005, 1106, name)
+        format = {'Schema': self.Resource,
+                    'User': self.Account,
+                    'GroupId': self.Group}
+        database.initUser(format)
 
     def _getCredential(self, password):
         return self.Account, password

@@ -45,6 +45,7 @@ from .datasource import DataSource
 from .dbtool import getDriverPropertyInfos
 from .dbtool import getSqlException
 
+from .unotool import createMessageBox
 from .unotool import createService
 from .unotool import getDesktop
 from .unotool import getDialog
@@ -52,3 +53,5 @@ from .unotool import getFileSequence
 from .unotool import getResourceLocation
 from .unotool import getSimpleFile
 from .unotool import getStringResource
+
+from .dispatch import Dispatch
