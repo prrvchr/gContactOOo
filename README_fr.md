@@ -1,3 +1,5 @@
+# ![gContactOOo logo](img/gContactOOo.png) gContactOOo
+
 **This [document](https://prrvchr.github.io/gContactOOo) in English.**
 
 **L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
