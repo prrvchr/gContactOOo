@@ -46,7 +46,7 @@ Vous devez installer cette extension, si elle n'est pas déjà installée.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![gContactOOo logo](https://prrvchr.github.io/gContactOOo/img/gContactOOo.png) **[gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt)** version 0.0.6.
+- Installer l'extension ![gContactOOo logo](img/gContactOOo.png) **[gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt)** version 0.0.6.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
