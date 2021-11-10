@@ -50,7 +50,7 @@ from gcontact import getLoggerUrl
 from gcontact import getMessage
 from gcontact import logMessage
 from gcontact import setLoggerSetting
-g_message = 'OptionsDialog'
+g_logger = 'Logger'
 
 from gcontact import g_extension
 from gcontact import g_identifier
@@ -152,10 +152,10 @@ class OptionsDialog(unohelper.Base,
 
     def _logInfo(self, dialog):
         version  = ' '.join(sys.version.split())
-        msg = getMessage(self._ctx, g_message, 111, version)
+        msg = getMessage(self._ctx, g_logger, 111, version)
         logMessage(self._ctx, INFO, msg, "OptionsDialog", "_logInfo()")
         path = os.pathsep.join(sys.path)
-        msg = getMessage(self._ctx, g_message, 112, path)
+        msg = getMessage(self._ctx, g_logger, 112, path)
         logMessage(self._ctx, INFO, msg, "OptionsDialog", "_logInfo()")
         url = getLoggerUrl(self._ctx)
         self._setDialogText(dialog, url)
