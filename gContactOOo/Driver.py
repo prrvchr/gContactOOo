@@ -73,13 +73,13 @@ class Driver(unohelper.Base,
         msg = getMessage(ctx, g_message, 101)
         logMessage(ctx, INFO, msg, 'Driver', '__init__()')
 
-    _dataSource = None
+    _datasource = None
 
     @property
     def DataSource(self):
-        if Driver._dataSource is None:
-            Driver._dataSource = DataSource(self._ctx)
-        return Driver._dataSource
+        if Driver._datasource is None:
+            Driver._datasource = DataSource(self._ctx)
+        return Driver._datasource
 
 # XCreateCatalog
     def createCatalog(self, info):
