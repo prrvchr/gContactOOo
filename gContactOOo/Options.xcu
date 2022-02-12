@@ -32,7 +32,7 @@
   oor:package="com.gmail.prrvchr.extensions"
   oor:name="gContactOOo">
     <prop oor:name="AddressBookName">
-        <value xml:lang="en-US">My Google contacts</value>
-        <value xml:lang="fr-FR">Mes contacts Google</value>
+        <value xml:lang="en">All my contacts</value>
+        <value xml:lang="fr">Tous mes contacts</value>
     </prop>
 </oor:component-data>
