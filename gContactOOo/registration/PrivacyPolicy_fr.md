@@ -15,6 +15,8 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 - `Utilisateur`: l'utilisateur du logiciel gContactOOo.
 - `Fournisseur`: fournisseur de services Internet fournissant des services Internet à `gContactOOo`.
 
+Bien que **gContactOOo ne partage ni ne transfert aucun données avec toutes autre application**, `gContactOOo` respecte [la politique de données utilisateur des services API Google](https://developers.google.com/terms/api-services-user-data-policy), y compris les exigences d'utilisation limitée.
+
 ## Contact:
 
 Dans tous les cas, il est possible de contacter le responsable du traitement des données à l'adresse suivante:
