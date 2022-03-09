@@ -123,10 +123,13 @@ def _createPreparedStatement(ctx, datasource, statements):
 
 def getTablesAndStatements(ctx, statement, version=g_version):
     try:
+        print("dbinit.getTablesAndStatements() 1")
         tables = []
         statements = []
         call = getDataSourceCall(ctx, statement.getConnection(), 'getTables')
+        print("dbinit.getTablesAndStatements() 2")
         for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableNames'))):
+            print("dbinit.getTablesAndStatements() 3")
             view = False
             versioned = False
             columns = []
@@ -153,9 +156,9 @@ def getTablesAndStatements(ctx, statement, version=g_version):
                     unique.append({'Table': table, 'Column': column})
                 if data.getValue('ForeignTable') and data.getValue('ForeignColumn'):
                     constraint.append({'Table': table,
-                                    'Column': column,
-                                    'ForeignTable': data.getValue('ForeignTable'),
-                                    'ForeignColumn': data.getValue('ForeignColumn')})
+                                       'Column': column,
+                                       'ForeignTable': data.getValue('ForeignTable'),
+                                       'ForeignColumn': data.getValue('ForeignColumn')})
             if primary:
                 columns.append(getSqlQuery(ctx, 'getPrimayKey', primary))
             for format in unique:
@@ -168,7 +171,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
             query = getSqlQuery(ctx, 'createTable', format)
             if version >= '2.5.0' and versioned:
                 query += getSqlQuery(ctx, 'getSystemVersioning')
-            print("dbinit.getTablesAndStatements() \n%s" % query)
+            print("dbinit.getTablesAndStatements() 4 \n%s" % query)
             tables.append(query)
             if view:
                 typed = False
@@ -185,7 +188,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
         call.close()
         return tables, statements
     except Exception as e:
-        print("ERROR: %s" % traceback.print_exc())
+        traceback.print_exc()
 
 
 def getViewsAndTriggers(ctx, statement, name):
