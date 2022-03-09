@@ -128,8 +128,14 @@ def getTablesAndStatements(ctx, statement, version=g_version):
         statements = []
         call = getDataSourceCall(ctx, statement.getConnection(), 'getTables')
         print("dbinit.getTablesAndStatements() 2")
-        for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableNames'))):
-            print("dbinit.getTablesAndStatements() 3")
+        q = getSqlQuery(ctx, 'getTableNames')
+        print("dbinit.getTablesAndStatements() 3 %s" % q)
+        r = statement.executeQuery(query)
+        print("dbinit.getTablesAndStatements() 4")
+        seq = getSequenceFromResult(r)
+        print("dbinit.getTablesAndStatements() 5 %s" % (seq, ))
+        for table in seq:
+            print("dbinit.getTablesAndStatements() 6")
             view = False
             versioned = False
             columns = []
@@ -171,7 +177,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
             query = getSqlQuery(ctx, 'createTable', format)
             if version >= '2.5.0' and versioned:
                 query += getSqlQuery(ctx, 'getSystemVersioning')
-            print("dbinit.getTablesAndStatements() 4 \n%s" % query)
+            print("dbinit.getTablesAndStatements() 7 \n%s" % query)
             tables.append(query)
             if view:
                 typed = False
