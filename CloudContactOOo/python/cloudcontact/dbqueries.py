@@ -263,10 +263,10 @@ GRANT SELECT ON "%(Schema)s"."%(Name)s" TO "%(User)s";
 
 # Select Queries
     elif name == 'getTableNames':
-        query = 'SELECT "Name" FROM PUBLIC."Tables";'
+        query = 'SELECT "Name" FROM "Tables" WHERE "View" IS NOT NULL ORDER BY "Table";'
 
     elif name == 'getViewNames':
-        query = 'SELECT "Name" FROM "Tables" WHERE "View"=TRUE ORDER BY "Table"'
+        query = 'SELECT "Name" FROM "Tables" WHERE "View"=TRUE ORDER BY "Table";'
 
     elif name == 'getTables':
         s1 = '"T"."Table" AS "TableId"'
