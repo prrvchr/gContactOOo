@@ -158,9 +158,8 @@ def createDataSource1(dbcontext, location, dbname, shutdown):
     datasource.URL = getDataSourceLocation(location, dbname, shutdown)
     return datasource
 
-def getDataSourceLocation1(location, dbname, shutdown):
+def getDataSourceLocation(location, dbname, shutdown=False):
     url = '%s%s/%s%s' % (g_protocol, location, dbname, g_options)
-    print("dbtool.getDataSourceLocation() %s" % url)
     if shutdown:
         url += g_shutdown
     return url
@@ -447,14 +446,15 @@ def getRowResult(result, index=(0,), separator=' '):
     return tuple(sequence)
 
 def getValueFromResult(result, index=1, default=None):
-    # TODO: 'TINYINT' is buggy: don't use it
     dbtype = result.MetaData.getColumnTypeName(index)
     if dbtype == 'VARCHAR':
+        value = result.getString(index)
+    elif dbtype == 'CHARACTER':
         value = result.getString(index)
     elif dbtype == 'BOOLEAN':
         value = result.getBoolean(index)
     elif dbtype == 'TINYINT':
-        value = result.getShort(index)
+        value = result.getByte(index)
     elif dbtype == 'SMALLINT':
         value = result.getShort(index)
     elif dbtype == 'INTEGER':
@@ -465,12 +465,14 @@ def getValueFromResult(result, index=1, default=None):
         value = result.getFloat(index)
     elif dbtype == 'DOUBLE':
         value = result.getDouble(index)
-    elif dbtype == 'TIMESTAMP':
+    elif dbtype.startswith('TIMESTAMP'):
         value = result.getTimestamp(index)
     elif dbtype == 'TIME':
         value = result.getTime(index)
     elif dbtype == 'DATE':
         value = result.getDate(index)
+    elif dbtype == 'BINARY':
+        value = result.getBytes(index).value
     elif dbtype.endswith('ARRAY'):
         value = result.getArray(index)
     else:
@@ -479,15 +481,17 @@ def getValueFromResult(result, index=1, default=None):
 
 def createStaticTable(ctx, statement, tables, readonly=False):
     for table in tables:
-        query = getSqlQuery(ctx, 'createTable' + table)
+        query = getSqlQuery(ctx, 'createTable' + table, table)
         statement.executeUpdate(query)
-    for table in tables:
-        statement.executeUpdate(getSqlQuery(ctx, 'setTableSource', table))
+        query = getSqlQuery(ctx, 'setTableSource', table)
+        statement.executeUpdate(query)
         if readonly:
-            statement.executeUpdate(getSqlQuery(ctx, 'setTableReadOnly', table))
+            query = getSqlQuery(ctx, 'setTableReadOnly', table)
+            statement.executeUpdate(query)
 
 def executeSqlQueries(statement, queries):
     for query in queries:
+        print("dbtool.executeSqlQueries(): %s" % query)
         statement.executeQuery(query)
 
 def getWarning(state, code, message, context=None, exception=None):
