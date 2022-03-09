@@ -187,8 +187,8 @@ def getTablesAndStatements(ctx, statement, version=g_version):
                 statements.append(merge)
         call.close()
         return tables, statements
-    except Exception as e:
-        traceback.print_exc()
+    except:
+        print(traceback.format_exc())
 
 
 def getViewsAndTriggers(ctx, statement, name):
