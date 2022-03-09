@@ -96,6 +96,7 @@ class DataBase(unohelper.Base,
         self._batchedCalls = OrderedDict()
         self._addressbook = None
         url = getResourceLocation(ctx, g_identifier, g_folder)
+        print("gContact.DataBase.init() %s" % url)
         self._url = url + '/' + g_host
         if self._embedded:
             self._path = url + '/' + g_jar
