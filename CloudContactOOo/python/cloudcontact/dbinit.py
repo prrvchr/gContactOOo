@@ -121,11 +121,13 @@ def _createPreparedStatement(ctx, datasource, statements):
             query.Command = sql
             queries.insertByName(name, query)
 
-def _getTableNames(ctx, statement):
+def _getTableNames(ctx, connection):
     print("dbinit._getTableNames() 1")
+    statement = connection.createStatement()
     result = statement.executeQuery(getSqlQuery(ctx, 'getTableNames'))
     names = getSequenceFromResult(result)
     result.close()
+    statement.close()
     print("dbinit._getTableNames() 2 %s"% (names, ))
     return names
 
@@ -134,7 +136,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
         print("dbinit.getTablesAndStatements() 1")
         tables = []
         statements = []
-        names = _getTableNames(ctx, statement)
+        names = _getTableNames(ctx, statement.getConnection())
         call = getDataSourceCall(ctx, statement.getConnection(), 'getTables')
         print("dbinit.getTablesAndStatements() 2")
         for table in names:
