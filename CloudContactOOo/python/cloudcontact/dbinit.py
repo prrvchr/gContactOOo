@@ -130,7 +130,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
         print("dbinit.getTablesAndStatements() 2")
         q = getSqlQuery(ctx, 'getTableNames')
         print("dbinit.getTablesAndStatements() 3 %s" % q)
-        r = statement.executeQuery(query)
+        r = statement.executeQuery(q)
         print("dbinit.getTablesAndStatements() 4")
         seq = getSequenceFromResult(r)
         print("dbinit.getTablesAndStatements() 5 %s" % (seq, ))
