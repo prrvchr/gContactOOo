@@ -141,8 +141,6 @@ def getTablesAndStatements(ctx, statement, version=g_version):
             column = data.getValue('Column')
             definition = '"%s"' % column
             definition += ' %s' % data.getValue('Type')
-            lenght = data.getValue('Lenght')
-            definition += '(%s)' % lenght if lenght else ''
             default = data.getValue('Default')
             definition += ' DEFAULT %s' % default if default else ''
             options = data.getValue('Options')
@@ -169,6 +167,7 @@ def getTablesAndStatements(ctx, statement, version=g_version):
         query = getSqlQuery(ctx, 'createTable', format)
         if version >= '2.5.0' and versioned:
             query += getSqlQuery(ctx, 'getSystemVersioning')
+        print("dbinit.getTablesAndStatements() \n%s" % query)
         tables.append(query)
         if view:
             typed = False
