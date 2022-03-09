@@ -122,67 +122,71 @@ def _createPreparedStatement(ctx, datasource, statements):
             queries.insertByName(name, query)
 
 def getTablesAndStatements(ctx, statement, version=g_version):
-    tables = []
-    statements = []
-    call = getDataSourceCall(ctx, statement.getConnection(), 'getTables')
-    for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableNames'))):
-        view = False
-        versioned = False
-        columns = []
-        primary = []
-        unique = []
-        constraint = []
-        call.setString(1, table)
-        result = call.executeQuery()
-        while result.next():
-            data = getKeyMapFromResult(result, KeyMap())
-            view = data.getValue('View')
-            versioned = data.getValue('Versioned')
-            column = data.getValue('Column')
-            definition = '"%s"' % column
-            definition += ' %s' % data.getValue('Type')
-            default = data.getValue('Default')
-            definition += ' DEFAULT %s' % default if default else ''
-            options = data.getValue('Options')
-            definition += ' %s' % options if options else ''
-            columns.append(definition)
-            if data.getValue('Primary'):
-                primary.append('"%s"' % column)
-            if data.getValue('Unique'):
-                unique.append({'Table': table, 'Column': column})
-            if data.getValue('ForeignTable') and data.getValue('ForeignColumn'):
-                constraint.append({'Table': table,
-                                   'Column': column,
-                                   'ForeignTable': data.getValue('ForeignTable'),
-                                   'ForeignColumn': data.getValue('ForeignColumn')})
-        if primary:
-            columns.append(getSqlQuery(ctx, 'getPrimayKey', primary))
-        for format in unique:
-            columns.append(getSqlQuery(ctx, 'getUniqueConstraint', format))
-        for format in constraint:
-            columns.append(getSqlQuery(ctx, 'getForeignConstraint', format))
-        if version >= '2.5.0' and versioned:
-            columns.append(getSqlQuery(ctx, 'getPeriodColumns'))
-        format = (table, ','.join(columns))
-        query = getSqlQuery(ctx, 'createTable', format)
-        if version >= '2.5.0' and versioned:
-            query += getSqlQuery(ctx, 'getSystemVersioning')
-        print("dbinit.getTablesAndStatements() \n%s" % query)
-        tables.append(query)
-        if view:
-            typed = False
+    try:
+        tables = []
+        statements = []
+        call = getDataSourceCall(ctx, statement.getConnection(), 'getTables')
+        for table in getSequenceFromResult(statement.executeQuery(getSqlQuery(ctx, 'getTableNames'))):
+            view = False
+            versioned = False
+            columns = []
+            primary = []
+            unique = []
+            constraint = []
+            call.setString(1, table)
+            result = call.executeQuery()
+            while result.next():
+                data = getKeyMapFromResult(result, KeyMap())
+                view = data.getValue('View')
+                versioned = data.getValue('Versioned')
+                column = data.getValue('Column')
+                definition = '"%s"' % column
+                definition += ' %s' % data.getValue('Type')
+                default = data.getValue('Default')
+                definition += ' DEFAULT %s' % default if default else ''
+                options = data.getValue('Options')
+                definition += ' %s' % options if options else ''
+                columns.append(definition)
+                if data.getValue('Primary'):
+                    primary.append('"%s"' % column)
+                if data.getValue('Unique'):
+                    unique.append({'Table': table, 'Column': column})
+                if data.getValue('ForeignTable') and data.getValue('ForeignColumn'):
+                    constraint.append({'Table': table,
+                                    'Column': column,
+                                    'ForeignTable': data.getValue('ForeignTable'),
+                                    'ForeignColumn': data.getValue('ForeignColumn')})
+            if primary:
+                columns.append(getSqlQuery(ctx, 'getPrimayKey', primary))
+            for format in unique:
+                columns.append(getSqlQuery(ctx, 'getUniqueConstraint', format))
             for format in constraint:
-                if format['Column'] == 'Type':
-                    typed = True
-                    break
-            format = {'Table': table}
-            if typed:
-                merge = getSqlQuery(ctx, 'createTypedDataMerge', format)
-            else:
-                merge = getSqlQuery(ctx, 'createUnTypedDataMerge', format)
-            statements.append(merge)
-    call.close()
-    return tables, statements
+                columns.append(getSqlQuery(ctx, 'getForeignConstraint', format))
+            if version >= '2.5.0' and versioned:
+                columns.append(getSqlQuery(ctx, 'getPeriodColumns'))
+            format = (table, ','.join(columns))
+            query = getSqlQuery(ctx, 'createTable', format)
+            if version >= '2.5.0' and versioned:
+                query += getSqlQuery(ctx, 'getSystemVersioning')
+            print("dbinit.getTablesAndStatements() \n%s" % query)
+            tables.append(query)
+            if view:
+                typed = False
+                for format in constraint:
+                    if format['Column'] == 'Type':
+                        typed = True
+                        break
+                format = {'Table': table}
+                if typed:
+                    merge = getSqlQuery(ctx, 'createTypedDataMerge', format)
+                else:
+                    merge = getSqlQuery(ctx, 'createUnTypedDataMerge', format)
+                statements.append(merge)
+        call.close()
+        return tables, statements
+    except Exception as e:
+        print("ERROR: %s" % traceback.print_exc())
+
 
 def getViewsAndTriggers(ctx, statement, name):
     c1 = []
