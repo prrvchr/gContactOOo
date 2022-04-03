@@ -42,7 +42,7 @@ Si nécessaire, renommez-le avant de l'installer.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![HsqlDBDriverOOo logo](https://prrvchr.github.io/HsqlDBDriverOOo/img/HsqlDBDriverOOo.png) **[HsqlDBDriverOOo.oxt](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt)** version 0.0.4.
+- Installer l'extension ![jdbcDriverOOo logo](https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png) **[jdbcDriverOOo.oxt](https://github.com/prrvchr/jdbcDriverOOo/raw/master/jdbcDriverOOo.oxt)** version 0.0.4.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
@@ -133,7 +133,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
 
-- L'extension [HsqlDBDriverOOo](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+- L'extension [jdbcDriverOOo](https://github.com/prrvchr/jdbcDriverOOo/raw/master/jdbcDriverOOo.oxt) fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
 - Modification du [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) afin de:
     - Ouvrir et fermer la base de données à chaque réplication.

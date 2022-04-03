@@ -42,7 +42,7 @@ If necessary, rename it before installing it.
 
 You must install this extension, if it is not already installed.
 
-- Install ![HsqlDBDriverOOo logo](https://prrvchr.github.io/HsqlDBDriverOOo/img/HsqlDBDriverOOo.png) **[HsqlDBDriverOOo.oxt](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt)** extension version 0.0.4.
+- Install ![jdbcDriverOOo logo](https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png) **[jdbcDriverOOo.oxt](https://github.com/prrvchr/jdbcDriverOOo/raw/master/jdbcDriverOOo.oxt)** extension version 0.0.4.
 
 You must install this extension, if it is not already installed.
 
@@ -133,7 +133,7 @@ It will give you access to an information system that only larges companies are 
 
 - Driver is now registred for a new protocol: **sdbc:address:google:your_account@gmail.com**
 
-- The [HsqlDBDriverOOo](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt) extension now provides the driver needed to access the HsqlDB database used by gContactOOo.
+- The [jdbcDriverOOo](https://github.com/prrvchr/jdbcDriverOOo/raw/master/jdbcDriverOOo.oxt) extension now provides the driver needed to access the HsqlDB database used by gContactOOo.
 
 - Modifying the [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) in order to: 
     - Open and close the database at each replication.
