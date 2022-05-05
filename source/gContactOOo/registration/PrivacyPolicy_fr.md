@@ -1,4 +1,4 @@
-# ![gContactOOo logo](https://prrvchr.github.io/gContactOOo/img/gContactOOo.png) gContactOOo - Politique de protection des données
+# (https://prrvchr.github.io/gContactOOo/img/gContactOOo.png) gContactOOo ![gContactOOo logo] Politique de protection des données
 
 **L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr).**
 

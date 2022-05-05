@@ -1,4 +1,4 @@
-# ![logo][1] gContactOOo - Conditions d'utilisation
+# gContactOOo ![logo][1] Conditions d'utilisation
 
 **L’utilisation de ce logiciel vous soumet également à nos [Règles de Confidentialité][2]**.
 
