@@ -1,6 +1,6 @@
 # ![gContactOOo logo](https://prrvchr.github.io/gContactOOo/img/gContactOOo.png) gContactOOo - Data Protection Policy
 
-**Use of this software also subjects you to our [Terms Of Use](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_en).**
+**Use of this software also subjects you to our [Terms Of Use](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en).**
 
 Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/gContactOOo/).
 
