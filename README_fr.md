@@ -1,8 +1,8 @@
-# ![gContactOOo logo](img/gContactOOo.png) gContactOOo
+# ![gContactOOo logo][1] gContactOOo
 
-**This [document](https://prrvchr.github.io/gContactOOo) in English.**
+**This [document][2] in English.**
 
-**L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/gContactOOo/registration/PrivacyPolicy_fr)
+**L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr)
 
 # version [0.0.6](https://prrvchr.github.io/gContactOOo/README_fr#historique)
 
@@ -42,11 +42,11 @@ Si nécessaire, renommez-le avant de l'installer.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![jdbcDriverOOo logo](https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png) **[jdbcDriverOOo.oxt](https://github.com/prrvchr/jdbcDriverOOo/raw/master/jdbcDriverOOo.oxt)** version 0.0.4.
+- Installer l'extension ![jdbcDriverOOo logo](https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png) **[jdbcDriverOOo.oxt](https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt)** version 0.0.4.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![gContactOOo logo](img/gContactOOo.png) **[gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt)** version 0.0.6.
+- Installer l'extension ![gContactOOo logo](img/gContactOOo.png) **[gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/source/gContactOOo/dist/gContactOOo.oxt)** version 0.0.6.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
@@ -111,7 +111,7 @@ J'essaierai de le résoudre ;-)
 
 Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
 
-Avec l'extension [smtpMailerOOo](https://github.com/prrvchr/smtpMailerOOo/blob/master/smtpMailerOOo.oxt), elle peut être la source de données pour des [publipostages](https://fr.wikipedia.org/wiki/Publipostage) par courriel (email), à vos correspondants contenus dans votre téléphone.
+Avec l'extension [smtpMailerOOo](https://github.com/prrvchr/smtpMailerOOo/blob/master/source/smtpMailerOOo/dist/smtpMailerOOo.oxt), elle peut être la source de données pour des [publipostages](https://fr.wikipedia.org/wiki/Publipostage) par courriel (email), à vos correspondants contenus dans votre téléphone.
 
 Elle vous donnera accès à un système d'information que seules les grandes entreprises sont capables, aujourd'hui, de mettre en œuvre.
 
@@ -119,11 +119,11 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
-- Ecriture d'une nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py), lancé en arrière-plan (python Thread) responsable de:
+- Ecriture d'une nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py), lancé en arrière-plan (python Thread) responsable de:
 
     - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
 
-- Ecriture d'une nouvelle interface [DataBase](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/database.py), responsable de tous les appels à la base de données.
+- Ecriture d'une nouvelle interface [DataBase](https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py), responsable de tous les appels à la base de données.
 
 - Beaucoup d'autres correctifs...
 
@@ -133,9 +133,9 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
 
-- L'extension [jdbcDriverOOo](https://github.com/prrvchr/jdbcDriverOOo/raw/master/jdbcDriverOOo.oxt) fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+- L'extension [jdbcDriverOOo](https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt) fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
-- Modification du [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/CloudContactOOo/python/cloudcontact/replicator.py) afin de:
+- Modification du [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py) afin de:
     - Ouvrir et fermer la base de données à chaque réplication.
     - Se mettre en attente après la dernière fermeture du carnet d'adresses.
     - Se décharger lors de la fermeture de LibreOffice / OpenOffice.
@@ -151,3 +151,6 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 - Ajouter de nouvelles langues pour l'internationalisation...
 
 - Tout ce qui est bienvenu...
+
+[1]: <img/gContactOOo.png>
+[2]: <https://prrvchr.github.io/gContactOOo>

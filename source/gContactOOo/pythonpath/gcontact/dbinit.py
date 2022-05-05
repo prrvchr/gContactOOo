@@ -1,0 +1,1 @@
+../../../../uno/lib/uno/addressbook/dbinit.py
