@@ -1,4 +1,7 @@
-/*
+#!
+# -*- coding: utf_8 -*-
+
+"""
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
@@ -22,71 +25,71 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
-*/
-package io.github.prrvchr.uno.helper;
+"""
 
-import java.util.Map;
+import uno
+import unohelper
 
-import com.sun.star.container.NoSuchElementException;
-import com.sun.star.container.XNameAccess;
-import com.sun.star.lang.WrappedTargetException;
-import com.sun.star.uno.Type;
+from com.sun.star.logging.LogLevel import INFO
+from com.sun.star.logging.LogLevel import SEVERE
 
+from com.sun.star.ucb import XRestUser
 
-public class NameAccessHelper<T>
-implements XNameAccess
-{
-    private final Map<String, T> m_elements;
-    private String m_type = "com.sun.star.uno.XInterface";
+from .unolib import KeyMap
 
-    // The constructor method:
-    public NameAccessHelper(Map<String, T> elements)
-    {
-        m_elements = elements;
-    }
-    public NameAccessHelper(Map<String, T> elements,
-                            String type)
-    {
-        m_elements = elements;
-        m_type = type;
-    }
+from .oauth2tool import getRequest
+
+from .database import DataBase
+
+from .logger import logMessage
+from .logger import getMessage
+g_message = 'user'
+
+import traceback
 
 
-    // com.sun.star.container.XElementAccess <- XNameAccess:
-    @Override
-    public Type getElementType()
-    {
-        return new Type(m_type);
-    }
+class User(unohelper.Base,
+           XRestUser):
+    def __init__(self, ctx, source=None, name=None, database=None):
+        self.ctx = ctx
+        self.DataBase = database
+        # Uri with Scheme but without a Path generate invalid user but we need
+        # to return an Identifier, and raise an 'IllegalIdentifierException'
+        # when ContentProvider try to get the Content...
+        # (ie: ContentProvider.queryContent() -> Identifier.getContent())
+        if source is None:
+            self.Provider = None
+            self.Request = None
+            self.MetaData = KeyMap()
+        else:
+            self.Provider = source.Provider
+            self.Request = getRequest(self.ctx, self.Provider.Scheme, name)
+            self.MetaData = source.DataBase.selectUser(name)
+            self.CanAddChild = not self.Provider.GenerateIds
+        msg = getMessage(self.ctx, g_message, 101)
+        logMessage(self.ctx, INFO, msg, "User", "__init__()")
 
-    @Override
-    public boolean hasElements()
-    {
-        return !m_elements.isEmpty();
-    }
+    @property
+    def Id(self):
+        return self.MetaData.getDefaultValue('UserId', None)
+    @property
+    def Name(self):
+        return self.MetaData.getDefaultValue('UserName', None)
+    @property
+    def RootId(self):
+        return self.MetaData.getDefaultValue('RootId', None)
+    @property
+    def RootName(self):
+        return self.MetaData.getDefaultValue('RootName', None)
+    @property
+    def Token(self):
+        return self.MetaData.getDefaultValue('Token', '')
 
-
-    // com.sun.star.container.XNameAccess:
-    @Override
-    public Object getByName(String name)
-    throws NoSuchElementException, WrappedTargetException
-    {
-        if (!hasByName(name)) throw new NoSuchElementException();
-        return m_elements.get(name);
-    }
-
-    @Override
-    public String[] getElementNames()
-    {
-        int len = m_elements.size();
-        return m_elements.keySet().toArray(new String[len]);
-    }
-
-    @Override
-    public boolean hasByName(String name)
-    {
-        return m_elements.containsKey(name);
-    }
-
-
-}
+    # XRestUser
+    def isValid(self):
+        return self.Id is not None
+    def setDataBase(self, datasource, password, sync):
+        name, password = self.getCredential(password)
+        self.DataBase = DataBase(self.ctx, datasource, name, password, sync)
+    def getCredential(self, password):
+        return self.Name, password

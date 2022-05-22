@@ -1,4 +1,7 @@
-/*
+#!
+# -*- coding: utf-8 -*-
+
+"""
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
@@ -22,64 +25,17 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
-*/
-package io.github.prrvchr.uno.helper;
+"""
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.HashMap;
-
-import com.sun.star.container.XNameAccess;
-import com.sun.star.sdbcx.XUser;
-import com.sun.star.sdbcx.XUsersSupplier;
-
-
-public class UsersSupplierHelper
-implements XUsersSupplier
-{
-    private final java.sql.Connection m_Connection;
-
-    // The constructor method:
-    public UsersSupplierHelper(Connection connection)
-    {
-        m_Connection = connection;
-    }
-
-
-    // com.sun.star.sdbcx.XUsersSupplier:
-    @Override
-    public XNameAccess getUsers()
-    {
-        ResultSet result = null;
-        String query = "SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS";
-        try
-        {
-            Statement statement = m_Connection.createStatement();
-            result = statement.executeQuery(query);
-        }
-        catch (java.sql.SQLException e) {e.getStackTrace();}
-        if (result == null) return null;
-        @SuppressWarnings("unused")
-        String type = "com.sun.star.sdbc.XUser";
-        @SuppressWarnings("unused")
-        HashMap<String, XUser> elements = new HashMap<>();
-        try
-        {
-            int i = 1;
-            int count = result.getMetaData().getColumnCount();
-            while (result.next())
-            {
-                for (int j = 1; j <= count; j++)
-                {
-                    String value = UnoHelper.getResultSetValue(result, j);
-                    System.out.println("UsersSupplier.getUsers() " + i + " - " + value);
-                }
-                i++;
-            }
-        } catch (java.sql.SQLException e) {e.printStackTrace();}
-        return null;
-    }
-
-
-}
+# DataSource configuration
+g_protocol = 'xdbc:hsqldb:'
+g_folder = 'hsqldb'
+g_path = 'hsqldb'
+g_jar = 'hsqldb.jar'
+g_class = 'org.hsqldb.jdbcDriver'
+g_options = ';default_schema=true;hsqldb.default_table_type=cached;get_column_name=false;ifexists=false'
+g_shutdown = ';shutdown=true'
+g_csv = '%s.csv;fs=|;ignore_first=true;encoding=UTF-8;quoted=true'
+g_version = '2.5.0'
+g_role = 'FrontOffice'
+g_dba = 'AD'
