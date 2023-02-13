@@ -27,65 +27,23 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import uno
-import unohelper
+# General configuration
+g_extension = 'gContactOOo'
+g_identifier = 'io.github.prrvchr.%s' % g_extension
+g_logger = '%s.Logger' % g_identifier
+# Resource strings files folder
+g_resource = 'resource'
 
-from com.sun.star.frame import XDispatchProvider
+g_host = 'people.googleapis.com'
+g_version = 'v1'
+g_url = 'https://%s/%s' % (g_host, g_version)
+g_page = 100
+g_member = 1000
+g_admin = False
+g_sync = 600
+g_compact = 100
 
-from com.sun.star.lang import XInitialization
-from com.sun.star.lang import XServiceInfo
-
-from com.sun.star.logging.LogLevel import INFO
-from com.sun.star.logging.LogLevel import SEVERE
-
-from gcontact import Dispatch
-
-from gcontact import g_identifier
-
-import traceback
-
-# pythonloader looks for a static g_ImplementationHelper variable
-g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationName = '%s.Dispatcher' % g_identifier
-
-
-class Dispatcher(unohelper.Base,
-                 XDispatchProvider,
-                 XInitialization,
-                 XServiceInfo):
-    def __init__(self, ctx):
-        self._ctx = ctx
-        self._frame = None
-
-# XInitialization
-    def initialize(self, args):
-        if len(args) > 0:
-            self._frame = args[0]
-
-# XDispatchProvider
-    def queryDispatch(self, url, frame, flags):
-        dispatch = None
-        if url.Path in ('request', ):
-            parent = self._frame.getContainerWindow()
-            dispatch = Dispatch(self._ctx, parent)
-        return dispatch
-
-    def queryDispatches(self, requests):
-        dispatches = []
-        for request in requests:
-            dispatch = self.queryDispatch(request.FeatureURL, request.FrameName, request.SearchFlags)
-            dispatches.append(dispatch)
-        return tuple(dispatches)
-
-    # XServiceInfo
-    def supportsService(self, service):
-        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
-    def getImplementationName(self):
-        return g_ImplementationName
-    def getSupportedServiceNames(self):
-        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
-
-
-g_ImplementationHelper.addImplementation(Dispatcher,                                # UNO object class
-                                         g_ImplementationName,                      # Implementation name
-                                        (g_ImplementationName,))                    # List of implemented services
+g_group = 'all'
+g_filter = 'USER_CONTACT_GROUP'
+g_timestamp = '%Y-%m-%dT%H:%M:%S.00'
+g_db_timestamp = 'YYYY-MM-DD"T"HH24:MI:SS.FFFFFFFFFFFF"Z"'

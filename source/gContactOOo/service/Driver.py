@@ -118,13 +118,13 @@ class Driver(unohelper.Base,
             msg = getMessage(self._ctx, g_message, 119, username)
             logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             version = connection.getMetaData().getDriverVersion()
-            msg = getMessage(self._ctx, g_message, 120, (version, username))
+            msg = getMessage(self._ctx, g_message, 120, version, username)
             logMessage(self._ctx, INFO, msg, 'Driver', 'connect()')
             return connection
         except SQLException as e:
             raise e
         except Exception as e:
-            msg = getMessage(self._ctx, g_message, 121, (e, traceback.print_exc()))
+            msg = getMessage(self._ctx, g_message, 121, e, traceback.print_exc())
             logMessage(self._ctx, SEVERE, msg, 'Driver', 'connect()')
             print(msg)
 
