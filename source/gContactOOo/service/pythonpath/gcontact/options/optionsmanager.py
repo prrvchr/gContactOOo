@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+#!
+# -*- coding: utf-8 -*-
+
+"""
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
@@ -23,16 +25,53 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
--->
-<!DOCTYPE manifest:manifest PUBLIC "-//OpenOffice.org//DTD Manifest 1.0//EN" "Manifest.dtd">
-<manifest:manifest xmlns:manifest="http://openoffice.org/2001/manifest">
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-typelibrary;type=RDB" manifest:full-path="types.rdb"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.basic-library" manifest:full-path="gContactOOo/"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="service/Driver.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Drivers.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="service/OptionsHandler.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OAuth2OOo.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OptionsDialog.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-schema" manifest:full-path="Options.xcs"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Options.xcu"/>
-</manifest:manifest>
+"""
+
+import uno
+import unohelper
+
+from com.sun.star.ui.dialogs.ExecutableDialogResults import OK
+
+from ..unotool import getDesktop
+from ..unotool import getResourceLocation
+from ..unotool import getSimpleFile
+
+from ..logger import LogManager
+
+from ..configuration import g_identifier
+from ..configuration import g_host
+from ..configuration import g_driverlog
+
+from ..dbconfig  import g_folder
+
+import os
+import sys
+import traceback
+
+
+class OptionsManager(unohelper.Base):
+    def __init__(self, ctx, window):
+        self._ctx = ctx
+        print("OptionsManager.__init__() 1")
+        version  = ' '.join(sys.version.split())
+        path = os.pathsep.join(sys.path)
+        infos = {111: version, 112: path}
+        self._logger = LogManager(ctx, window.getPeer(), infos, g_identifier, g_driverlog)
+        self._window = window
+        print("OptionsManager.__init__() 2")
+
+    def loadSetting(self):
+        self._logger.reloadSetting()
+
+    def saveSetting(self):
+        self._logger.saveSetting()
+
+    def viewData(self):
+        folder = g_folder + '/' + g_host
+        location = getResourceLocation(self._ctx, g_identifier, folder)
+        url = location + '.odb'
+        if getSimpleFile(self._ctx).exists(url):
+            desktop = getDesktop(self._ctx)
+            desktop.loadComponentFromURL(url, '_default', 0, ())
+            self._window.endDialog(OK)
+

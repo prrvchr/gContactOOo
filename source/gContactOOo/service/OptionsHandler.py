@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+#!
+# -*- coding: utf-8 -*-
+
+"""
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
@@ -23,16 +25,70 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
--->
-<!DOCTYPE manifest:manifest PUBLIC "-//OpenOffice.org//DTD Manifest 1.0//EN" "Manifest.dtd">
-<manifest:manifest xmlns:manifest="http://openoffice.org/2001/manifest">
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-typelibrary;type=RDB" manifest:full-path="types.rdb"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.basic-library" manifest:full-path="gContactOOo/"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="service/Driver.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Drivers.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-component;type=Python" manifest:full-path="service/OptionsHandler.py"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OAuth2OOo.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="OptionsDialog.xcu"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-schema" manifest:full-path="Options.xcs"/>
-    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" manifest:full-path="Options.xcu"/>
-</manifest:manifest>
+"""
+
+import uno
+import unohelper
+
+from com.sun.star.lang import XServiceInfo
+
+from com.sun.star.awt import XContainerWindowEventHandler
+
+from gcontact import OptionsManager
+
+from gcontact import g_identifier
+
+import traceback
+
+# pythonloader looks for a static g_ImplementationHelper variable
+g_ImplementationHelper = unohelper.ImplementationHelper()
+g_ImplementationName = '%s.OptionsHandler' % g_identifier
+
+
+class OptionsHandler(unohelper.Base,
+                     XServiceInfo,
+                     XContainerWindowEventHandler):
+    def __init__(self, ctx):
+        self._ctx = ctx
+        self._manager = None
+
+    # XContainerWindowEventHandler
+    def callHandlerMethod(self, window, event, method):
+        try:
+            handled = False
+            if method == 'external_event':
+                if event == 'initialize':
+                    self._manager = OptionsManager(self._ctx, window)
+                    handled = True
+                elif event == 'ok':
+                    self._manager.saveSetting()
+                    handled = True
+                elif event == 'back':
+                    self._manager.loadSetting()
+                    handled = True
+            elif method == 'ViewData':
+                self._manager.viewData()
+                handled = True
+            return handled
+        except Exception as e:
+            msg = "Error: %s" % traceback.print_exc()
+            print(msg)
+
+    def getSupportedMethodNames(self):
+        return ('external_event',
+                'ViewData')
+
+    # XServiceInfo
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+
+    def getImplementationName(self):
+        return g_ImplementationName
+
+    def getSupportedServiceNames(self):
+        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
+
+g_ImplementationHelper.addImplementation(OptionsHandler,                             # UNO object class
+                                         g_ImplementationName,                       # Implementation name
+                                         (g_ImplementationName,))                    # List of implemented services

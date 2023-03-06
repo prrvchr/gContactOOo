@@ -29,10 +29,12 @@
 
 from .configuration import g_identifier
 from .configuration import g_extension
+from .configuration import g_driverlog
 from .configuration import g_host
 
-from .dbconfig  import g_folder
+from .options import OptionsManager
 
+from .logger import LogModel
 from .logger import clearLogger
 from .logger import getLoggerSetting
 from .logger import getLoggerUrl

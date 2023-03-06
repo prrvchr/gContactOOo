@@ -27,7 +27,7 @@
                         <value>%origin%/gContactOOo/OptionsDialog.xdl</value>
                     </prop>
                     <prop oor:name="EventHandlerService">
-                        <value>io.github.prrvchr.gContactOOo.OptionsDialog</value>
+                        <value>io.github.prrvchr.gContactOOo.OptionsHandler</value>
                     </prop>
                 </node>
             </node>
