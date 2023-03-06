@@ -56,7 +56,7 @@ class OptionsManager(unohelper.Base):
         version  = ' '.join(sys.version.split())
         path = os.pathsep.join(sys.path)
         infos = {111: version, 112: path}
-        self._logger = LogManager(ctx, window.getPeer(), infos, g_identifier, g_driverlog)
+        self._logger = LogManager(ctx, window.getPeer(), infos, g_identifier, g_driverlog, True)
         self._window = window
         print("OptionsManager.__init__() 2")
 
