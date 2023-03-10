@@ -47,8 +47,6 @@ from .configuration import g_host
 from .configuration import g_url
 from .configuration import g_page
 from .configuration import g_member
-from .logger import logMessage
-from .logger import getMessage
 
 import json
 

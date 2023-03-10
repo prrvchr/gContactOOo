@@ -34,13 +34,7 @@ from .configuration import g_host
 
 from .options import OptionsManager
 
-from .logger import LogModel
-from .logger import clearLogger
-from .logger import getLoggerSetting
-from .logger import getLoggerUrl
-from .logger import getMessage
-from .logger import logMessage
-from .logger import setLoggerSetting
+from .logger import getLogger
 
 from .datasource import DataSource
 

@@ -3,6 +3,5 @@
 <library:library xmlns:library="http://openoffice.org/2000/library" library:name="gContactOOo" library:readonly="false" library:passwordprotected="false">
   <library:element library:name="LogDialog"/>
   <library:element library:name="LogWindow"/>
-  <library:element library:name="LoggerWindow"/>
   <library:element library:name="OptionsDialog"/>
 </library:library>

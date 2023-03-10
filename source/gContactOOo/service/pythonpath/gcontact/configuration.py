@@ -37,6 +37,7 @@ g_basename = 'Driver'
 
 g_driverlog = 'DriverLogger'
 g_synclog = 'SyncLogger'
+g_errorlog = 'gContactError'
 
 g_host = 'people.googleapis.com'
 g_version = 'v1'
