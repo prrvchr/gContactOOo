@@ -73,8 +73,13 @@ class Logger(unohelper.Base,
             self._logp(level, clazz, method, message)
 
     # XLogger2
-    def getMessage(self, resource, args):
-        if self._resolver is not None and self._resolver.hasEntryForId(resource):
+    def hasEntryForId(self, resource):
+        if self._resolver is None:
+            return False
+        return self._resolver.hasEntryForId(resource)
+
+    def resolveString(self, resource, args):
+        if self.hasEntryForId(resource):
             msg = self._resolver.resolveString(resource)
             if args:
                 msg = msg % args
@@ -84,12 +89,12 @@ class Logger(unohelper.Base,
 
     def logrb(self, level, resource, arguments):
         if self.isLoggable(level):
-            message = self.getMessage(resource, arguments)
+            message = self.resolveString(resource, arguments)
             self._log(level, message)
 
     def logprb(self, level, clazz, method, resource, arguments):
         if self.isLoggable(level):
-            message = self.getMessage(resource, arguments)
+            message = self.resolveString(resource, arguments)
             self._logp(level, clazz, method, message)
 
     def addModifyListener(self, listener):

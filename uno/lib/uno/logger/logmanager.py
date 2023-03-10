@@ -34,8 +34,6 @@ from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
 from .logmodel import LogModel
-from .logmodel import LoggerModel
-from .logview import LoggerWindow
 from .logview import LogWindow
 from .logview import LogDialog
 from .loghandler import WindowHandler
@@ -46,6 +44,8 @@ from .loghandler import LoggerListener
 from ..unotool import getDialog
 from ..unotool import getFileSequence
 
+from .loghelper import getLoggerName
+
 from ..configuration import g_extension
 from ..configuration import g_identifier
 
@@ -53,24 +53,14 @@ import traceback
 
 
 class LogManager(unohelper.Base):
-    def __init__(self, ctx, parent, infos, filter, default, multi=False):
+    def __init__(self, ctx, parent, infos, filter, default):
         self._ctx = ctx
-        handler = WindowHandler(self)
-        if multi:
-            model = LoggerModel(ctx, default, PoolListener(self))
-            view = LoggerWindow(ctx, handler, parent)
-        else:
-            model = LogModel(ctx, default)
-            view = LogWindow(ctx, handler, parent)
-        self._model = model
-        self._view = view
+        self._model = LogModel(ctx, default, PoolListener(self))
+        self._view = LogWindow(ctx, WindowHandler(self), parent)
         self._infos = infos
         self._filter = filter
         self._dialog = None
-        if multi:
-            self._view.initLogger(self._model.getLoggerNames(filter))
-        else:
-            self._view.setLoggerSetting(*self._model.getLoggerSetting())
+        self._view.initLogger(self._model.getLoggerNames(filter))
 
 # LogManager setter methods
     def dispose(self):
@@ -92,7 +82,7 @@ class LogManager(unohelper.Base):
         self._view.setLoggerSetting(*settings)
 
     def changeLogger(self, name):
-        logger = name if self._filter is None else '%s.%s' % (g_identifier, name)
+        logger = name if self._filter is None else getLoggerName(name)
         self._model.setLogger(logger)
         self.reloadSetting()
 
