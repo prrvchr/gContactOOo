@@ -61,7 +61,7 @@ class OptionsManager(unohelper.Base):
         print("OptionsManager.__init__() 2")
 
     def loadSetting(self):
-        self._logger.reloadSetting()
+        self._logger.loadSetting()
 
     def saveSetting(self):
         self._logger.saveSetting()
