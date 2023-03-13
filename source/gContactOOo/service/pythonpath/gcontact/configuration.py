@@ -30,7 +30,7 @@
 # General configuration
 g_extension = 'gContactOOo'
 g_identifier = 'io.github.prrvchr.%s' % g_extension
-g_logger = '%s.Logger' % g_identifier
+
 # Resource strings files folder
 g_resource = 'resource'
 g_basename = 'Driver'
@@ -42,10 +42,13 @@ g_errorlog = 'gContactError'
 g_host = 'people.googleapis.com'
 g_version = 'v1'
 g_url = 'https://%s/%s' % (g_host, g_version)
+
+# g_scheme is needed to access odb file in options dialog
+g_scheme = g_host
+
 g_page = 100
 g_member = 1000
 g_admin = False
-g_sync = 600
 g_compact = 100
 
 g_group = 'all'
