@@ -43,9 +43,6 @@ g_host = 'people.googleapis.com'
 g_version = 'v1'
 g_url = 'https://%s/%s' % (g_host, g_version)
 
-# g_scheme is needed to access odb file in options dialog
-g_scheme = g_host
-
 g_page = 100
 g_member = 1000
 g_admin = False
