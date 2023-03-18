@@ -35,7 +35,7 @@ g_identifier = 'io.github.prrvchr.%s' % g_extension
 g_resource = 'resource'
 g_basename = 'Driver'
 
-g_driverlog = 'DriverLogger'
+g_defaultlog = 'gContactLogger'
 g_synclog = 'SyncLogger'
 g_errorlog = 'gContactError'
 

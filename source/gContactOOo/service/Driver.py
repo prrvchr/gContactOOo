@@ -48,7 +48,7 @@ from gcontact import DataSource
 
 from gcontact import g_identifier
 from gcontact import g_host
-from gcontact import g_driverlog
+from gcontact import g_defaultlog
 from gcontact import getDriverPropertyInfos
 from gcontact import getSqlException
 
@@ -70,7 +70,7 @@ class Driver(unohelper.Base,
     def __init__(self, ctx):
         self._ctx = ctx
         self._supportedProtocol = 'sdbc:address:google'
-        self._logger = getLogger(ctx, g_driverlog)
+        self._logger = getLogger(ctx, g_defaultlog)
         self._logger.logprb(INFO, 'Driver', '__init__()', 101)
 
     _datasource = None
