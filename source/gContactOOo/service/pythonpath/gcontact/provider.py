@@ -39,8 +39,6 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_QUERY
 from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
 from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 
-from com.sun.star.sdbc import XRestProvider
-
 from .unotool import getConnectionMode
 
 from .configuration import g_host
@@ -51,8 +49,7 @@ from .configuration import g_member
 import json
 
 
-class Provider(unohelper.Base,
-               XRestProvider):
+class Provider(unohelper.Base):
     def __init__(self, ctx):
         self._ctx = ctx
         self._Error = ''
