@@ -43,6 +43,7 @@ g_host = 'people.googleapis.com'
 g_version = 'v1'
 g_url = 'https://%s/%s' % (g_host, g_version)
 
+g_chunk = 320 * 1024
 g_page = 100
 g_member = 1000
 g_admin = False

@@ -45,8 +45,10 @@ from .configuration import g_host
 from .configuration import g_url
 from .configuration import g_page
 from .configuration import g_member
+from .configuration import g_chunk
 
-import json
+from . import json
+import traceback
 
 
 class Provider(unohelper.Base):
@@ -67,9 +69,8 @@ class Provider(unohelper.Base):
     def isOffLine(self):
         return getConnectionMode(self._ctx, self.Host) != ONLINE
 
-    def getRequestParameter(self, method, data=None):
-        parameter = uno.createUnoStruct('com.sun.star.auth.RestRequestParameter')
-        parameter.Name = method
+    def getRequestParameter(self, request, method, data=None):
+        parameter = request.getRequestParameter(method)
         parameter.Url = self.BaseUrl
         if method == 'getUser':
             parameter.Method = 'GET'
@@ -146,4 +147,44 @@ class Provider(unohelper.Base):
         for k in keys:
             groups.append('%s/%s' % (resource, k))
         return tuple(groups)
-            
+
+    def parseData(self, response):
+        rootid = name = created = modified = mimetype = None
+        addchild = canrename = True
+        trashed = readonly = versionable = False
+        events = ijson.sendable_list()
+        parser = ijson.parse_coro(events)
+        iterator = response.iterContent(g_chunk, False)
+        while iterator.hasMoreElements():
+            chunk = iterator.nextElement().value
+            print("Provider.parseData() Method: %s- Page: %s - Content: \n: %s" % (parameter.Name, parameter.PageCount, chunk.decode('utf-8')))
+            parser.send(chunk)
+            for prefix, event, value in events:
+                print("Provider.parseData() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                if (prefix, event) == ('id', 'string'):
+                    rootid = value
+                elif (prefix, event) == ('name', 'string'):
+                    name = value
+                elif (prefix, event) == ('createdTime', 'string'):
+                    created = self.parseDateTime(value)
+                elif (prefix, event) == ('modifiedTime', 'string'):
+                    modified = self.parseDateTime(value)
+                elif (prefix, event) == ('mimeType', 'string'):
+                    mimetype = value
+                elif (prefix, event) == ('trashed', 'boolean'):
+                    trashed = value
+                elif (prefix, event) == ('capabilities.canAddChildren', 'boolean'):
+                    addchild = value
+                elif (prefix, event) == ('capabilities.canRename', 'boolean'):
+                    canrename = value
+                elif (prefix, event) == ('capabilities.canEdit', 'boolean'):
+                    readonly = not value
+                elif (prefix, event) == ('capabilities.canReadRevisions', 'boolean'):
+                    versionable = value
+            del events[:]
+        parser.close()
+        return {'RootId': rootid, 'Title': name, 'DateCreated': created, 'DateModified': modified, 
+                "MediaType": mimetype, 'Trashed': trashed, 'CanAddChild': addchild, 
+                'CanRename': canrename, 'IsReadOnly': readonly, 'IsVersionable': versionable}
+
+
