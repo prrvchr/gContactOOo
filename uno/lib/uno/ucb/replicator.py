@@ -165,14 +165,8 @@ class Replicator(unohelper.Base,
     def _initUser(self, user):
         # This procedure is launched only once for each new user
         # This procedure corresponds to the initial pull for a new User (ie: without Token)
-        rejected, pages, count, token = self.Provider.firstPull(user)
-        print("Replicator._initUser() 1 Count: %s - Pages %s" % (count, pages))
-        self._logger.logprb(INFO, 'Replicator', '_initUser()', 121, pages, count)
-        if len(rejected):
-            self._logger.logprb(SEVERE, 'Replicator', '_initUser()', 122, len(rejected))
-        for title, itemid, parents in rejected:
-            self._logger.logprb(SEVERE, 'Replicator', '_initUser()', 123, title, itemid, parents)
-        print("Replicator._initUser() 2 Count: %s - Token: %s" % (count, token))
+        pages, count, token = self.Provider.firstPull(user)
+        print("Replicator._initUser() 1 Count: %s - Pages %s - Token: %s" % (count, pages, token))
         user.Provider.initUser(self.DataBase, user, token)
         user.SyncMode = 1
         self._fullPull = True
@@ -181,7 +175,7 @@ class Replicator(unohelper.Base,
         # This procedure is launched each time the synchronization is started
         # This procedure corresponds to the pull for a User (ie: a Token is required)
         print("Replicator._pullUser() 1")
-        token, count, pages = user.Provider.pullUser(user)
+        pages, count, token = user.Provider.pullUser(user)
         if token:
             user.setToken(token)
         print("Replicator._pullUser() 2 Items count: %s - Pages count: %s - Token: %s" % (count, pages, token))
@@ -263,18 +257,15 @@ class Replicator(unohelper.Base,
                 created = getDateTimeToString(metadata.get('DateCreated'))
                 if user.Provider.isFolder(mediatype):
                     print("Replicator._pushItem() INSERT 3")
-                    response = user.Provider.createFolder(user.Request, metadata)
+                    status = user.Provider.createFolder(user, metadata)
                     print("Replicator._pushItem() INSERT 4")
-                    status = self.callBack(itemid, response)
-                    print("Replicator._pushItem() INSERT 5")
                     self._logger.logprb(INFO, 'Replicator', '_pushItem()', 141, metadata.get('Title'), created)
-                    print("Replicator._pushItem() INSERT 6")
+                    print("Replicator._pushItem() INSERT 5")
                 elif user.Provider.isLink(mediatype):
                     pass
                 elif user.Provider.isDocument(mediatype):
-                    if user.Provider.createFile(user.Request, metadata):
-                        #if self._needPush('SizeUpdated', itemid, operations):
-                        status = user.Provider.uploadFile(user, metadata, True)
+                    status = user.Provider.uploadFile(user, metadata, True)
+                    if status:
                         self._logger.logprb(INFO, 'Replicator', '_pushItem()', 142, metadata.get('Title'), created)
             # UPDATE procedures, only a few properties are synchronized: Title and content(ie: Size or DateModified)
             elif action & UPDATE:

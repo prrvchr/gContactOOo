@@ -127,22 +127,22 @@ class ProviderBase(object):
 
     # Method called by Content
     def updateFolderContent(self, content):
+        timestamp = currentDateTimeInTZ()
         parameter = self.getRequestParameter(content.User.Request, 'getFolderContent', content)
-        iterator = self.parseItems(content.User.Request, parameter)
-        updated = content.User.DataBase.updateFolderContent(iterator, content.User.Id)
-        return updated
+        iterator = self.parseRootFolder(parameter, content)
+        count = content.User.DataBase.pullItems(iterator, content.User.Id, timestamp)
+        return count
 
     def getDocumentContent(self, content, url):
         print('ProviderBase.getDocumentContent() Url: %s' % url)
         data = self.getDocumentLocation(content)
-        parameter = self.getRequestParameter(content.User.Request, 'getDocumentContent', data)
-        response = content.User.Request.download(parameter, url, g_chunk, 3, 10)
-        response.close()
-        return response.Ok
-
-    # Can be rewrited properties
-    def getDocumentLocation(self, content):
-        return content
+        if data is not None:
+            print('ProviderBase.getDocumentContent() Data: %s' % data)
+            parameter = self.getRequestParameter(content.User.Request, 'getDocumentContent', data)
+            response = content.User.Request.download(parameter, url, g_chunk, 3, 10)
+            response.close()
+            return response.Ok
+        return False
 
     # Method called by Replicator
     def pullNewIdentifiers(self, user):
@@ -157,15 +157,21 @@ class ProviderBase(object):
         response.close()
 
     def firstPull(self, user):
-        start = currentDateTimeInTZ()
-        call = user.DataBase.getFirstPullCall(user.Id, 1, start)
-        orphans, pages, count, token = self._pullItems(call, user, start, 'getFirstPull', user)
-        #rows += self._filterParents(call, user.Provider, items, parents, roots, start)
-        rejected = self._getRejectedItems(orphans)
-        if count > 0:
-            call.executeBatch()
-        call.close()
-        return rejected, pages, count, token
+        timestamp = currentDateTimeInTZ()
+        page = count = 0
+        for root in self.getFirstPullRoots(user):
+            parameter = self.getRequestParameter(user.Request, 'getFirstPull', root)
+            iterator = self.parseItems(user.Request, parameter)
+            count +=  user.DataBase.pullItems(iterator, user.Id, timestamp)
+            page += parameter.PageCount
+        return page, count, parameter.SyncToken
+
+    def pullUser(self, user):
+        timestamp = currentDateTimeInTZ()
+        parameter = self.getRequestParameter(user.Request, 'getPull', user)
+        iterator = self.parseItems(user.Request, parameter)
+        count = user.DataBase.pullItems(iterator, user.Id, timestamp)
+        return parameter.PageCount, count, parameter.SyncToken
 
     def getUserToken(self, user):
         parameter = self.getRequestParameter(user.Request, 'getToken', user)
@@ -185,17 +191,6 @@ class ProviderBase(object):
             rejected.append((title, itemid, ','.join(parents)))
         return rejected
 
-    def _pullItems(self, call, user, start, method, data):
-        orphans = OrderedDict()
-        roots = [user.RootId]
-        pages = count = 0
-        token = ''
-        for root in self.getFirstPullRoots(user):
-            parameter = self.getRequestParameter(user.Request, method, root)
-            iterator = self.parseItems(user.Request, parameter)
-            count = user.DataBase.pullItems(call, iterator, self._isValidItem, roots, orphans)
-        return orphans, parameter.PageCount, count, parameter.SyncToken
-
     def _isValidItem(self, item, roots, orphans):
         itemid = self._getItemId(item)
         parents = self._getItemParents(item)
@@ -214,12 +209,6 @@ class ProviderBase(object):
         return item[1]
     def _getItemParents(self, item):
         return item[11]
-
-    def pullUser(self, user):
-        timestamp = currentDateTimeInTZ()
-        parameter = self.getRequestParameter(user.Request, 'getPull', user)
-        iterator = self.parseChanges(user.Request, parameter)
-        return self.mergePullUser(user, parameter, iterator, timestamp)
 
     # Must be implemented method
     def getRequestParameter(self, request, method, data):
@@ -243,7 +232,19 @@ class ProviderBase(object):
     def getFirstPullRoots(self, user):
         raise NotImplementedError
 
-    def mergePullUser(self, user, parameter, iterator):
+    def parseUploadLocation(self, user):
+        raise NotImplementedError
+
+    def getDocumentLocation(self, user):
+        raise NotImplementedError
+
+    def mergeNewFolder(self, response, user, item):
+        raise NotImplementedError
+
+    def createNewFile(self, user, data):
+        raise NotImplementedError
+
+    def parseRootFolder(self, parameter, content):
         raise NotImplementedError
 
     def initUser(self, database, user, token):
@@ -269,26 +270,24 @@ class ProviderBase(object):
         parameter = self.getRequestParameter(request, 'getItem', identifier)
         return request.execute(parameter)
 
-    def createFolder(self, request, item):
-        parameter = self.getRequestParameter(request, 'createNewFolder', item)
-        return request.execute(parameter)
-
-    def createFile(self, request, data):
-        return True
-
-    def uploadFile(self, user, item, new=False):
-        method = 'getNewUploadLocation' if new else 'getUploadLocation'
-        parameter = self.getRequestParameter(user.Request, method, item)
+    def createFolder(self, user, item):
+        parameter = self.getRequestParameter(user.Request, 'createNewFolder', item)
         response = user.Request.execute(parameter)
-        print("Provider.uploadFile() 1 Content: '%s'" % response.getHeader('Location'))
-        if not response.Ok:
+        return self.mergeNewFolder(response, user, item)
+
+    def uploadFile(self, user, data, new=False):
+        status = False
+        method = 'getNewUploadLocation' if new else 'getUploadLocation'
+        parameter = self.getRequestParameter(user.Request, method, data)
+        response = user.Request.execute(parameter)
+        location = self.parseUploadLocation(response)
+        if location is not None:
+            parameter = self.getRequestParameter(user.Request, 'getUploadStream', location)
+            url = self.SourceURL + g_separator + data.get('Id')
+            response = user.Request.upload(parameter, url)
+            status = response.Ok
             response.close()
-            return False
-        url = self.SourceURL + g_separator + item.get('Id')
-        parameter = self.getRequestParameter(user.Request, 'getUploadStream', response)
-        response.close()
-        user.Request.upload(parameter, url)
-        return True
+        return status
 
     def updateTitle(self, request, item):
         parameter = self.getRequestParameter(request, 'updateTitle', item)
