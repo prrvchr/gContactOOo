@@ -1,1 +1,1 @@
-../../../../../uno/lib/uno/addressbook/dbinit.py
+../../../../../uno/lib/uno/card/dbinit.py

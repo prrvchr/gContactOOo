@@ -30,16 +30,12 @@
 import uno
 import unohelper
 
-from com.sun.star.ucb.ConnectionMode import OFFLINE
-from com.sun.star.ucb.ConnectionMode import ONLINE
-from com.sun.star.auth.RestRequestTokenType import TOKEN_NONE
-from com.sun.star.auth.RestRequestTokenType import TOKEN_URL
-from com.sun.star.auth.RestRequestTokenType import TOKEN_REDIRECT
-from com.sun.star.auth.RestRequestTokenType import TOKEN_QUERY
-from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
-from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
+from com.sun.star.rest.ParameterType import QUERY
 
-from .unotool import getConnectionMode
+from .providerbase import ProviderBase
+
+from .dbtool import currentDateTimeInTZ
+from .dbtool import currentUnoDateTime
 
 from .configuration import g_host
 from .configuration import g_url
@@ -47,15 +43,17 @@ from .configuration import g_page
 from .configuration import g_member
 from .configuration import g_chunk
 
-from . import json
+import json
+from . import ijson
 import traceback
 
 
-class Provider(unohelper.Base):
-    def __init__(self, ctx):
+class Provider(ProviderBase):
+    def __init__(self, ctx, columns, fields):
         self._ctx = ctx
-        self._Error = ''
-        self.SessionMode = OFFLINE
+        self._columns = columns
+        self._fields = fields
+        #self._fields = fields + ('metadata', )
 
     @property
     def Host(self):
@@ -63,128 +61,205 @@ class Provider(unohelper.Base):
     @property
     def BaseUrl(self):
         return g_url
+    @property
+    def DateTimeFormat(self):
+        return '%Y-%m-%dT%H:%M:%S.%fZ'
 
-    def isOnLine(self):
-        return getConnectionMode(self._ctx, self.Host) != OFFLINE
-    def isOffLine(self):
-        return getConnectionMode(self._ctx, self.Host) != ONLINE
+    # Method called from DataSource.getConnection()
+    def getUserUri(self, server, name):
+        return name
 
-    def getRequestParameter(self, request, method, data=None):
+    # Method called from User._getNewUser()
+    def insertUser(self, database, request, scheme, server, name, pwd):
+        parameter = self._getRequestParameter(request, 'getUser')
+        response = request.execute(parameter)
+        userid = self._parseUser(response)
+        return database.insertUser(userid, scheme, server, '', name)
+
+    def _parseUser(self, response):
+        userid = None
+        if response.Ok:
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                chunk = iterator.nextElement().value
+                print("Provider.parseData() Method: %s- Page: %s - Content: \n: %s" % (response.Parameter.Name, response.Parameter.PageCount, chunk.decode('utf-8')))
+                parser.send(chunk)
+                for prefix, event, value in events:
+                    print("Provider.parseData() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                    if (prefix, event) == ('resourceName', 'string'):
+                        userid = self._getResource(value)
+                del events[:]
+            parser.close()
+        response.close()
+        return userid
+
+    def initAddressbooks(self, database, user):
+        print("Provider.initAddressbooks() Name: %s - Uri: %s" % (user.Name, user.Uri))
+        # FIXME: Google Contact only offers one address book...
+        name = 'Tous mes Contacts'
+        iterator = (item for item in ((user.Uri, name, '', ''), ))
+        count, modified = user.Addressbooks.initAddressbooks(database, user.Id, iterator)
+        if not count:
+            #TODO: Raise SqlException with correct message!
+            print("User.initAddressbooks() 1 %s" % (addressbooks, ))
+            raise self.getSqlException(1004, 1108, 'initAddressbooks', '%s has no support of CardDAV!' % user.Server)
+        if modified:
+            database.initAddressbooks(user)
+
+    def firstPullCard(self, database, user, addressbook, page, count):
+        return self._pullCard(database, user, addressbook, page, count)
+
+    def pullCard(self, database, user, addressbook, page, count):
+        return self._pullCard(database, user, addressbook, page, count)
+
+    def _pullCard(self, database, user, addressbook, page, count):
+        parameter = self._getRequestParameter(user.Request, 'getPeoples', addressbook)
+        count += database.mergeCard(addressbook.Id, self._parsePeople(user.Request, parameter))
+        if parameter.SyncToken:
+            database.updateAddressbookToken(addressbook.Id, parameter.SyncToken)
+        page, count = self._pullGroup(database, user, addressbook, parameter.PageCount, count)
+        return parameter.PageCount + page, count
+
+    def _pullGroup(self, database, user, addressbook, page, count):
+        parameter = self._getRequestParameter(user.Request, 'getGroups', addressbook)
+        count += database.mergeGroup(addressbook.Id, self._parseGroup(user.Request, parameter))
+        return parameter.PageCount + page, count
+
+    def parseCard(self, database):
+        start = database.getLastUserSync()
+        stop = currentDateTimeInTZ()
+        iterator = self._parseCard(database, start, stop)
+        count = database.mergeCardValue(iterator)
+        print("Provider.parseCard() Count: %s" % count)
+        database.updateUserSync(stop)
+
+    def syncGroups(self, database):
+        database.syncGroups()
+
+    def _parseCard(self, database, start, stop):
+        for aid, cid, data, query in database.getChangedCard(start, stop):
+            if query == 'Deleted':
+                continue
+            else:
+                for column, value in json.loads(data).items():
+                    yield cid, column, value
+
+    def _parsePeople(self, request, parameter):
+        print("Provider._parsePeople() Columns Keys: %s" % (self._columns.keys(), ))
+        while parameter.hasNextPage():
+            response = request.execute(parameter)
+            if not response.Ok:
+                response.close()
+                break
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                chunk = iterator.nextElement().value
+                #print("Provider.parseData() Method: %s- Page: %s - Content: \n: %s" % (parameter.Name, parameter.PageCount, chunk.decode('utf-8')))
+                parser.send(chunk)
+                for prefix, event, value in events:
+                    #print("Provider.parseData() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                    if (prefix, event) == ('nextPageToken', 'string'):
+                        parameter.setNextPage('pageToken', value, QUERY)
+                    elif (prefix, event) == ('nextSyncToken', 'string'):
+                        parameter.SyncToken = value
+                    elif (prefix, event) == ('connections.item', 'start_map'):
+                        cid = etag = None
+                        data = {}
+                        deleted = False
+                    elif (prefix, event) == ('connections.item.metadata.item.deleted.', 'boolean'):
+                        deleted = value
+                    elif (prefix, event) == ('connections.item.resourceName', 'string'):
+                        cid = self._getResource(value)
+                    elif (prefix, event) == ('connections.item.etag', 'string'):
+                        etag = value
+                    elif prefix in self._columns and event == 'string':
+                        data[self._columns.get(prefix)] = value
+                    elif (prefix, event) == ('connections.item', 'end_map'):
+                        yield cid, etag, deleted, json.dumps(data)
+                del events[:]
+            parser.close()
+            response.close()
+
+    def _parseGroup(self, request, parameter):
+        print("Provider._parseGroup() Name: %s" % parameter.Name)
+        while parameter.hasNextPage():
+            response = request.execute(parameter)
+            if not response.Ok:
+                response.close()
+                break
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                chunk = iterator.nextElement().value
+                print("Provider._parseGroup() Method: %s- Page: %s - Content: \n: %s" % (parameter.Name, parameter.PageCount, chunk.decode('utf-8')))
+                parser.send(chunk)
+                for prefix, event, value in events:
+                    print("Provider._parseGroup() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                    if (prefix, event) == ('nextPageToken', 'string'):
+                        parameter.setNextPage('pageToken', value, QUERY)
+                    elif (prefix, event) == ('nextSyncToken', 'string'):
+                        parameter.SyncToken = value
+                    elif (prefix, event) == ('contactGroups.item', 'start_map'):
+                        uri = name = None
+                        updated = currentUnoDateTime()
+                        parse = deleted = False
+                    elif (prefix, event) == ('contactGroups.item.metadata.deleted.', 'boolean'):
+                        deleted = value
+                    elif (prefix, event) == ('contactGroups.item.metadata.updateTime.', 'string'):
+                        updated = self.parseDateTime(value)
+                    elif (prefix, event) == ('contactGroups.item.resourceName', 'string'):
+                        uri = self._getResource(value)
+                    elif (prefix, event) == ('contactGroups.item.name', 'string'):
+                        name = value
+                    elif (prefix, event) == ('contactGroups.item.groupType.', 'string'):
+                        if value == 'USER_CONTACT_GROUP':
+                            parse = True
+                    elif (prefix, event) == ('contactGroups.item', 'end_map') and parse:
+                        yield uri, deleted, name, updated
+                del events[:]
+            parser.close()
+            response.close()
+
+
+    def _getRequestParameter(self, request, method, data=None):
         parameter = request.getRequestParameter(method)
         parameter.Url = self.BaseUrl
         if method == 'getUser':
-            parameter.Method = 'GET'
             parameter.Url += '/people/me'
-            parameter.Query = '{"personFields": "%s"}' % ','.join(data)
-        elif method == 'People':
-            parameter.Method = 'GET'
+            parameter.setQuery('personFields', 'metadata')
+
+        elif method == 'getPeoples':
             parameter.Url += '/people/me/connections'
-            fields = '"personFields": "%s"' % ','.join(data.Fields)
-            sources = '"sources": "READ_SOURCE_TYPE_CONTACT"'
-            page = '"pageSize": %s' % g_page
-            sync = data.PeopleSync
-            if sync:
-                token = '"syncToken": "%s"' % sync
+            parameter.setQuery('personFields', self._fields.get('connections'))
+            parameter.setQuery('sources', 'READ_SOURCE_TYPE_CONTACT')
+            parameter.setQuery('pageSize', '%s' % g_page)
+            if data.Token:
+                parameter.setQuery('syncToken', data.Token)
             else:
-                token = '"requestSyncToken": true'
-            parameter.Query = '{%s, %s, %s, %s}' % (fields, sources, page, token)
-            token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
-            token.Type = TOKEN_QUERY | TOKEN_SYNC
-            token.Field = 'nextPageToken'
-            token.Value = 'pageToken'
-            token.SyncField = 'nextSyncToken'
-            enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
-            enumerator.Field = 'connections'
-            enumerator.Token = token
-            parameter.Enumerator = enumerator
-        elif method == 'Group':
-            parameter.Method = 'GET'
+                parameter.setQuery('requestSyncToken', 'true')
+
+        elif method == 'getGroups':
             parameter.Url += '/contactGroups'
-            page = '"pageSize": %s' % g_page
-            query = [page]
-            sync = data.GroupSync
-            if sync:
-                query.append('"syncToken": "%s"' % sync)
-            parameter.Query = '{%s}' % ','.join(query)
-            token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
-            token.Type = TOKEN_QUERY | TOKEN_SYNC
-            token.Field = 'nextPageToken'
-            token.Value = 'pageToken'
-            token.SyncField = 'nextSyncToken'
-            enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
-            enumerator.Field = 'contactGroups'
-            enumerator.Token = token
-            parameter.Enumerator = enumerator
+            parameter.setQuery('groupFields', 'name,groupType,memberCount,metadata')
+            parameter.setQuery('pageSize', '%s' % g_page)
+            if data.Token:
+                parameter.setQuery('syncToken', data.Token)
+            else:
+                parameter.setQuery('requestSyncToken', 'true')
+
         elif method == 'Connection':
-            parameter.Method = 'GET'
             parameter.Url += '/contactGroups:batchGet'
-            resources = '","'.join(data.getKeys())
-            parameter.Query = '{"resourceNames": ["%s"], "maxMembers": %s}' % (resources, g_member)
+            parameter.setQuery('resourceNames', json.dumps(data.getKeys()))
+            parameter.setQuery('maxMembers', g_member)
+
         return parameter
 
-    def transcode(self, name, value):
-        if name == 'People':
-            value = self._getResource('people', value)
-        elif name == 'Group':
-            value = self._getResource('contactGroups', value)
+    def _getResource(self, value):
+        tmp, sep, value = value.partition('/')
         return value
-    def transform(self, name, value):
-        #if name == 'Resource' and value.startswith('people'):
-        #    value = value.split('/').pop()
-        return value
-
-    def getUser(self, request, fields):
-        parameter = self.getRequestParameter('getUser', fields)
-        return request.execute(parameter)
-    def getUserId(self, user):
-        return user.getValue('resourceName').split('/').pop()
-        #return user.getValue('resourceName')
-    def getItemId(self, item):
-        return item.getDefaultValue('resourceName', '').split('/').pop()
-
-    def _getResource(self, resource, keys):
-        groups = []
-        for k in keys:
-            groups.append('%s/%s' % (resource, k))
-        return tuple(groups)
-
-    def parseData(self, response):
-        rootid = name = created = modified = mimetype = None
-        addchild = canrename = True
-        trashed = readonly = versionable = False
-        events = ijson.sendable_list()
-        parser = ijson.parse_coro(events)
-        iterator = response.iterContent(g_chunk, False)
-        while iterator.hasMoreElements():
-            chunk = iterator.nextElement().value
-            print("Provider.parseData() Method: %s- Page: %s - Content: \n: %s" % (parameter.Name, parameter.PageCount, chunk.decode('utf-8')))
-            parser.send(chunk)
-            for prefix, event, value in events:
-                print("Provider.parseData() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
-                if (prefix, event) == ('id', 'string'):
-                    rootid = value
-                elif (prefix, event) == ('name', 'string'):
-                    name = value
-                elif (prefix, event) == ('createdTime', 'string'):
-                    created = self.parseDateTime(value)
-                elif (prefix, event) == ('modifiedTime', 'string'):
-                    modified = self.parseDateTime(value)
-                elif (prefix, event) == ('mimeType', 'string'):
-                    mimetype = value
-                elif (prefix, event) == ('trashed', 'boolean'):
-                    trashed = value
-                elif (prefix, event) == ('capabilities.canAddChildren', 'boolean'):
-                    addchild = value
-                elif (prefix, event) == ('capabilities.canRename', 'boolean'):
-                    canrename = value
-                elif (prefix, event) == ('capabilities.canEdit', 'boolean'):
-                    readonly = not value
-                elif (prefix, event) == ('capabilities.canReadRevisions', 'boolean'):
-                    versionable = value
-            del events[:]
-        parser.close()
-        return {'RootId': rootid, 'Title': name, 'DateCreated': created, 'DateModified': modified, 
-                "MediaType": mimetype, 'Trashed': trashed, 'CanAddChild': addchild, 
-                'CanRename': canrename, 'IsReadOnly': readonly, 'IsVersionable': versionable}
-
 

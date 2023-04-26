@@ -1,1 +1,1 @@
-../../../../../uno/lib/uno/addressbook/dbqueries.py
+../../../../../uno/lib/uno/card/dbqueries.py

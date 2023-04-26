@@ -1,1 +1,1 @@
-../../../../../uno/lib/uno/addressbook/user.py
+../../../../../uno/lib/uno/card/user.py

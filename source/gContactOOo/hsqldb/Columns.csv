@@ -1,12 +1,1 @@
-Column|Name
-0|Group
-1|People
-2|Resource
-3|Account
-4|PeopleSync
-5|GroupSync
-6|Label
-7|Type
-8|Value
-9|Name
-10|TimeStamp
+../../../uno/lib/uno/card/hsqldb/Columns.csv

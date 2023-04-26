@@ -1,1 +1,1 @@
-../../../../../uno/lib/uno/addressbook/replicator.py
+../../../../../uno/lib/uno/card/replicator.py

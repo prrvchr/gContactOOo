@@ -42,15 +42,16 @@ from com.sun.star.sdbcx import XCreateCatalog
 from com.sun.star.sdbcx import XDataDefinitionSupplier
 from com.sun.star.sdbcx import XDropCatalog
 
-from gcontact import getLogger
-
 from gcontact import DataSource
 
-from gcontact import g_identifier
-from gcontact import g_host
-from gcontact import g_defaultlog
 from gcontact import getDriverPropertyInfos
+from gcontact import getLogger
 from gcontact import getSqlException
+
+from gcontact import g_defaultlog
+from gcontact import g_host
+from gcontact import g_identifier
+from gcontact import g_scheme
 
 import validators
 import traceback
@@ -98,29 +99,19 @@ class Driver(unohelper.Base,
             self._logger.logprb(INFO, 'Driver', 'connect()', 111, url)
             protocols = url.strip().split(':')
             if len(protocols) != 4 or not all(protocols):
-                state = self._logger.resolveString(112)
-                msg = self._logger.resolveString(1101, url)
-                raise getSqlException(state, 1101, msg, self)
-            username = protocols[3]
-            password = ''
-            if not validators.email(username):
-                state = self._logger.resolveString(113)
-                msg = self._logger.resolveString(1102, username)
-                msg += self._logger.resolveString(1103)
-                raise getSqlException(state, 1104, msg, self)
-            self._logger.logprb(INFO, 'Driver', 'connect()', 114, g_host)
-            self.DataSource.setUser(username, password)
-            self._logger.logprb(INFO, 'Driver', 'connect()', 118, username)
-            connection = self.DataSource.getConnection(username, password)
-            self._logger.logprb(INFO, 'Driver', 'connect()', 119, username)
+                raise getSqlException(self._ctx, self, 112, 1101, 'connect()', url)
+            user, pwd = protocols[3], ''
+            if not validators.email(user):
+                raise getSqlException(self._ctx, self, 113, 1102, 'connect()', user)
+            connection = self.DataSource.getConnection(g_scheme, g_host, user, pwd)
             version = connection.getMetaData().getDriverVersion()
-            self._logger.logprb(INFO, 'Driver', 'connect()', 120, version, username)
+            name = connection.getMetaData().getUserName()
+            self._logger.logprb(INFO, 'Driver', 'connect()', 114, version, name)
             return connection
         except SQLException as e:
             raise e
         except Exception as e:
-            self._logger.logprb(SEVERE, 'Driver', 'connect()', 121, e, traceback.print_exc())
-            print(msg)
+            self._logger.logprb(SEVERE, 'Driver', 'connect()', 115, e, traceback.format_exc())
 
     def acceptsURL(self, url):
         accept = url.startswith(self._supportedProtocol)

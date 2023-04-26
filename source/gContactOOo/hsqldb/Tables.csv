@@ -1,16 +1,1 @@
-Table|Name|Identity|View|Versioned
-0|Tables|||false
-1|Columns|||false
-2|Labels|||false
-3|Types|||false
-4|Peoples|1|false|false
-5|Groups||false|false
-6|Connections||false|false
-7|Locales||false|false
-8|Names||true|false
-9|Emails||true|false
-10|Addresses||true|false
-11|Phones||true|false
-12|Organisations||true|false
-13|Sips||true|false
-14|Defineds||false|false
+../../../uno/lib/uno/card/hsqldb/Tables.csv

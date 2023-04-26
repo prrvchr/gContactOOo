@@ -1,0 +1,5 @@
+Property|Resource|Path|Name
+0|0|displayName|Name
+1|0|familyName|FamilyName
+2|0|givenName|GivenName
+3|0|middleName|MiddleName
