@@ -52,18 +52,10 @@ class Provider(ProviderBase):
     def __init__(self, ctx, paths, maps, types, tmps, fields):
         self._ctx = ctx
         self._paths = dict(list(paths))
-        for p in self._paths:
-            print("Provider.__init__() Paths: %s - %s" % (p, self._paths[p]))
         self._maps = dict(list(maps))
-        for p in self._maps:
-            print("Provider.__init__() Maps: %s - %s" % (p, self._maps[p]))
         self._types = dict(list(types))
-        for p in self._types:
-            print("Provider.__init__() Types: %s - %s" % (p, self._types[p]))
         self._tmps = list(tmps)
-        print("Provider.__init__() Tmps: %s" % (self._tmps, ))
         self._fields = next(fields)
-        print("Provider.__init__() Fileds: %s" % self._fields)
 
     @property
     def Host(self):
@@ -160,11 +152,7 @@ class Provider(ProviderBase):
                 continue
             else:
                 for column, value in json.loads(data).items():
-                    i = indexes.get(column)
-                    if i:
-                        yield cid, i, value
-                    else:
-                        print("Provider._parseCard() CID: %s - Column: '%s' - Value: '%s'" % (cid, column, value))
+                    yield cid, indexes.get(column), value
 
     def _parsePeople(self, request, parameter):
         map = tmp = False
