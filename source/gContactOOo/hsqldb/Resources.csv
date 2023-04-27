@@ -2,5 +2,5 @@ Resource|Path|Name|View
 0|connections|names|Names
 1|connections|emailAddresses|Emails
 2|connections|addresses|Addresses
-3|connections|organizations|Organizations
-4|connections|phoneNumbers|Phones
+3|connections|phoneNumbers|Phones
+4|connections|organizations|Organizations

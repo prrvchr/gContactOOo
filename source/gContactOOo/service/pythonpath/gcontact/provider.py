@@ -51,11 +51,19 @@ import traceback
 class Provider(ProviderBase):
     def __init__(self, ctx, paths, maps, types, tmps, fields):
         self._ctx = ctx
-        self._paths = paths
-        self._maps = maps
-        self._types = types
-        self._tmps = tmps
-        self._fields = 'metadata,' + fields
+        self._paths = dict(list(paths))
+        for p in self._paths:
+            print("Provider.__init__() Paths: %s - %s" % (p, self._paths[p]))
+        self._maps = dict(list(maps))
+        for p in self._maps:
+            print("Provider.__init__() Maps: %s - %s" % (p, self._maps[p]))
+        self._types = dict(list(types))
+        for p in self._types:
+            print("Provider.__init__() Types: %s - %s" % (p, self._types[p]))
+        self._tmps = list(tmps)
+        print("Provider.__init__() Tmps: %s" % (self._tmps, ))
+        self._fields = next(fields)
+        print("Provider.__init__() Fileds: %s" % self._fields)
 
     @property
     def Host(self):
@@ -188,16 +196,19 @@ class Provider(ProviderBase):
                     # FIXME: All the data parsing is done based on the tables: Resources, Properties and Types 
                     # FIXME: Only properties listed in these tables will be parsed
                     # FIXME: This is the part for simple property import (use of tables: Resources and Properties)
-                    elif prefix in self._paths and event == 'string':
+                    elif event == 'string' and prefix in self._paths:
                         data[self._paths.get(prefix)] = value
                     # FIXME: This is the part for typed property import (use of tables: Resources, Properties and Types)
-                    elif prefix in self._maps and event == 'start_map':
+                    elif event == 'start_map' and prefix in self._maps:
                         map = tmp = None
-                    elif map is None and prefix in self._types and event == 'string':
-                        map = self._types.get(prefix).get(value)
-                    elif tmp is None and prefix in self._tmps and event == 'string':
+                        suffix = ''
+                    elif event == 'map_key' and prefix in self._maps and value in self._maps.get(prefix):
+                        suffix = value
+                    elif event == 'string' and map is None and prefix in self._types:
+                        map = self._types.get(prefix).get(value + suffix)
+                    elif event == 'string' and tmp is None and prefix in self._tmps:
                         tmp = value
-                    elif map and tmp and prefix in self._maps and event == 'end_map':
+                    elif event == 'end_map' and map and tmp and prefix in self._maps:
                         data[map] = tmp
                         map = tmp = False
                     elif (prefix, event) == ('connections.item', 'end_map'):
