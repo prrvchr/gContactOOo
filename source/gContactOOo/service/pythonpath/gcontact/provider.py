@@ -49,11 +49,13 @@ import traceback
 
 
 class Provider(ProviderBase):
-    def __init__(self, ctx, columns, fields):
+    def __init__(self, ctx, paths, maps, types, tmps, fields):
         self._ctx = ctx
-        self._columns = columns
-        self._fields = fields
-        #self._fields = fields + ('metadata', )
+        self._paths = paths
+        self._maps = maps
+        self._types = types
+        self._tmps = tmps
+        self._fields = 'metadata,' + fields
 
     @property
     def Host(self):
@@ -76,25 +78,6 @@ class Provider(ProviderBase):
         userid = self._parseUser(response)
         return database.insertUser(userid, scheme, server, '', name)
 
-    def _parseUser(self, response):
-        userid = None
-        if response.Ok:
-            events = ijson.sendable_list()
-            parser = ijson.parse_coro(events)
-            iterator = response.iterContent(g_chunk, False)
-            while iterator.hasMoreElements():
-                chunk = iterator.nextElement().value
-                print("Provider.parseData() Method: %s- Page: %s - Content: \n: %s" % (response.Parameter.Name, response.Parameter.PageCount, chunk.decode('utf-8')))
-                parser.send(chunk)
-                for prefix, event, value in events:
-                    print("Provider.parseData() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
-                    if (prefix, event) == ('resourceName', 'string'):
-                        userid = self._getResource(value)
-                del events[:]
-            parser.close()
-        response.close()
-        return userid
-
     def initAddressbooks(self, database, user):
         print("Provider.initAddressbooks() Name: %s - Uri: %s" % (user.Name, user.Uri))
         # FIXME: Google Contact only offers one address book...
@@ -114,6 +97,41 @@ class Provider(ProviderBase):
     def pullCard(self, database, user, addressbook, page, count):
         return self._pullCard(database, user, addressbook, page, count)
 
+    def parseCard(self, database):
+        start = database.getLastUserSync()
+        stop = currentDateTimeInTZ()
+        iterator = self._parseCard(database, start, stop)
+        count = database.mergeCardValue(iterator)
+        print("Provider.parseCard() Count: %s" % count)
+        database.updateUserSync(stop)
+
+    def syncGroups(self, database, user, addressbook, pages, count):
+        timestamp = currentUnoDateTime()
+        for gid, group in database.getGroups(addressbook.Id):
+            parameter = self._getRequestParameter(user.Request, 'getGroup', group)
+            count += database.mergeGroupData(gid, timestamp, self._parseGroup(user.Request, parameter))
+            pages += parameter.PageCount
+        return  pages, count
+
+    def _parseUser(self, response):
+        userid = None
+        if response.Ok:
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                chunk = iterator.nextElement().value
+                print("Provider.parseData() Method: %s- Page: %s - Content: \n: %s" % (response.Parameter.Name, response.Parameter.PageCount, chunk.decode('utf-8')))
+                parser.send(chunk)
+                for prefix, event, value in events:
+                    print("Provider.parseData() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                    if (prefix, event) == ('resourceName', 'string'):
+                        userid = self._getResource(value)
+                del events[:]
+            parser.close()
+        response.close()
+        return userid
+
     def _pullCard(self, database, user, addressbook, page, count):
         parameter = self._getRequestParameter(user.Request, 'getPeoples', addressbook)
         count += database.mergeCard(addressbook.Id, self._parsePeople(user.Request, parameter))
@@ -124,30 +142,24 @@ class Provider(ProviderBase):
 
     def _pullGroup(self, database, user, addressbook, page, count):
         parameter = self._getRequestParameter(user.Request, 'getGroups', addressbook)
-        count += database.mergeGroup(addressbook.Id, self._parseGroup(user.Request, parameter))
+        count += database.mergeGroup(addressbook.Id, self._parseGroups(user.Request, parameter))
         return parameter.PageCount + page, count
 
-    def parseCard(self, database):
-        start = database.getLastUserSync()
-        stop = currentDateTimeInTZ()
-        iterator = self._parseCard(database, start, stop)
-        count = database.mergeCardValue(iterator)
-        print("Provider.parseCard() Count: %s" % count)
-        database.updateUserSync(stop)
-
-    def syncGroups(self, database):
-        database.syncGroups()
-
     def _parseCard(self, database, start, stop):
+        indexes = database.getColumnIndexes()
         for aid, cid, data, query in database.getChangedCard(start, stop):
             if query == 'Deleted':
                 continue
             else:
                 for column, value in json.loads(data).items():
-                    yield cid, column, value
+                    i = indexes.get(column)
+                    if i:
+                        yield cid, i, value
+                    else:
+                        print("Provider._parseCard() CID: %s - Column: '%s' - Value: '%s'" % (cid, column, value))
 
     def _parsePeople(self, request, parameter):
-        print("Provider._parsePeople() Columns Keys: %s" % (self._columns.keys(), ))
+        map = tmp = False
         while parameter.hasNextPage():
             response = request.execute(parameter)
             if not response.Ok:
@@ -157,17 +169,14 @@ class Provider(ProviderBase):
             parser = ijson.parse_coro(events)
             iterator = response.iterContent(g_chunk, False)
             while iterator.hasMoreElements():
-                chunk = iterator.nextElement().value
-                #print("Provider.parseData() Method: %s- Page: %s - Content: \n: %s" % (parameter.Name, parameter.PageCount, chunk.decode('utf-8')))
-                parser.send(chunk)
+                parser.send(iterator.nextElement().value)
                 for prefix, event, value in events:
-                    #print("Provider.parseData() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
                     if (prefix, event) == ('nextPageToken', 'string'):
                         parameter.setNextPage('pageToken', value, QUERY)
                     elif (prefix, event) == ('nextSyncToken', 'string'):
                         parameter.SyncToken = value
                     elif (prefix, event) == ('connections.item', 'start_map'):
-                        cid = etag = None
+                        cid = etag = tmp = label = None
                         data = {}
                         deleted = False
                     elif (prefix, event) == ('connections.item.metadata.item.deleted.', 'boolean'):
@@ -176,16 +185,28 @@ class Provider(ProviderBase):
                         cid = self._getResource(value)
                     elif (prefix, event) == ('connections.item.etag', 'string'):
                         etag = value
-                    elif prefix in self._columns and event == 'string':
-                        data[self._columns.get(prefix)] = value
+                    # FIXME: All the data parsing is done based on the tables: Resources, Properties and Types 
+                    # FIXME: Only properties listed in these tables will be parsed
+                    # FIXME: This is the part for simple property import (use of tables: Resources and Properties)
+                    elif prefix in self._paths and event == 'string':
+                        data[self._paths.get(prefix)] = value
+                    # FIXME: This is the part for typed property import (use of tables: Resources, Properties and Types)
+                    elif prefix in self._maps and event == 'start_map':
+                        map = tmp = None
+                    elif map is None and prefix in self._types and event == 'string':
+                        map = self._types.get(prefix).get(value)
+                    elif tmp is None and prefix in self._tmps and event == 'string':
+                        tmp = value
+                    elif map and tmp and prefix in self._maps and event == 'end_map':
+                        data[map] = tmp
+                        map = tmp = False
                     elif (prefix, event) == ('connections.item', 'end_map'):
                         yield cid, etag, deleted, json.dumps(data)
                 del events[:]
             parser.close()
             response.close()
 
-    def _parseGroup(self, request, parameter):
-        print("Provider._parseGroup() Name: %s" % parameter.Name)
+    def _parseGroups(self, request, parameter):
         while parameter.hasNextPage():
             response = request.execute(parameter)
             if not response.Ok:
@@ -195,11 +216,8 @@ class Provider(ProviderBase):
             parser = ijson.parse_coro(events)
             iterator = response.iterContent(g_chunk, False)
             while iterator.hasMoreElements():
-                chunk = iterator.nextElement().value
-                print("Provider._parseGroup() Method: %s- Page: %s - Content: \n: %s" % (parameter.Name, parameter.PageCount, chunk.decode('utf-8')))
-                parser.send(chunk)
+                parser.send(iterator.nextElement().value)
                 for prefix, event, value in events:
-                    print("Provider._parseGroup() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
                     if (prefix, event) == ('nextPageToken', 'string'):
                         parameter.setNextPage('pageToken', value, QUERY)
                     elif (prefix, event) == ('nextSyncToken', 'string'):
@@ -213,18 +231,34 @@ class Provider(ProviderBase):
                     elif (prefix, event) == ('contactGroups.item.metadata.updateTime.', 'string'):
                         updated = self.parseDateTime(value)
                     elif (prefix, event) == ('contactGroups.item.resourceName', 'string'):
+                        print("Provider._parseGroups() resourceName: %s" % value)
                         uri = self._getResource(value)
                     elif (prefix, event) == ('contactGroups.item.name', 'string'):
                         name = value
-                    elif (prefix, event) == ('contactGroups.item.groupType.', 'string'):
-                        if value == 'USER_CONTACT_GROUP':
-                            parse = True
+                    elif (prefix, event) == ('contactGroups.item.groupType', 'string'):
+                        parse = value == 'USER_CONTACT_GROUP'
                     elif (prefix, event) == ('contactGroups.item', 'end_map') and parse:
                         yield uri, deleted, name, updated
                 del events[:]
             parser.close()
             response.close()
 
+    def _parseGroup(self, request, parameter):
+        response = request.execute(parameter)
+        if response.Ok:
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            members = []
+            while iterator.hasMoreElements():
+                parser.send(iterator.nextElement().value)
+                for prefix, event, value in events:
+                    if (prefix, event) == ('memberResourceNames.item', 'string'):
+                        members.append(self._getResource(value))
+                del events[:]
+            yield members
+            parser.close()
+        response.close()
 
     def _getRequestParameter(self, request, method, data=None):
         parameter = request.getRequestParameter(method)
@@ -235,7 +269,7 @@ class Provider(ProviderBase):
 
         elif method == 'getPeoples':
             parameter.Url += '/people/me/connections'
-            parameter.setQuery('personFields', self._fields.get('connections'))
+            parameter.setQuery('personFields', self._fields)
             parameter.setQuery('sources', 'READ_SOURCE_TYPE_CONTACT')
             parameter.setQuery('pageSize', '%s' % g_page)
             if data.Token:
@@ -247,14 +281,15 @@ class Provider(ProviderBase):
             parameter.Url += '/contactGroups'
             parameter.setQuery('groupFields', 'name,groupType,memberCount,metadata')
             parameter.setQuery('pageSize', '%s' % g_page)
-            if data.Token:
-                parameter.setQuery('syncToken', data.Token)
-            else:
-                parameter.setQuery('requestSyncToken', 'true')
+            #TODO: We need to manager Token and deleted record
+            #if data.Token:
+            #    parameter.setQuery('syncToken', data.Token)
+            #else:
+            #parameter.setQuery('requestSyncToken', 'true')
 
-        elif method == 'Connection':
-            parameter.Url += '/contactGroups:batchGet'
-            parameter.setQuery('resourceNames', json.dumps(data.getKeys()))
+        elif method == 'getGroup':
+            parameter.Url += f'/contactGroups/{data}'
+            parameter.setQuery('groupFields', 'clientData')
             parameter.setQuery('maxMembers', g_member)
 
         return parameter

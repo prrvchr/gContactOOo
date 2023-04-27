@@ -3,3 +3,5 @@ Property|Resource|Path|Name
 1|0|familyName|FamilyName
 2|0|givenName|GivenName
 3|0|middleName|MiddleName
+4|1|value|
+5|1|type|Email
