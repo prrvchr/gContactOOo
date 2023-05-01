@@ -42,7 +42,9 @@ from com.sun.star.sdbcx import XCreateCatalog
 from com.sun.star.sdbcx import XDataDefinitionSupplier
 from com.sun.star.sdbcx import XDropCatalog
 
+from gcontact import DataBase
 from gcontact import DataSource
+from gcontact import Provider
 
 from gcontact import getDriverPropertyInfos
 from gcontact import getLogger
@@ -79,7 +81,8 @@ class Driver(unohelper.Base,
     @property
     def DataSource(self):
         if Driver._datasource is None:
-            Driver._datasource = DataSource(self._ctx)
+            database = DataBase(self._ctx)
+            Driver._datasource = DataSource(self._ctx, database, Provider(self._ctx, database))
         return Driver._datasource
 
 # XCreateCatalog

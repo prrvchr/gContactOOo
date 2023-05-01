@@ -32,7 +32,7 @@ import unohelper
 
 from com.sun.star.rest.ParameterType import QUERY
 
-from .providerbase import ProviderBase
+from .card import Provider as ProviderBase
 
 from .dbtool import currentDateTimeInTZ
 from .dbtool import currentUnoDateTime

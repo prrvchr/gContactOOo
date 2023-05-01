@@ -1,1 +1,1 @@
-../../../../../uno/lib/uno/dbconfig.py
+../../../../../uno/lib/uno/card/dbconfig.py
