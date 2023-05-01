@@ -49,8 +49,9 @@ import traceback
 
 
 class Provider(ProviderBase):
-    def __init__(self, ctx, paths, maps, types, tmps, fields):
+    def __init__(self, ctx, database):
         self._ctx = ctx
+        paths, maps, types, tmps, fields = database.getMetaData('metadata', 'item')
         self._paths = dict(list(paths))
         self._maps = dict(list(maps))
         self._types = dict(list(types))
@@ -147,7 +148,7 @@ class Provider(ProviderBase):
 
     def _parseCard(self, database, start, stop):
         indexes = database.getColumnIndexes()
-        for aid, cid, data, query in database.getChangedCard(start, stop):
+        for aid, cid, query, data in database.getChangedCard(start, stop):
             if query == 'Deleted':
                 continue
             else:
