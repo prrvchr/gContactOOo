@@ -52,11 +52,11 @@ class Provider(ProviderBase):
     def __init__(self, ctx, database):
         self._ctx = ctx
         paths, maps, types, tmps, fields = database.getMetaData('item', 'metadata')
-        self._paths = dict(list(paths))
-        self._maps = dict(list(maps))
-        self._types = dict(list(types))
-        self._tmps = list(tmps)
-        self._fields = next(fields)
+        self._paths = paths
+        self._maps = maps
+        self._types = types
+        self._tmps = tmps
+        self._fields = fields
 
     @property
     def Host(self):
@@ -145,12 +145,16 @@ class Provider(ProviderBase):
 
     def _parseCardValue(self, database, start, stop):
         indexes = database.getColumnIndexes()
-        for aid, cid, query, data in database.getChangedCard(start, stop):
+        for book, card, query, data in database.getChangedCard(start, stop):
             if query == 'Deleted':
                 continue
             else:
                 for column, value in json.loads(data).items():
-                    yield cid, indexes.get(column), value
+                    index = indexes.get(column)
+                    if index:
+                        yield book, card, index, value
+                    else:
+                        print("Provider._parseCardValue() Column: %s" % column)
 
     def _parsePeople(self, request, parameter):
         map = tmp = False

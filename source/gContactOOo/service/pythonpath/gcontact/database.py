@@ -37,11 +37,11 @@ class DataBase(DataBaseSuper):
 
     def getMetaData(self, tag, default=None, dot='.', sep=','):
         try:
-            paths = self._getPaths(tag, dot)
-            maps = self._getMaps(tag, dot)
-            types = self._getTypes(tag, dot)
-            tmps = self._getTmps(tag, dot)
-            fields = self._getFields(default, sep)
+            paths =  dict(list(self._getPaths(tag, dot)))
+            maps = dict(list(self._getMaps(tag, dot)))
+            types = dict(list(self._getTypes(tag, dot)))
+            tmps = list(self._getTmps(tag, dot))
+            fields = next(self._getFields(default, sep))
         except Exception as e:
             msg = "Error: %s" % traceback.print_exc()
             print(msg)
@@ -53,7 +53,21 @@ class DataBase(DataBaseSuper):
         result = call.executeQuery()
         while result.next():
             key = result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
-            yield key, result.getString(4)
+            value = result.getString(4)
+            print("DataBase._getPaths() key: '%s' - Value: %s" % (key, value))
+            yield key, value
+        result.close()
+        call.close()
+
+    def _getMaps(self, tag, dot):
+        sep = dot + tag + dot
+        call = self._getCall('getMaps')
+        result = call.executeQuery()
+        while result.next():
+            key = result.getString(1) + sep + result.getString(2) + dot + tag
+            paths = result.getArray(3).getArray(None)
+            print("DataBase._getMaps() key: '%s' - List: %s" % (key, paths))
+            yield key, paths
         result.close()
         call.close()
 
@@ -71,22 +85,16 @@ class DataBase(DataBaseSuper):
         result.close()
         call.close()
 
-    def _getMaps(self, tag, dot):
-        sep = dot + tag + dot
-        call = self._getCall('getMaps')
-        result = call.executeQuery()
-        while result.next():
-            key = result.getString(1) + sep + result.getString(2) + dot + tag
-            yield key, result.getArray(3).getArray(None)
-        result.close()
-        call.close()
-
     def _getTmps(self, tag, dot):
         sep = dot + tag + dot
         call = self._getCall('getTmps')
         result = call.executeQuery()
         while result.next():
-            yield result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
+            key = result.getString(1)
+            key += sep + result.getString(2)
+            key += sep + result.getString(3)
+            print("DataBase._getTmps() key: '%s'" % key)
+            yield key
         result.close()
         call.close()
 
@@ -98,5 +106,6 @@ class DataBase(DataBaseSuper):
             fields.append(result.getString(1))
         result.close()
         call.close()
+        print("DataBase._getFields() Fields: '%s'" % sep.join(fields))
         yield sep.join(fields)
 
