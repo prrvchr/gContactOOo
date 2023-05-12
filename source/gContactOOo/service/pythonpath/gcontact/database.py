@@ -29,8 +29,74 @@
 
 from .card import DataBase as DataBaseSuper
 
+import json
 import traceback
 
 
 class DataBase(DataBaseSuper):
-    pass
+
+    def getMetaData(self, tag, default=None, dot='.', sep=','):
+        try:
+            paths = self._getPaths(tag, dot)
+            maps = self._getMaps(tag, dot)
+            types = self._getTypes(tag, dot)
+            tmps = self._getTmps(tag, dot)
+            fields = self._getFields(default, sep)
+        except Exception as e:
+            msg = "Error: %s" % traceback.print_exc()
+            print(msg)
+        return paths, maps, types, tmps, fields
+
+    def _getPaths(self, tag, dot):
+        sep = dot + tag + dot
+        call = self._getCall('getPaths')
+        result = call.executeQuery()
+        while result.next():
+            key = result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
+            yield key, result.getString(4)
+        result.close()
+        call.close()
+
+    def _getTypes(self, tag, dot):
+        sep = dot + tag + dot
+        call = self._getCall('getTypes')
+        result = call.executeQuery()
+        while result.next():
+            key = result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
+            maps = {}
+            for map in result.getArray(4).getArray(None):
+                maps.update(json.loads(map))
+            print("DataBase._getTypes() key: '%s' - Dict: %s" % (key, maps))
+            yield key, maps
+        result.close()
+        call.close()
+
+    def _getMaps(self, tag, dot):
+        sep = dot + tag + dot
+        call = self._getCall('getMaps')
+        result = call.executeQuery()
+        while result.next():
+            key = result.getString(1) + sep + result.getString(2) + dot + tag
+            yield key, result.getArray(3).getArray(None)
+        result.close()
+        call.close()
+
+    def _getTmps(self, tag, dot):
+        sep = dot + tag + dot
+        call = self._getCall('getTmps')
+        result = call.executeQuery()
+        while result.next():
+            yield result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
+        result.close()
+        call.close()
+
+    def _getFields(self, defaults, sep):
+        fields = defaults.split(sep)
+        call = self._getCall('getFields')
+        result = call.executeQuery()
+        while result.next():
+            fields.append(result.getString(1))
+        result.close()
+        call.close()
+        yield sep.join(fields)
+

@@ -51,7 +51,7 @@ import traceback
 class Provider(ProviderBase):
     def __init__(self, ctx, database):
         self._ctx = ctx
-        paths, maps, types, tmps, fields = database.getMetaData('metadata', 'item')
+        paths, maps, types, tmps, fields = database.getMetaData('item', 'metadata')
         self._paths = dict(list(paths))
         self._maps = dict(list(maps))
         self._types = dict(list(types))
@@ -84,13 +84,10 @@ class Provider(ProviderBase):
         # FIXME: Google Contact only offers one address book...
         name = 'Tous mes Contacts'
         iterator = (item for item in ((user.Uri, name, '', ''), ))
-        count, modified = user.Addressbooks.initAddressbooks(database, user.Id, iterator)
-        if not count:
-            #TODO: Raise SqlException with correct message!
-            print("User.initAddressbooks() 1 %s" % (addressbooks, ))
-            raise self.getSqlException(1004, 1108, 'initAddressbooks', '%s has no support of CardDAV!' % user.Server)
-        if modified:
-            database.initAddressbooks(user)
+        self.initUserBooks(database, user, iterator)
+
+    def initUserGroups(self, database, user, book):
+        pass
 
     def firstPullCard(self, database, user, addressbook, page, count):
         return self._pullCard(database, user, addressbook, page, count)
@@ -101,7 +98,7 @@ class Provider(ProviderBase):
     def parseCard(self, database):
         start = database.getLastUserSync()
         stop = currentDateTimeInTZ()
-        iterator = self._parseCard(database, start, stop)
+        iterator = self._parseCardValue(database, start, stop)
         count = database.mergeCardValue(iterator)
         print("Provider.parseCard() Count: %s" % count)
         database.updateUserSync(stop)
@@ -146,7 +143,7 @@ class Provider(ProviderBase):
         count += database.mergeGroup(addressbook.Id, self._parseGroups(user.Request, parameter))
         return parameter.PageCount + page, count
 
-    def _parseCard(self, database, start, stop):
+    def _parseCardValue(self, database, start, stop):
         indexes = database.getColumnIndexes()
         for aid, cid, query, data in database.getChangedCard(start, stop):
             if query == 'Deleted':
