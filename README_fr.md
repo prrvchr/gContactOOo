@@ -2,35 +2,35 @@
 
 **This [document][2] in English.**
 
-**L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr) **et à notre** [**Politique de protection des données**](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr)
+**L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**][3] **et à notre** [**Politique de protection des données**][4]
 
-# version [0.0.6](https://prrvchr.github.io/gContactOOo/README_fr#historique)
+# version [0.0.6][5]
 
 ## Introduction:
 
-**gContactOOo** fait partie d'une [Suite](https://prrvchr.github.io/README_fr) d'extensions [LibreOffice](https://fr.libreoffice.org/download/telecharger-libreoffice/) et/ou [OpenOffice](https://www.openoffice.org/fr/Telecharger/) permettant de vous offrir des services inovants dans ces suites bureautique.  
+**gContactOOo** fait partie d'une [Suite][6] d'extensions [LibreOffice][7] et/ou [OpenOffice][8] permettant de vous offrir des services inovants dans ces suites bureautique.  
 Cette extension vous donne l'acces à vos contacts téléphonique dans LibreOffice / OpenOffice (les contacts de votre téléphone Android).
 
 Etant un logiciel libre je vous encourage:
-- A dupliquer son [code source](https://github.com/prrvchr/gContactOOo).
+- A dupliquer son [code source][9].
 - A apporter des modifications, des corrections, des améliorations.
-- D'ouvrir un [dysfonctionnement](https://github.com/prrvchr/gContactOOo/issues/new) si nécessaire.
+- D'ouvrir un [dysfonctionnement][10] si nécessaire.
 
 Bref, à participer au developpement de cette extension.  
 Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
 ## Prérequis:
 
-gContactOOo utilise une base de données locale [HsqlDB](http://hsqldb.org/) version 2.5.1.  
-HsqlDB étant une base de données écrite en Java, son utilisation nécessite [l'installation et la configuration](https://wiki.documentfoundation.org/Documentation/HowTo/Install_the_correct_JRE_-_LibreOffice_on_Windows_10/fr) dans LibreOffice / OpenOffice d'un **JRE version 11 ou ultérieure**.  
-Je vous recommande [Adoptium](https://adoptium.net/releases.html?variant=openjdk11) comme source d'installation de Java.
+gContactOOo utilise une base de données locale [HsqlDB][11] version 2.5.1.  
+HsqlDB étant une base de données écrite en Java, son utilisation nécessite [l'installation et la configuration][12] dans LibreOffice / OpenOffice d'un **JRE version 11 ou ultérieure**.  
+Je vous recommande [Adoptium][13] comme source d'installation de Java.
 
-Si vous utilisez **LibreOffice sous Linux**, alors vous êtes sujet au [dysfonctionnement 139538](https://bugs.documentfoundation.org/show_bug.cgi?id=139538).  
+Si vous utilisez **LibreOffice sous Linux**, alors vous êtes sujet au [dysfonctionnement 139538][14].  
 Pour contourner le problème, veuillez désinstaller les paquets:
 - libreoffice-sdbc-hsqldb
 - libhsqldb1.8.0-java
 
-Si vous souhaitez quand même utiliser la fonctionnalité HsqlDB intégré fournie par LibreOffice, alors installez l'extension [HsqlDBembeddedOOo](https://prrvchr.github.io/HsqlDBembeddedOOo/README_fr).  
+Si vous souhaitez quand même utiliser la fonctionnalité HsqlDB intégré fournie par LibreOffice, alors installez l'extension [HsqlDBembeddedOOo][15].  
 OpenOffice et LibreOffice sous Windows ne sont pas soumis à ce dysfonctionnement.
 
 ## Installation:
@@ -38,15 +38,15 @@ OpenOffice et LibreOffice sous Windows ne sont pas soumis à ce dysfonctionnemen
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-- Installer l'extension ![OAuth2OOo logo](https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.png) **[OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt)** version 0.0.6.
+- Installer l'extension ![OAuth2OOo logo][16] **[OAuth2OOo.oxt][17]** version 0.0.6.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![jdbcDriverOOo logo](https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png) **[jdbcDriverOOo.oxt](https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt)** version 0.0.4.
+- Installer l'extension ![jdbcDriverOOo logo][18] **[jdbcDriverOOo.oxt][19]** version 0.0.4.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![gContactOOo logo](img/gContactOOo.png) **[gContactOOo.oxt](https://github.com/prrvchr/gContactOOo/raw/master/source/gContactOOo/dist/gContactOOo.oxt)** version 0.0.6.
+- Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][20]** version 0.0.6.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
@@ -54,24 +54,24 @@ Redémarrez LibreOffice / OpenOffice après l'installation.
 
 Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de données des adresses...:
 
-![gContactOOo screenshot 1](img/gContactOOo-1_fr.png)
+![gContactOOo screenshot 1][21]
 
 À l'étape: 1. Type de carnet d'adresses:
 - sélectionner: Autre source de données externes
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 2](img/gContactOOo-2_fr.png)
+![gContactOOo screenshot 2][22]
 
 À l'étape: 2. Paramètres de Connexion:
 - cliquez sur: Paramètres (bouton)
 
-![gContactOOo screenshot 3](img/gContactOOo-3_fr.png)
+![gContactOOo screenshot 3][23]
 
 Dans Type de base de données:
 - sélectionner: Contacts Google
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 4](img/gContactOOo-4_fr.png)
+![gContactOOo screenshot 4][24]
 
 Dans Général: URL de la source de données:
 - mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
@@ -79,11 +79,11 @@ Dans Général: URL de la source de données:
 Puis:
 - cliquez sur: Tester la connexion (bouton)
 
-![gContactOOo screenshot 5](img/gContactOOo-5_fr.png)
+![gContactOOo screenshot 5][25]
 
-Après avoir autorisé l'application [OAuth2OOo](https://prrvchr.github.io/OAuth2OOo/README_fr) à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
+Après avoir autorisé l'application [OAuth2OOo][26] à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
-![gContactOOo screenshot 6](img/gContactOOo-6_fr.png)
+![gContactOOo screenshot 6][27]
 
 Maintenant à vous d'en profiter...
 
@@ -102,7 +102,7 @@ Maintenant à vous d'en profiter...
 * LibreOffice 6.4.4.2 (x64) - Windows 7 SP1
 
 Je vous encourage en cas de problème :-(  
-de créer un [dysfonctionnement](https://github.com/prrvchr/gContactOOo/issues/new)  
+de créer un [dysfonctionnement][10]  
 J'essaierai de le résoudre ;-)
 
 ## Historique:
@@ -111,7 +111,7 @@ J'essaierai de le résoudre ;-)
 
 Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
 
-Avec l'extension [smtpMailerOOo](https://github.com/prrvchr/smtpMailerOOo/blob/master/source/smtpMailerOOo/dist/smtpMailerOOo.oxt), elle peut être la source de données pour des [publipostages](https://fr.wikipedia.org/wiki/Publipostage) par courriel (email), à vos correspondants contenus dans votre téléphone.
+Avec l'extension [smtpMailerOOo][28], elle peut être la source de données pour des [publipostages][29] par courriel (email), à vos correspondants contenus dans votre téléphone.
 
 Elle vous donnera accès à un système d'information que seules les grandes entreprises sont capables, aujourd'hui, de mettre en œuvre.
 
@@ -119,11 +119,11 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
-- Ecriture d'une nouvelle interface [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py), lancé en arrière-plan (python Thread) responsable de:
+- Ecriture d'une nouvelle interface [Replicator][30], lancé en arrière-plan (python Thread) responsable de:
 
     - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
 
-- Ecriture d'une nouvelle interface [DataBase](https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py), responsable de tous les appels à la base de données.
+- Ecriture d'une nouvelle interface [DataBase][31], responsable de tous les appels à la base de données.
 
 - Beaucoup d'autres correctifs...
 
@@ -133,14 +133,14 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
 
-- L'extension [jdbcDriverOOo](https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt) fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+- L'extension [jdbcDriverOOo][19] fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
-- Modification du [Replicator](https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py) afin de:
+- Modification du [Replicator][30] afin de:
     - Ouvrir et fermer la base de données à chaque réplication.
     - Se mettre en attente après la dernière fermeture du carnet d'adresses.
     - Se décharger lors de la fermeture de LibreOffice / OpenOffice.
 
-- Possibilité d'ouvrir la base de données HsqlDB locale par: Outils -> Options -> Internet -> gContactOOo -> Voir la base de données
+- Possibilité d'ouvrir la base de données HsqlDB locale par: **Outils -> Options -> Internet -> gContactOOo -> Voir la base de données**
 
 - Beaucoup d'autres correctifs...
 
@@ -154,3 +154,32 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 [1]: <img/gContactOOo.png>
 [2]: <https://prrvchr.github.io/gContactOOo>
+[3]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
+[4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr>
+[5]: <https://prrvchr.github.io/gContactOOo#historical>
+[6]: <https://prrvchr.github.io/README_fr>
+[7]: <https://fr.libreoffice.org/download/telecharger-libreoffice/>
+[8]: <https://www.openoffice.org/fr/Telecharger/>
+[9]: <https://github.com/prrvchr/gContactOOo>
+[10]: <https://github.com/prrvchr/gContactOOo/issues/new>
+[11]: <http://hsqldb.org/>
+[12]: <https://wiki.documentfoundation.org/Documentation/HowTo/Install_the_correct_JRE_-_LibreOffice_on_Windows_10/fr>
+[13]: <https://adoptium.net/releases.html?variant=openjdk11>
+[14]: <https://bugs.documentfoundation.org/show_bug.cgi?id=139538>
+[15]: <https://prrvchr.github.io/HsqlDBembeddedOOo/README_fr>
+[16]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.png>
+[17]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
+[18]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png>
+[19]: <https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt>
+[20]: <https://github.com/prrvchr/gContactOOo/raw/master/source/gContactOOo/dist/gContactOOo.oxt>
+[21]: <img/gContactOOo-1.png>
+[22]: <img/gContactOOo-2.png>
+[23]: <img/gContactOOo-3.png>
+[24]: <img/gContactOOo-4.png>
+[25]: <img/gContactOOo-5.png>
+[26]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
+[27]: <img/gContactOOo-6.png>
+[28]: <https://github.com/prrvchr/smtpMailerOOo/blob/master/source/smtpMailerOOo/dist/smtpMailerOOo.oxt>
+[29]: <https://en.wikipedia.org/wiki/Mail_merge>
+[30]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
+[31]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
