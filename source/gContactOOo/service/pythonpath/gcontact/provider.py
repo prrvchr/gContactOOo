@@ -289,7 +289,7 @@ class Provider(ProviderBase):
             #parameter.setQuery('requestSyncToken', 'true')
 
         elif method == 'getGroup':
-            parameter.Url += f'/contactGroups/{data}'
+            parameter.Url += '/contactGroups/' + data
             parameter.setQuery('groupFields', 'clientData')
             parameter.setQuery('maxMembers', g_member)
 

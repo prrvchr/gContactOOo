@@ -42,7 +42,7 @@ g_errorlog = 'gContactError'
 g_scheme = 'https'
 g_host = 'people.googleapis.com'
 g_version = 'v1'
-g_url = f'{g_scheme}://{g_host}/{g_version}'
+g_url = '%s://%s/%s' % (g_scheme, g_host, g_version)
 
 g_chunk = 320 * 1024
 g_page = 100
