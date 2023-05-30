@@ -23,7 +23,7 @@ Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
 Si vous utilisez **OpenOffice sur Windows** quelle que soit la version, vous êtes sujet au [dysfonctionnement 128569][11]. Je n'ai pas trouvé de solution de contournement, pour l'instant je ne peux que vous conseiller d'installer **LibreOffice**...
 
-gContactOOo utilise une base de données locale [HsqlDB][12] version 2.5.1.  
+gContactOOo utilise une base de données locale [HsqlDB][12] version 2.7.1.  
 HsqlDB étant une base de données écrite en Java, son utilisation nécessite [l'installation et la configuration][13] dans LibreOffice / OpenOffice d'un **JRE version 11 ou ultérieure**.  
 Je vous recommande [Adoptium][14] comme source d'installation de Java.
 
