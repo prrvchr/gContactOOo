@@ -21,37 +21,39 @@ Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
 ## Prérequis:
 
-gContactOOo utilise une base de données locale [HsqlDB][11] version 2.5.1.  
-HsqlDB étant une base de données écrite en Java, son utilisation nécessite [l'installation et la configuration][12] dans LibreOffice / OpenOffice d'un **JRE version 11 ou ultérieure**.  
-Je vous recommande [Adoptium][13] comme source d'installation de Java.
+Si vous utilisez **OpenOffice sur Windows** quelle que soit la version, vous êtes sujet au [dysfonctionnement 128569][11]. Je n'ai pas trouvé de solution de contournement, pour l'instant je ne peux que vous conseiller d'installer **LibreOffice**...
+
+gContactOOo utilise une base de données locale [HsqlDB][12] version 2.5.1.  
+HsqlDB étant une base de données écrite en Java, son utilisation nécessite [l'installation et la configuration][13] dans LibreOffice / OpenOffice d'un **JRE version 11 ou ultérieure**.  
+Je vous recommande [Adoptium][14] comme source d'installation de Java.
 
 Si vous utilisez **LibreOffice sous Linux**, vous devez vous assurez de deux choses:
-  - Vous êtes sujet au [dysfonctionnement 139538][14]. Pour contourner le problème, veuillez **désinstaller les paquets** avec les commandes:
-    - `sudo apt remove libreoffice-sdbc-hsqldb`
-    - `sudo apt remove libhsqldb1.8.0-java`
+  - Vous êtes sujet au [dysfonctionnement 139538][15]. Pour contourner le problème, veuillez **désinstaller les paquets** avec les commandes:
+    - `sudo apt remove libreoffice-sdbc-hsqldb` (pour désinstaller le paquet libreoffice-sdbc-hsqldb)
+    - `sudo apt remove libhsqldb1.8.0-java` (pour désinstaller le paquet libhsqldb1.8.0-java)
 
-  Si vous souhaitez quand même utiliser la fonctionnalité HsqlDB intégré fournie par LibreOffice, alors installez l'extension [HsqlDBembeddedOOo][15].  
+Si vous souhaitez quand même utiliser la fonctionnalité HsqlDB intégré fournie par LibreOffice, alors installez l'extension [HsqlDBembeddedOOo][16].  
 
-  - Si le paquet python3-cffi-backend est installé alors vous devez **installer le paquet python3-cffi** avec la commande:
-    - `dpkg -s python3-cffi-backend` (pour savoir si le paquet est installé)
-    - `sudo apt install python3-cffi`
+  - Si le paquet python3-cffi-backend est installé alors vous devez **installer le paquet python3-cffi** avec les commandes:
+    - `dpkg -s python3-cffi-backend` (pour savoir si le paquet python3-cffi-backend est installé)
+    - `sudo apt install python3-cffi` (pour installer le paquet python3-cffi si nécessaire)
 
-OpenOffice et LibreOffice sous Windows ne sont pas soumis à ces dysfonctionnements.
+OpenOffice sous Linux et LibreOffice sous Windows ne sont pas soumis à ces dysfonctionnements.
 
 ## Installation:
 
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-- Installer l'extension ![OAuth2OOo logo][16] **[OAuth2OOo.oxt][17]** version 0.0.6.
+- Installer l'extension ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** version 0.0.6.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![jdbcDriverOOo logo][18] **[jdbcDriverOOo.oxt][19]** version 0.0.4.
+- Installer l'extension ![jdbcDriverOOo logo][19] **[jdbcDriverOOo.oxt][20]** version 0.0.4.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][20]** version 0.0.6.
+- Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][21]** version 0.0.6.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
@@ -59,24 +61,24 @@ Redémarrez LibreOffice / OpenOffice après l'installation.
 
 Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de données des adresses...:
 
-![gContactOOo screenshot 1][21]
+![gContactOOo screenshot 1][22]
 
 À l'étape: 1. Type de carnet d'adresses:
 - sélectionner: Autre source de données externes
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 2][22]
+![gContactOOo screenshot 2][23]
 
 À l'étape: 2. Paramètres de Connexion:
 - cliquez sur: Paramètres (bouton)
 
-![gContactOOo screenshot 3][23]
+![gContactOOo screenshot 3][24]
 
 Dans Type de base de données:
 - sélectionner: Contacts Google
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 4][24]
+![gContactOOo screenshot 4][25]
 
 Dans Général: URL de la source de données:
 - mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
@@ -84,27 +86,23 @@ Dans Général: URL de la source de données:
 Puis:
 - cliquez sur: Tester la connexion (bouton)
 
-![gContactOOo screenshot 5][25]
+![gContactOOo screenshot 5][26]
 
-Après avoir autorisé l'application [OAuth2OOo][26] à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
+Après avoir autorisé l'application [OAuth2OOo][27] à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
-![gContactOOo screenshot 6][27]
+![gContactOOo screenshot 6][28]
 
 Maintenant à vous d'en profiter...
 
 ## A été testé avec:
 
-* LibreOffice 6.4.4.2 - Ubuntu 20.04 -  LxQt 0.14.1
+* LibreOffice 7.3.7.2 - Lubuntu 22.04 - OpenJDK-11-JRE (amd64)
 
-* LibreOffice 7.0.0.0.alpha1 - Ubuntu 20.04 -  LxQt 0.14.1
+* LibreOffice 7.4.3.2(x64) - Windows 10(x64) - Adoptium JDK Hotspot 11.0.17 (x64) (sous Lubuntu 22.04 / VirtualBox 6.1.38)
 
-* OpenOffice 4.1.8 x86_64 - Ubuntu 20.04 - LxQt 0.14.1
+* OpenOffice 4.1.13 - Lubuntu 22.04 - OpenJDK-11-JRE (amd64) (sous Lubuntu 22.04 / VirtualBox 6.1.38)
 
-* OpenOffice 4.2.0.Build:9820 x86_64 - Ubuntu 20.04 - LxQt 0.14.1
-
-* LibreOffice 6.1.5.2 - Raspbian 10 buster - Raspberry Pi 4 Model B
-
-* LibreOffice 6.4.4.2 (x64) - Windows 7 SP1
+* **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][11]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
 
 Je vous encourage en cas de problème :-(  
 de créer un [dysfonctionnement][10]  
@@ -116,7 +114,7 @@ J'essaierai de le résoudre ;-)
 
 Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
 
-Avec l'extension [smtpMailerOOo][28], elle peut être la source de données pour des [publipostages][29] par courriel (email), à vos correspondants contenus dans votre téléphone.
+Avec l'extension [smtpMailerOOo][29], elle peut être la source de données pour des [publipostages][30] par courriel (email), à vos correspondants contenus dans votre téléphone.
 
 Elle vous donnera accès à un système d'information que seules les grandes entreprises sont capables, aujourd'hui, de mettre en œuvre.
 
@@ -124,11 +122,11 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
-- Ecriture d'une nouvelle interface [Replicator][30], lancé en arrière-plan (python Thread) responsable de:
+- Ecriture d'une nouvelle interface [Replicator][31], lancé en arrière-plan (python Thread) responsable de:
 
     - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
 
-- Ecriture d'une nouvelle interface [DataBase][31], responsable de tous les appels à la base de données.
+- Ecriture d'une nouvelle interface [DataBase][32], responsable de tous les appels à la base de données.
 
 - Beaucoup d'autres correctifs...
 
@@ -138,9 +136,9 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
 
-- L'extension [jdbcDriverOOo][19] fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+- L'extension [jdbcDriverOOo][20] fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
-- Modification du [Replicator][30] afin de:
+- Modification du [Replicator][31] afin de:
     - Ouvrir et fermer la base de données à chaque réplication.
     - Se mettre en attente après la dernière fermeture du carnet d'adresses.
     - Se décharger lors de la fermeture de LibreOffice / OpenOffice.
@@ -167,24 +165,25 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [8]: <https://www.openoffice.org/fr/Telecharger/>
 [9]: <https://github.com/prrvchr/gContactOOo>
 [10]: <https://github.com/prrvchr/gContactOOo/issues/new>
-[11]: <http://hsqldb.org/>
-[12]: <https://wiki.documentfoundation.org/Documentation/HowTo/Install_the_correct_JRE_-_LibreOffice_on_Windows_10/fr>
-[13]: <https://adoptium.net/releases.html?variant=openjdk11>
-[14]: <https://bugs.documentfoundation.org/show_bug.cgi?id=139538>
-[15]: <https://prrvchr.github.io/HsqlDBembeddedOOo/README_fr>
-[16]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.png>
-[17]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
-[18]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png>
-[19]: <https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt>
-[20]: <https://github.com/prrvchr/gContactOOo/raw/master/source/gContactOOo/dist/gContactOOo.oxt>
-[21]: <img/gContactOOo-1.png>
-[22]: <img/gContactOOo-2.png>
-[23]: <img/gContactOOo-3.png>
-[24]: <img/gContactOOo-4.png>
-[25]: <img/gContactOOo-5.png>
-[26]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
-[27]: <img/gContactOOo-6.png>
-[28]: <https://github.com/prrvchr/smtpMailerOOo/blob/master/source/smtpMailerOOo/dist/smtpMailerOOo.oxt>
-[29]: <https://en.wikipedia.org/wiki/Mail_merge>
-[30]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
-[31]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
+[11]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
+[12]: <http://hsqldb.org/>
+[13]: <https://wiki.documentfoundation.org/Documentation/HowTo/Install_the_correct_JRE_-_LibreOffice_on_Windows_10/fr>
+[14]: <https://adoptium.net/releases.html?variant=openjdk11>
+[15]: <https://bugs.documentfoundation.org/show_bug.cgi?id=139538>
+[16]: <https://prrvchr.github.io/HsqlDBembeddedOOo/README_fr>
+[17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.png>
+[18]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
+[19]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png>
+[20]: <https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt>
+[21]: <https://github.com/prrvchr/gContactOOo/raw/master/source/gContactOOo/dist/gContactOOo.oxt>
+[22]: <img/gContactOOo-1.png>
+[23]: <img/gContactOOo-2.png>
+[24]: <img/gContactOOo-3.png>
+[25]: <img/gContactOOo-4.png>
+[26]: <img/gContactOOo-5.png>
+[27]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
+[28]: <img/gContactOOo-6.png>
+[29]: <https://github.com/prrvchr/smtpMailerOOo/blob/master/source/smtpMailerOOo/dist/smtpMailerOOo.oxt>
+[30]: <https://en.wikipedia.org/wiki/Mail_merge>
+[31]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
+[32]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
