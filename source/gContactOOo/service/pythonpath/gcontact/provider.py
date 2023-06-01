@@ -75,9 +75,10 @@ class Provider(ProviderBase):
     # Method called from User._getNewUser()
     def insertUser(self, database, request, scheme, server, name, pwd):
         parameter = self._getRequestParameter(request, 'getUser')
-        response = request.execute(parameter)
-        userid = self._parseUser(response)
-        return database.insertUser(userid, scheme, server, '', name)
+        userid = self._parseUser(request.execute(parameter))
+        if userid is not None:
+            return database.insertUser(userid, scheme, server, '', name)
+        return None
 
     def initAddressbooks(self, database, user):
         print("Provider.initAddressbooks() Name: %s - Uri: %s" % (user.Name, user.Uri))
