@@ -44,7 +44,7 @@ from .configuration import g_member
 from .configuration import g_chunk
 
 import json
-from . import ijson
+import ijson
 import traceback
 
 
