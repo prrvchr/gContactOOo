@@ -1,8 +1,10 @@
-# ![gContactOOo logo](https://prrvchr.github.io/gContactOOo/img/gContactOOo.png) gContactOOo - Politique de protection des données
+# Politique de protection des données
 
-**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr).**
+**This [document][2] in English.**
 
-Concernant l'installation, la configuration et l'utilisation, veuillez consulter la [documentation](https://prrvchr.github.io/gContactOOo/README_fr).
+**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation][3].**
+
+Concernant l'installation, la configuration et l'utilisation, veuillez consulter la [documentation][4].
 
 ## Introduction:
 
@@ -15,7 +17,7 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 - `Utilisateur`: l'utilisateur du logiciel gContactOOo.
 - `Fournisseur`: fournisseur de services Internet fournissant des services Internet à `gContactOOo`.
 
-Bien que **gContactOOo ne partage ni ne transfert aucun données avec toutes autre application**, `gContactOOo` respecte [la politique de données utilisateur des services API Google](https://developers.google.com/terms/api-services-user-data-policy), y compris les exigences d'utilisation limitée.
+Bien que **gContactOOo ne partage ni ne transfert aucun données avec toutes autre application**, `gContactOOo` respecte [la politique de données utilisateur des services API Google][5], y compris les exigences d'utilisation limitée.
 
 ## Contact:
 
@@ -56,3 +58,9 @@ Il est de la responsabilité de l'`Utilisateur` de désinstaller `gContactOOo` a
 L'utilisation des services du `Fournisseur` via `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
 Le `Fournisseur` est seul responsable de l'expiration des données qu'il collecte comme décrit dans sa Politique de Protection des Données.
+
+[1]: <https://prrvchr.github.io/gContactOOo/img/gContactOOo.png>
+[2]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
+[3]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
+[4]: <https://prrvchr.github.io/gContactOOo/README_fr>
+[5]: <https://developers.google.com/terms/api-services-user-data-policy?hl=fr>

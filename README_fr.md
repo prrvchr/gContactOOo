@@ -1,8 +1,8 @@
-# ![gContactOOo logo][1] gContactOOo
+# Documentation
 
 **This [document][2] in English.**
 
-**L'utilisation de ce logiciel vous soumet à nos** [**Conditions d'utilisation**][3] **et à notre** [**Politique de protection des données**][4]
+**L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][3] et à notre [Politique de protection des données][4].**
 
 # version [1.0.0][5]
 
@@ -99,9 +99,9 @@ Maintenant à vous d'en profiter...
 
 * **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][11]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
 
-Je vous encourage en cas de problème :-(  
+Je vous encourage en cas de problème :confused:  
 de créer un [dysfonctionnement][10]  
-J'essaierai de le résoudre ;-)
+J'essaierai de le résoudre :smile:
 
 ## Historique:
 
@@ -134,6 +134,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 - L'extension [jdbcDriverOOo][20] fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
 - Modification du [Replicator][31] afin de:
+
     - Ouvrir et fermer la base de données à chaque réplication.
     - Se mettre en attente après la dernière fermeture du carnet d'adresses.
     - Se décharger lors de la fermeture de LibreOffice / OpenOffice.

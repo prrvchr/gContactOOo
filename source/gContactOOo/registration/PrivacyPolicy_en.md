@@ -1,8 +1,10 @@
-# ![gContactOOo logo](https://prrvchr.github.io/gContactOOo/img/gContactOOo.png) gContactOOo - Data Protection Policy
+# Data Protection Policy
 
-**Use of this software also subjects you to our [Terms Of Use](https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en).**
+**Ce [document][2] en français.**
 
-Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/gContactOOo/).
+**Use of this software also subjects you to our [Terms Of Use][3].**
+
+Regarding installation, configuration and use, please consult the [documentation][4].
 
 ## Introduction:
 
@@ -15,7 +17,7 @@ For simplicity, in the rest of this document, will be named:
 - `User`: the user of the gContactOOo software.
 - `Supplier`: the internet service provider delivering internet services to `gContactOOo`.
 
-Although **gContactOOo does not share or transfer any data to any other application**, `gContactOOo` adhere to [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements.
+Although **gContactOOo does not share or transfer any data to any other application**, `gContactOOo` adhere to [Google API Services User Data Policy][5], including the Limited Use requirements.
 
 ## Contact:
 
@@ -56,3 +58,9 @@ It is the responsibility of the `User` to uninstall `gContactOOo` in order to de
 Use of the `Supplier` services via `gContactOOo` may subject you to the Data Protection Policy of `Supplier`. It is the responsibility of the `User` to review this Policy from the `Supplier` website.
 
 `Supplier` is solely responsible for the expiration of the data it collects as described in its Policy.
+
+[1]: <https://prrvchr.github.io/gContactOOo/img/gContactOOo.png>
+[2]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr>
+[3]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
+[4]: <https://prrvchr.github.io/gContactOOo>
+[5]: <https://developers.google.com/terms/api-services-user-data-policy?hl=en>
