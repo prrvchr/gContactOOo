@@ -19,12 +19,14 @@ For simplicity, in the rest of this document, will be named:
 
 Although **gContactOOo does not share or transfer any data to any other application**, `gContactOOo` adhere to [Google API Services User Data Policy][5], including the Limited Use requirements.
 
+___
 ## Contact:
 
 In any case, it is possible to contact the person responsible for data processing at:
 
 prrvchr@gmail.com
 
+___
 ## Use of your personal data:
 
 To work `gContactOOo` need to keep data locally.
@@ -39,6 +41,7 @@ Use of the `Supplier` services through `gContactOOo`, may submit you to the Data
 
 `Supplier` is solely responsible for the use of the data it collects as described in its Policy.
 
+___
 ## Security of your personal information:
 
 Since the data collected by `gContactOOo` is located on the user's computer, only the `User` is responsible for the security of the data collected.
@@ -47,6 +50,7 @@ Use of the `Supplier` services via `gContactOOo` may subject you to the Data Pro
 
 `Supplier` is solely responsible for the security of the data it collects as described in its Policy.
 
+___
 ## Expiration of collected data:
 
 Updating the data collected locally is done each time `gContactOOo` is used.

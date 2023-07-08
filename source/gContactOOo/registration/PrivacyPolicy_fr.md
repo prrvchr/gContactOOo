@@ -19,12 +19,14 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 
 Bien que **gContactOOo ne partage ni ne transfert aucun données avec toutes autre application**, `gContactOOo` respecte [la politique de données utilisateur des services API Google][5], y compris les exigences d'utilisation limitée.
 
+___
 ## Contact:
 
 Dans tous les cas, il est possible de contacter le responsable du traitement des données à l'adresse suivante:
 
 prrvchr@gmail.com
 
+___
 ## Utilisation de vos données personnelles:
 
 Pour fonctionner, `gContactOOo` doit conserver des données localement.
@@ -39,6 +41,7 @@ L'utilisation des services du `Fournisseur` au travers de `gContactOOo` peut vou
 
 Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
+___
 ## Sécurité de vos informations personnelles:
 
 Étant donné que les données collectées par `gContactOOo` sont situées sur l'ordinateur de l'utilisateur, seul l'`Utilisateur` est responsable de la sécurité des données collectées.
@@ -47,6 +50,7 @@ L'utilisation des services du `Fournisseur` via `gContactOOo` peut vous soumettr
 
 Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
+___
 ## Expiration des données collectées:
 
 La mise à jour des données collectées localement est effectuée chaque fois que `gContactOOo` est utilisé.
