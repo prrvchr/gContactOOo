@@ -6,8 +6,6 @@
 
 # version [1.0.0][5]
 
-___
-
 ## Introduction:
 
 **gContactOOo** is part of a [Suite][6] of [LibreOffice][7] ~~and/or [OpenOffice][8]~~ extensions allowing to offer you innovative services in these office suites.  
