@@ -5,6 +5,7 @@
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][3] et à notre [Politique de protection des données][4].**
 
 # version [1.0.0][5]
+
 ___
 
 ## Introduction:
@@ -19,6 +20,7 @@ Etant un logiciel libre je vous encourage:
 
 Bref, à participer au developpement de cette extension.  
 Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
+
 ___
 
 ## Prérequis:
@@ -35,7 +37,8 @@ Si vous utilisez **LibreOffice sous Linux**, vous êtes sujet au [dysfonctionnem
 - `sudo apt remove libreoffice-sdbc-hsqldb` (pour désinstaller le paquet libreoffice-sdbc-hsqldb)
 - `sudo apt remove libhsqldb1.8.0-java` (pour désinstaller le paquet libhsqldb1.8.0-java)
 
-Si vous souhaitez quand même utiliser la fonctionnalité HsqlDB intégré fournie par LibreOffice, alors installez l'extension [HsqlDBembeddedOOo][16].  
+Si vous souhaitez quand même utiliser la fonctionnalité HsqlDB intégré fournie par LibreOffice, alors installez l'extension [HsqlDBembeddedOOo][16].
+
 ___
 
 ## Installation:
@@ -54,6 +57,7 @@ Vous devez installer cette extension, si elle n'est pas déjà installée.
 - Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][21]** version 1.0.0.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
+
 ___
 
 ## Utilisation:
@@ -92,6 +96,7 @@ Après avoir autorisé l'application [OAuth2OOo][27] à accéder à vos contacts
 ![gContactOOo screenshot 6][28]
 
 Maintenant à vous d'en profiter...
+
 ___
 
 ## A été testé avec:
@@ -107,6 +112,7 @@ ___
 Je vous encourage en cas de problème :confused:  
 de créer un [dysfonctionnement][10]  
 J'essaierai de le résoudre :smile:
+
 ___
 
 ## Historique:
