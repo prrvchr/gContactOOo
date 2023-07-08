@@ -7,7 +7,6 @@
 # version [1.0.0][5]
 
 ## Introduction:
-___
 
 **gContactOOo** is part of a [Suite][6] of [LibreOffice][7] ~~and/or [OpenOffice][8]~~ extensions allowing to offer you innovative services in these office suites.  
 This extension gives you access, in LibreOffice, to your phone contacts (the contacts of your Android phone).
@@ -20,8 +19,8 @@ Being free software I encourage you:
 In short, to participate in the development of this extension.  
 Because it is together that we can make Free Software smarter.
 
-## Requirement:
 ___
+## Requirement:
 
 In order to take advantage of the latest versions of the Python libraries used in gContactOOo, version 2 of Python has been abandoned in favor of **Python 3.8 minimum**.  
 This means that **gContactOOo no longer supports OpenOffice and LibreOffice 6.x on Windows since version 1.0.0**.
@@ -37,8 +36,8 @@ If you are using **LibreOffice on Linux**, you are subject to [bug 139538][15]. 
 
 If you still want to use the Embedded HsqlDB functionality provided by LibreOffice, then install the [HsqlDBembeddedOOo][16] extension.
 
-## Installation:
 ___
+## Installation:
 
 It seems important that the file was not renamed when it was downloaded.
 If necessary, rename it before installing it.
@@ -55,8 +54,8 @@ You must install this extension, if it is not already installed.
 
 Restart LibreOffice / OpenOffice after installation.
 
-## Use:
 ___
+## Use:
 
 In LibreOffice / OpenOffice go to File -> Wizards -> Address Data Source...:
 
@@ -93,8 +92,8 @@ After authorizing the [OAuth2OOo][27] application to access your Contacts, norma
 
 Have fun...
 
-## Has been tested with:
 ___
+## Has been tested with:
 
 * LibreOffice 7.3.7.2 - Lubuntu 22.04 - Python version 3.10.12 - OpenJDK-11-JRE (amd64)
 
@@ -108,8 +107,8 @@ I encourage you in case of problem :confused:
 to create an [issue][10]  
 I will try to solve it :smile:
 
-## Historical:
 ___
+## Historical:
 
 ### Introduction:
 
