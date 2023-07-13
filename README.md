@@ -172,7 +172,7 @@ It will give you access to an information system that only larges companies are 
 [14]: <https://adoptium.net/releases.html?variant=openjdk11>
 [15]: <https://bugs.documentfoundation.org/show_bug.cgi?id=139538>
 [16]: <https://prrvchr.github.io/HsqlDBembeddedOOo/>
-[17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.png>
+[17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg>
 [18]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
 [19]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png>
 [20]: <https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt>
