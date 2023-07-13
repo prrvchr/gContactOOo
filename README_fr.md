@@ -156,7 +156,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Tout ce qui est bienvenu...
 
-[1]: <img/gContactOOo.png>
+[1]: <img/gContactOOo.svg>
 [2]: <https://prrvchr.github.io/gContactOOo>
 [3]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr>

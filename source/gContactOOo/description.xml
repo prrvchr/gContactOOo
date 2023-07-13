@@ -55,8 +55,8 @@
         <name lang="en-US">gContactOOo</name>
     </display-name>
     <icon>
-        <default xlink:href="gContactOOo/gContactOOo.png"/>
-        <high-contrast xlink:href="gContactOOo/gContactOOo.png"/>
+        <default xlink:href="gContactOOo/gContactOOo.svg"/>
+        <high-contrast xlink:href="gContactOOo/gContactOOo.svg"/>
     </icon>
     <extension-description>
         <src xlink:href="description/desc_en.txt" lang="en-US"/>

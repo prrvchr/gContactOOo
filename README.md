@@ -156,7 +156,7 @@ It will give you access to an information system that only larges companies are 
 
 - Anything welcome...
 
-[1]: <img/gContactOOo.png>
+[1]: <img/gContactOOo.svg>
 [2]: <https://prrvchr.github.io/gContactOOo/README_fr>
 [3]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
