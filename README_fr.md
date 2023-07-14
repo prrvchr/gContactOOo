@@ -174,7 +174,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [16]: <https://prrvchr.github.io/HsqlDBembeddedOOo/README_fr>
 [17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg>
 [18]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
-[19]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png>
+[19]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.svg>
 [20]: <https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt>
 [21]: <https://github.com/prrvchr/gContactOOo/raw/master/source/gContactOOo/dist/gContactOOo.oxt>
 [22]: <img/gContactOOo-1.png>
