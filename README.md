@@ -4,7 +4,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][3] and [Data Protection Policy][4].**
 
-# version [1.0.0][5]
+# version [1.0.1][5]
 
 ## Introduction:
 
@@ -42,15 +42,15 @@ ___
 It seems important that the file was not renamed when it was downloaded.
 If necessary, rename it before installing it.
 
-- Install ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** extension version 1.1.0.
+- Install ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** extension version 1.1.1.
 
 You must install this extension, if it is not already installed.
 
-- Install ![jdbcDriverOOo logo][19] **[jdbcDriverOOo.oxt][20]** extension version 1.0.3.
+- Install ![jdbcDriverOOo logo][19] **[jdbcDriverOOo.oxt][20]** extension version 1.0.5.
 
 You must install this extension, if it is not already installed.
 
-- Install ![gContactOOo logo][1] **[gContactOOo.oxt][21]** extension version 1.0.0.
+- Install ![gContactOOo logo][1] **[gContactOOo.oxt][21]** extension version 1.0.1.
 
 Restart LibreOffice / OpenOffice after installation.
 
@@ -114,7 +114,7 @@ ___
 
 This extension was written in order to make usable in free software (LibreOffice or OpenOffice) your personal data (your address book) stored in your Android phone.
 
-With the [smtpMailerOOo][29] extension, it can be the data source for [mail merge][30] by email, to your correspondents contained in your phone.
+With the [eMailerOOo][29] extension, it can be the data source for [mail merge][30] by email, to your correspondents contained in your phone.
 
 It will give you access to an information system that only larges companies are able, today, to implement.
 
@@ -148,7 +148,13 @@ It will give you access to an information system that only larges companies are 
 
 - Many other fix...
 
-### What remains to be done for version 0.0.6:
+### What has been done for version 1.0.1:
+
+- The absence or obsolescence of the **OAuth2OOo** and/or **jdbcDriverOOo** extensions necessary for the proper functioning of **gContactOOo** now displays an error message.
+
+- Many other things...
+
+### What remains to be done for version 1.0.1:
 
 - Make the address book locally editable with replication of changes.
 
@@ -184,7 +190,7 @@ It will give you access to an information system that only larges companies are 
 [26]: <img/gContactOOo-5.png>
 [27]: <https://prrvchr.github.io/OAuth2OOo>
 [28]: <img/gContactOOo-6.png>
-[29]: <https://github.com/prrvchr/smtpMailerOOo/blob/master/source/smtpMailerOOo/dist/smtpMailerOOo.oxt>
+[29]: <https://prrvchr.github.io/eMailerOOo>
 [30]: <https://en.wikipedia.org/wiki/Mail_merge>
 [31]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
 [32]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>

@@ -4,7 +4,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][3] et à notre [Politique de protection des données][4].**
 
-# version [1.0.0][5]
+# version [1.0.1][5]
 
 ## Introduction:
 
@@ -42,15 +42,15 @@ ___
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-- Installer l'extension ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** version 1.1.0.
+- Installer l'extension ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** version 1.1.1.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![jdbcDriverOOo logo][19] **[jdbcDriverOOo.oxt][20]** version 1.0.3.
+- Installer l'extension ![jdbcDriverOOo logo][19] **[jdbcDriverOOo.oxt][20]** version 1.0.5.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][21]** version 1.0.0.
+- Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][21]** version 1.0.1.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
@@ -114,7 +114,7 @@ ___
 
 Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
 
-Avec l'extension [smtpMailerOOo][29], elle peut être la source de données pour des [publipostages][30] par courriel (email), à vos correspondants contenus dans votre téléphone.
+Avec l'extension [eMailerOOo][29], elle peut être la source de données pour des [publipostages][30] par courriel (email), à vos correspondants contenus dans votre téléphone.
 
 Elle vous donnera accès à un système d'information que seules les grandes entreprises sont capables, aujourd'hui, de mettre en œuvre.
 
@@ -148,7 +148,13 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Beaucoup d'autres correctifs...
 
-### Que reste-t-il à faire pour la version 0.0.6:
+### Ce qui a été fait pour la version 1.0.1:
+
+- L'absence ou l'obsolescence des extensions **OAuth2OOo** et/ou **jdbcDriverOOo** nécessaires au bon fonctionnement de **gContactOOo** affiche désormais un message d'erreur.
+
+- Encore plein d'autres choses...
+
+### Que reste-t-il à faire pour la version 1.0.1:
 
 - Rendre le carnet d'adresses modifiable localement avec la réplication des modifications.
 
@@ -184,7 +190,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [26]: <img/gContactOOo-5.png>
 [27]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
 [28]: <img/gContactOOo-6.png>
-[29]: <https://github.com/prrvchr/smtpMailerOOo/blob/master/source/smtpMailerOOo/dist/smtpMailerOOo.oxt>
+[29]: <https://prrvchr.github.io/eMailerOOo/README_fr>
 [30]: <https://en.wikipedia.org/wiki/Mail_merge>
 [31]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
 [32]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>

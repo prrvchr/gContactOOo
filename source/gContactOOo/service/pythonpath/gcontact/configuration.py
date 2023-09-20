@@ -30,6 +30,7 @@
 # General configuration
 g_extension = 'gContactOOo'
 g_identifier = 'io.github.prrvchr.%s' % g_extension
+g_protocol = 'sdbc:address:google'
 
 # Resource strings files folder
 g_resource = 'resource'
