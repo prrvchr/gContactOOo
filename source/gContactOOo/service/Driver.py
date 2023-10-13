@@ -46,20 +46,20 @@ from gcontact import DataBase
 
 from gcontact import DataSource
 
-from mcontact import checkVersion
-from mcontact import getConnectionUrl
+from gcontact import checkVersion
+from gcontact import getConnectionUrl
 from gcontact import getDriverPropertyInfos
-from mcontact import getExtensionVersion
+from gcontact import getExtensionVersion
 from gcontact import getLogger
-from mcontact import getOAuth2Version
+from gcontact import getOAuth2Version
 from gcontact import getSqlException
 
-from mcontact import g_oauth2ext
-from mcontact import g_oauth2ver
+from gcontact import g_oauth2ext
+from gcontact import g_oauth2ver
 
-from mcontact import g_jdbcext
-from mcontact import g_jdbcid
-from mcontact import g_jdbcver
+from gcontact import g_jdbcext
+from gcontact import g_jdbcid
+from gcontact import g_jdbcver
 
 from gcontact import g_extension
 from gcontact import g_identifier
@@ -68,7 +68,7 @@ from gcontact import g_scheme
 from gcontact import g_host
 from gcontact import g_folder
 from gcontact import g_defaultlog
-from mcontact import g_version
+from gcontact import g_version
 
 import validators
 import traceback
