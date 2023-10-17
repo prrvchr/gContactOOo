@@ -166,7 +166,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [2]: <https://prrvchr.github.io/gContactOOo>
 [3]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr>
-[5]: <https://prrvchr.github.io/gContactOOo#historical>
+[5]: <https://prrvchr.github.io/gContactOOo/README_fr#historique>
 [6]: <https://prrvchr.github.io/README_fr>
 [7]: <https://fr.libreoffice.org/download/telecharger-libreoffice/>
 [8]: <https://www.openoffice.org/fr/Telecharger/>
