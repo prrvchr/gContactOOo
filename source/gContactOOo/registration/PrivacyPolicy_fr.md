@@ -21,7 +21,7 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 
 `gContactOOo` utilisant des services logiciels fourni par `OAuth2OOo`, **son utilisation vous soumet également à la [Politique de protection des données][6]** de `OAuth2OOo`.
 
-Bien que **gContactOOo ne partage ni ne transfert aucun données avec toutes autre application**, `gContactOOo` respecte [la politique de données utilisateur des services API Google][7], y compris les exigences d'utilisation limitée.
+Bien que `gContactOOo` **ne partage ni ne transfert aucun données avec toutes autre application**, `gContactOOo` respecte [la politique de données utilisateur des services API Google][7], y compris les exigences d'utilisation limitée.
 
 ___
 ## Contact:
@@ -37,7 +37,7 @@ Pour fonctionner, `OAuth2OOo` et/ou `gContactOOo` doivent conserver des données
 
 L'emplacement de ces données est le répertoire d'installation de l'application `OAuth2OOo` et/ou `gContactOOo`, respectivement.
 
-**`OAuth2OOo` et/ou `gContactOOo` ne collectent aucune donnée sur des serveurs externes, d'aucune manières.**
+`OAuth2OOo` et/ou `gContactOOo` **ne collectent aucune donnée sur des serveurs externes, d'aucune manières.**
 
 La suppression des données collectées par `OAuth2OOo` et/ou `gContactOOo` est garantie par la désinstallation de l'application `OAuth2OOo` et/ou `gContactOOo`, respectivement.
 
@@ -48,23 +48,23 @@ Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collec
 ___
 ## Sécurité de vos informations personnelles:
 
-Étant donné que les données collectées par `OAuth2OOo` et/ou `gContactOOo` sont situées sur l'`Ordinateur`, seul **l'`Utilisateur` est responsable de la sécurité des données collectées**.
+Étant donné que les données collectées par `OAuth2OOo` et/ou `gContactOOo` sont situées sur l'`Ordinateur`, **seul l'**`Utilisateur` **est responsable de la sécurité des données collectées**.
 
 L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
 Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
 ___
-## Nature des données collectées:
+## Nature et étendue des droits sur les données collectées:
 
-`gContactOOo` vous permet d'obtenir une copie de vos contacts Google sur votre `Ordinateur`. En conséquence, `gContactOOo` revendique au travers de `OAuth2OOo` le droit de **consulter, modifier et supprimer vos Contacts Google**.
+`gContactOOo` vous permet d'obtenir une copie de vos Contacts Google sur votre `Ordinateur`. En conséquence, `gContactOOo` revendique au travers de `OAuth2OOo` le droit de **consulter, modifier et supprimer vos Contacts Google**.
 
 ___
 ## Expiration des données collectées:
 
 La mise à jour des données collectées localement est effectuée chaque fois que `OAuth2OOo` et/ou `gContactOOo` sont utilisés.
 
-**La suppression des données collectées localement est possible en désinstallant `OAuth2OOo` et/ou `gContactOOo`, respectivement**.
+**La suppression des données collectées localement est possible en désinstallant** `OAuth2OOo` et/ou `gContactOOo`, **respectivement**.
 
 Il est de la responsabilité de l'`Utilisateur` de désinstaller `OAuth2OOo` et/ou `gContactOOo` afin de supprimer les données collectées.
 

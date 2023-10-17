@@ -21,7 +21,7 @@ For simplicity, in the rest of this document, will be named:
 
 `gContactOOo` using software services provided by `OAuth2OOo`, **its use also subjects you to the [Data Protection Policy][6]** of `OAuth2OOo`.
 
-Although **gContactOOo does not share or transfer any data to any other application**, `gContactOOo` adhere to [Google API Services User Data Policy][7], including the Limited Use requirements.
+Although `gContactOOo` **does not share or transfer any data to any other application**, `gContactOOo` adhere to [Google API Services User Data Policy][7], including the Limited Use requirements.
 
 ___
 ## Contact:
@@ -37,7 +37,7 @@ To work `OAuth2OOo` and/or `gContactOOo` need to keep data locally on the `Compu
 
 The location of this data is in the `OAuth2OOo` and/or `gContactOOo` application directory, respectively.
 
-**`OAuth2OOo` and/or `gContactOOo` does not collect any data on external servers in any way.**
+`OAuth2OOo` and/or `gContactOOo` **does not collect any data on external servers in any way.**
 
 The deletion of data collected by `OAuth2OOo` and/or `gContactOOo`, is guaranteed, by the `OAuth2OOo` and/or `gContactOOo` application uninstall, respectively.
 
@@ -48,14 +48,14 @@ Use of the `Supplier` services through `OAuth2OOo` and/or `gContactOOo`, may sub
 ___
 ## Security of your personal information:
 
-Since the data collected by `OAuth2OOo` and/or `gContactOOo` is located on the `Computer`, only **the `User` is responsible for the security of the data collected**.
+Since the data collected by `OAuth2OOo` and/or `gContactOOo` is located on the `Computer`, **only the** `User` **is responsible for the security of the data collected**.
 
 Use of the `Supplier` services via `OAuth2OOo` and/or `gContactOOo` may subject you to the data protection Policy of `Supplier`. It is the responsibility of the `User` to review this Policy from the `Supplier` website.
 
 `Supplier` is solely responsible for the security of the data it collects as described in its Policy.
 
 ___
-## Nature of collected data:
+## Nature and scope rights over the data collected:
 
 `gContactOOo` allows you to get a copy of your Google Contacts on your `Computer`. Consequently, `gContactOOo` claims through `OAuth2OOo` the right to **consult, modify and delete your Google Contacts**.
 
@@ -64,7 +64,7 @@ ___
 
 Updating the data collected locally is done each time `OAuth2OOo` and/or `gContactOOo` is used.
 
-**The deletion of data collected locally, is possible by uninstalling `OAuth2OOo` and/or `gContactOOo` respectively.**
+**The deletion of data collected locally, is possible by uninstalling** `OAuth2OOo` and/or `gContactOOo` **respectively**.
 
 It is the responsibility of the `User` to uninstall `OAuth2OOo` and/or `gContactOOo` in order to delete the collected data.
 
