@@ -60,7 +60,7 @@ ___
 `gContactOOo` allows you to get a copy of your Google Contacts on your `Computer`. Consequently, `gContactOOo` claims through `OAuth2OOo` the right to **consult, modify and delete your Google Contacts**.
 
 ___
-## Expiry of collected data:
+## Expiration of collected data:
 
 Updating the data collected locally is done each time `OAuth2OOo` and/or `gContactOOo` is used.
 
