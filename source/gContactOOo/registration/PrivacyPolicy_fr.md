@@ -21,7 +21,7 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 
 `gContactOOo` utilisant des services logiciels fourni par `OAuth2OOo`, **son utilisation vous soumet également à la [Politique de protection des données][6]** de `OAuth2OOo`.
 
-Bien que `gContactOOo` **ne partage ni ne transfert aucun données avec toutes autre application**, `gContactOOo` respecte [la politique de données utilisateur des services API Google][7], y compris les exigences d'utilisation limitée.
+Bien que `OAuth2OOo` et/ou `gContactOOo` **ne partagent ni ne transfèrent aucune données avec toutes autres applications**, `OAuth2OOo` et/ou `gContactOOo` respecte [la politique de données utilisateur des services API Google][7], y compris les exigences d'utilisation limitée.
 
 ___
 ## Contact:
