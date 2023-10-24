@@ -1,0 +1,13 @@
+namespace: gContactOOo
+output:
+  file_path: ./Fluid-Attacks-Results.csv
+  format: CSV
+working_dir: .
+sast:
+  include:
+    - source/gContactOOo/service/pythonpath/gcontact/
+    - glob(source/gContactOOo/service/*.py)
+sca:
+  include:
+    - .
+language: EN
