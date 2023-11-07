@@ -4,7 +4,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][3] et à notre [Politique de protection des données][4].**
 
-# version [1.0.1][5]
+# version [1.0.2][5]
 
 ## Introduction:
 
@@ -42,7 +42,7 @@ ___
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-- Installer l'extension ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** version 1.1.1.
+- Installer l'extension ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** version 1.2.0.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
@@ -50,7 +50,7 @@ Vous devez installer cette extension, si elle n'est pas déjà installée.
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][21]** version 1.0.1.
+- Installer l'extension ![gContactOOo logo][1] **[gContactOOo.oxt][21]** version 1.0.2.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
@@ -154,7 +154,11 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Encore plein d'autres choses...
 
-### Que reste-t-il à faire pour la version 1.0.1:
+### Ce qui a été fait pour la version 1.0.2:
+
+- Prise en charge de la version 1.2.0 de l'extension **OAuth2OOo**. Les versions précédentes ne fonctionneront pas avec l'extension **OAuth2OOo** 1.2.0 ou ultérieure.
+
+### Que reste-t-il à faire pour la version 1.0.2:
 
 - Rendre le carnet d'adresses modifiable localement avec la réplication des modifications.
 

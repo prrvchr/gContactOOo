@@ -4,7 +4,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][3] and [Data Protection Policy][4].**
 
-# version [1.0.1][5]
+# version [1.0.2][5]
 
 ## Introduction:
 
@@ -42,7 +42,7 @@ ___
 It seems important that the file was not renamed when it was downloaded.
 If necessary, rename it before installing it.
 
-- Install ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** extension version 1.1.1.
+- Install ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** extension version 1.2.0.
 
 You must install this extension, if it is not already installed.
 
@@ -50,7 +50,7 @@ You must install this extension, if it is not already installed.
 
 You must install this extension, if it is not already installed.
 
-- Install ![gContactOOo logo][1] **[gContactOOo.oxt][21]** extension version 1.0.1.
+- Install ![gContactOOo logo][1] **[gContactOOo.oxt][21]** extension version 1.0.2.
 
 Restart LibreOffice / OpenOffice after installation.
 
@@ -154,7 +154,11 @@ It will give you access to an information system that only larges companies are 
 
 - Many other things...
 
-### What remains to be done for version 1.0.1:
+### What has been done for version 1.0.2:
+
+- Support for version **1.2.0** of the **OAuth2OOo** extension. Previous versions will not work with **OAuth2OOo** extension 1.2.0 or higher.
+
+### What remains to be done for version 1.0.2:
 
 - Make the address book locally editable with replication of changes.
 
