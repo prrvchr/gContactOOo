@@ -80,12 +80,12 @@ class Provider(ProviderBase):
             return database.insertUser(userid, scheme, server, '', name)
         return None
 
-    def initAddressbooks(self, database, user):
+    def initAddressbooks(self, source, database, user):
         print("Provider.initAddressbooks() Name: %s - Uri: %s" % (user.Name, user.Uri))
         # FIXME: Google Contact only offers one address book...
         name = 'Tous mes Contacts'
         iterator = (item for item in ((user.Uri, name, '', ''), ))
-        self.initUserBooks(database, user, iterator)
+        self.initUserBooks(source, database, user, iterator)
 
     def initUserGroups(self, database, user, book):
         pass

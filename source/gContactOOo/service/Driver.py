@@ -123,7 +123,7 @@ class Driver(unohelper.Base,
             if not validators.email(username):
                 self._logSqlException(1102, username)
                 raise self._getSqlException(113, 1102, username)
-            connection = self.DataSource.getConnection(g_scheme, g_host, username, password)
+            connection = self.DataSource.getConnection(self, g_scheme, g_host, username, password)
             version = self.DataSource.DataBase.Version
             name = connection.getMetaData().getUserName()
             self._logger.logprb(INFO, 'Driver', 'connect()', 114, version, name)
