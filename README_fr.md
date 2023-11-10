@@ -46,11 +46,11 @@ Si nécessaire, renommez-le avant de l'installer.
 
 - Installer l'extension ![OAuth2OOo logo][15] **[OAuth2OOo.oxt][16]** [![Version][17]][16]
 
-Vous devez installer cette extension, si elle n'est pas déjà installée.
+    Vous devez installer cette extension, si elle n'est pas déjà installée.
 
 - Installer l'extension ![jdbcDriverOOo logo][18] **[jdbcDriverOOo.oxt][19]** [![Version][20]][19]
 
-Vous devez installer cette extension, si elle n'est pas déjà installée.
+    Vous devez installer cette extension, si elle n'est pas déjà installée.
 
 - Installer l'extension ![gContactOOo logo][21] **[gContactOOo.oxt][22]** [![Version][23]][22]
 
