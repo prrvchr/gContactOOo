@@ -191,10 +191,10 @@ It will give you access to an information system that only larges companies are 
 [14]: <https://prrvchr.github.io/HyperSQLOOo/>
 [15]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
 [16]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
-[17]: <https://img.shields.io/github/downloads/prrvchr/OAuth2OOo/latest/total?label=v1.2.1#right>
+[17]: <https://img.shields.io/github/v/tag/prrvchr/OAuth2OOo?label=latest#right>
 [18]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.svg#middle>
 [19]: <https://github.com/prrvchr/jdbcDriverOOo/releases/latest/download/jdbcDriverOOo.oxt>
-[20]: <https://img.shields.io/github/downloads/prrvchr/jdbcDriverOOo/latest/total?label=v1.0.5#right>
+[20]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [21]: <img/gContactOOo.svg#middle>
 [22]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
 [23]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.0.3#right>
