@@ -44,15 +44,15 @@ ___
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-- Installer l'extension ![OAuth2OOo logo][15] **[OAuth2OOo.oxt][16]** [![Version][17]][16]
+- [![OAuth2OOo logo][15]][16] Installer l'extension **[OAuth2OOo.oxt][17]** [![Version][18]][17]
 
     Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![jdbcDriverOOo logo][18] **[jdbcDriverOOo.oxt][19]** [![Version][20]][19]
+- [![jdbcDriverOOo logo][19]][20] Installer l'extension **[jdbcDriverOOo.oxt][21]** [![Version][22]][21]
 
     Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![gContactOOo logo][21] **[gContactOOo.oxt][22]** [![Version][23]][22]
+- ![gContactOOo logo][23] Installer l'extension **[gContactOOo.oxt][24]** [![Version][25]][24]
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
@@ -62,24 +62,24 @@ ___
 
 Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de données des adresses...:
 
-![gContactOOo screenshot 1][24]
+![gContactOOo screenshot 1][26]
 
 À l'étape: 1. Type de carnet d'adresses:
 - sélectionner: Autre source de données externes
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 2][25]
+![gContactOOo screenshot 2][27]
 
 À l'étape: 2. Paramètres de Connexion:
 - cliquez sur: Paramètres (bouton)
 
-![gContactOOo screenshot 3][26]
+![gContactOOo screenshot 3][28]
 
 Dans Type de base de données:
 - sélectionner: Contacts Google
 - cliquez sur: Suivant (bouton)
 
-![gContactOOo screenshot 4][27]
+![gContactOOo screenshot 4][29]
 
 Dans Général: URL de la source de données:
 - mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
@@ -87,11 +87,11 @@ Dans Général: URL de la source de données:
 Puis:
 - cliquez sur: Tester la connexion (bouton)
 
-![gContactOOo screenshot 5][28]
+![gContactOOo screenshot 5][30]
 
-Après avoir autorisé l'application [OAuth2OOo][29] à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
+Après avoir autorisé l'application [OAuth2OOo][16] à accéder à vos contacts, normalement vous devez voir s'afficher: Test de connexion: Connexion établie.
 
-![gContactOOo screenshot 6][30]
+![gContactOOo screenshot 6][31]
 
 Maintenant à vous d'en profiter...
 
@@ -105,7 +105,7 @@ ___
 
 * LibreOffice 7.4.3.2(x64) - Windows 10(x64) - Python version 3.8.15  - Adoptium JDK Hotspot 11.0.17 (x64) (under Lubuntu 22.04 / VirtualBox 6.1.38)
 
-* **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][31]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
+* **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][32]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
 
 Je vous encourage en cas de problème :confused:  
 de créer un [dysfonctionnement][9]  
@@ -119,7 +119,7 @@ ___
 
 Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
 
-Avec l'extension [eMailerOOo][32], elle peut être la source de données pour des [publipostages][33] par courriel (email), à vos correspondants contenus dans votre téléphone.
+Avec l'extension [eMailerOOo][33], elle peut être la source de données pour des [publipostages][34] par courriel (email), à vos correspondants contenus dans votre téléphone.
 
 Elle vous donnera accès à un système d'information que seules les grandes entreprises sont capables, aujourd'hui, de mettre en œuvre.
 
@@ -127,11 +127,11 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
-- Ecriture d'une nouvelle interface [Replicator][34], lancé en arrière-plan (python Thread) responsable de:
+- Ecriture d'une nouvelle interface [Replicator][35], lancé en arrière-plan (python Thread) responsable de:
 
     - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
 
-- Ecriture d'une nouvelle interface [DataBase][35], responsable de tous les appels à la base de données.
+- Ecriture d'une nouvelle interface [DataBase][36], responsable de tous les appels à la base de données.
 
 - Beaucoup d'autres correctifs...
 
@@ -141,9 +141,9 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Le pilote est maintenant enregistré pour un nouveau protocole: **sdbc:address:google:votre_compte@gmail.com**
 
-- L'extension [jdbcDriverOOo][36] fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
+- L'extension [jdbcDriverOOo][20] fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
-- Modification du [Replicator][34] afin de:
+- Modification du [Replicator][35] afin de:
 
     - Ouvrir et fermer la base de données à chaque réplication.
     - Se mettre en attente après la dernière fermeture du carnet d'adresses.
@@ -190,24 +190,24 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [13]: <https://bugs.documentfoundation.org/show_bug.cgi?id=139538>
 [14]: <https://prrvchr.github.io/HyperSQLOOo/README_fr>
 [15]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
-[16]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
-[17]: <https://img.shields.io/github/v/tag/prrvchr/OAuth2OOo?label=latest#right>
-[18]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.svg#middle>
-[19]: <https://github.com/prrvchr/jdbcDriverOOo/releases/latest/download/jdbcDriverOOo.oxt>
-[20]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
-[21]: <img/gContactOOo.svg#middle>
-[22]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[23]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.0.3#right>
-[24]: <img/gContactOOo-1.png>
-[25]: <img/gContactOOo-2.png>
-[26]: <img/gContactOOo-3.png>
-[27]: <img/gContactOOo-4.png>
-[28]: <img/gContactOOo-5.png>
-[29]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
-[30]: <img/gContactOOo-6.png>
-[31]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
-[32]: <https://prrvchr.github.io/eMailerOOo/README_fr>
-[33]: <https://en.wikipedia.org/wiki/Mail_merge>
-[34]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
-[35]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
-[36]: <https://prrvchr.github.io/jdbcDriverOOo/README_fr>
+[16]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
+[17]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
+[18]: <https://img.shields.io/github/v/tag/prrvchr/OAuth2OOo?label=latest#right>
+[19]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.svg#middle>
+[20]: <https://prrvchr.github.io/jdbcDriverOOo/README_fr>
+[21]: <https://github.com/prrvchr/jdbcDriverOOo/releases/latest/download/jdbcDriverOOo.oxt>
+[22]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
+[23]: <img/gContactOOo.svg#middle>
+[24]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
+[25]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.0.3#right>
+[26]: <img/gContactOOo-1.png>
+[27]: <img/gContactOOo-2.png>
+[28]: <img/gContactOOo-3.png>
+[29]: <img/gContactOOo-4.png>
+[30]: <img/gContactOOo-5.png>
+[31]: <img/gContactOOo-6.png>
+[32]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
+[33]: <https://prrvchr.github.io/eMailerOOo/README_fr>
+[34]: <https://en.wikipedia.org/wiki/Mail_merge>
+[35]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
+[36]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
