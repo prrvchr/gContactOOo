@@ -118,6 +118,25 @@ Après avoir autorisé l'application [OAuth2OOo][16] à accéder à vos contacts
 
 ![gContactOOo screenshot 6][31]
 
+Si la connexion a été etablie, vous pouvez terminer cet assistant avec le bouton Terminer
+
+![gContactOOo screenshot 7][32]
+
+Si nécessaire il est possible de renommer les noms des colonnes de la source de données à l'aide du bouton: Assignation de champ
+Veuillez poursuivre cet assistant par le bouton: Suivant
+
+![gContactOOo screenshot 8][33]
+
+Il faut nommer et créer un fichier odb. Pour cela vous devez:
+- Décocher la case: Intégrer cette définition du carnet d'adresses dans le document actuel.
+- Nommé le fichier odb dans le champ: Emplacement
+
+Il faut également rendre accessible ce fichier odb. Pour cela vous devez:
+- Cocher la case: Rendre ce carnet d'adresses accessible à tous les modules de LibreOffice
+- Nommé le carnet d'adresses dans le champ: Nom du carnet d'adresses
+
+![gContactOOo screenshot 9][34]
+
 Maintenant à vous d'en profiter...
 
 ___
@@ -130,7 +149,7 @@ ___
 
 * LibreOffice 7.4.3.2(x64) - Windows 10(x64) - Python version 3.8.15  - Adoptium JDK Hotspot 11.0.17 (x64) (under Lubuntu 22.04 / VirtualBox 6.1.38)
 
-* **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][32]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
+* **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][35]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
 
 Je vous encourage en cas de problème :confused:  
 de créer un [dysfonctionnement][9]  
@@ -144,7 +163,7 @@ ___
 
 Cette extension a été écrite afin de rendre utilisables dans un logiciel libre (LibreOffice ou OpenOffice) vos données personnelles (votre carnet d'adresses) stockées dans votre téléphone Android.
 
-Avec l'extension [eMailerOOo][33], elle peut être la source de données pour des [publipostages][34] par courriel (email), à vos correspondants contenus dans votre téléphone.
+Avec l'extension [eMailerOOo][36], elle peut être la source de données pour des [publipostages][37] par courriel (email), à vos correspondants contenus dans votre téléphone.
 
 Elle vous donnera accès à un système d'information que seules les grandes entreprises sont capables, aujourd'hui, de mettre en œuvre.
 
@@ -152,11 +171,11 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Intégration et utilisation de la nouvelle version de Hsqldb 2.5.1.
 
-- Ecriture d'une nouvelle interface [Replicator][35], lancé en arrière-plan (python Thread) responsable de:
+- Ecriture d'une nouvelle interface [Replicator][38], lancé en arrière-plan (python Thread) responsable de:
 
     - Effectuer les procédures nécessaires lors de la création d'un nouvel utilisateur (Pull initial).
 
-- Ecriture d'une nouvelle interface [DataBase][36], responsable de tous les appels à la base de données.
+- Ecriture d'une nouvelle interface [DataBase][39], responsable de tous les appels à la base de données.
 
 - Beaucoup d'autres correctifs...
 
@@ -168,7 +187,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - L'extension [jdbcDriverOOo][20] fournit désormais le pilote nécessaire pour accéder à la base de données HsqlDB utilisée par gContactOOo.
 
-- Modification du [Replicator][35] afin de:
+- Modification du [Replicator][38] afin de:
 
     - Ouvrir et fermer la base de données à chaque réplication.
     - Se mettre en attente après la dernière fermeture du carnet d'adresses.
@@ -200,6 +219,8 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Tout ce qui est bienvenu...
 
+
+
 [1]: <https://prrvchr.github.io/gContactOOo>
 [2]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
 [3]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr>
@@ -225,14 +246,17 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [23]: <img/gContactOOo.svg#middle>
 [24]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
 [25]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.0.3#right>
-[26]: <img/gContactOOo-1.png>
-[27]: <img/gContactOOo-2.png>
-[28]: <img/gContactOOo-3.png>
-[29]: <img/gContactOOo-4.png>
-[30]: <img/gContactOOo-5.png>
-[31]: <img/gContactOOo-6.png>
-[32]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
-[33]: <https://prrvchr.github.io/eMailerOOo/README_fr>
-[34]: <https://en.wikipedia.org/wiki/Mail_merge>
-[35]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
-[36]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
+[26]: <img/gContactOOo-1_fr.png>
+[27]: <img/gContactOOo-2_fr.png>
+[28]: <img/gContactOOo-3_fr.png>
+[29]: <img/gContactOOo-4_fr.png>
+[30]: <img/gContactOOo-5_fr.png>
+[31]: <img/gContactOOo-6_fr.png>
+[32]: <img/gContactOOo-7_fr.png>
+[33]: <img/gContactOOo-8_fr.png>
+[34]: <img/gContactOOo-9_fr.png>
+[35]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
+[36]: <https://prrvchr.github.io/eMailerOOo/README_fr>
+[37]: <https://en.wikipedia.org/wiki/Mail_merge>
+[38]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
+[39]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>

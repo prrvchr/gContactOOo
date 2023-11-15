@@ -118,6 +118,25 @@ After authorizing the [OAuth2OOo][16] application to access your Contacts, norma
 
 ![gContactOOo screenshot 6][31]
 
+If the connection has been established, you can complete this wizard with the Finish button
+
+![gContactOOo screenshot 7][32]
+
+If necessary it is possible to rename the names of the columns of the data source using the button: Field Assignment
+Please continue this wizard with the button: Next
+
+![gContactOOo screenshot 8][33]
+
+You must name and create an odb file. To do this you must:
+- Uncheck the box: Embed this address book definition in the current document.
+- Named the odb file in the field: Location
+
+This odb file must also be made accessible. To do this you must:
+- Check the box: Make this address book available to all modules in LibreOffice
+- Named the address book in the field: Address book name
+
+![gContactOOo screenshot 9][34]
+
 Have fun...
 
 ___
@@ -233,8 +252,11 @@ It will give you access to an information system that only larges companies are 
 [29]: <img/gContactOOo-4.png>
 [30]: <img/gContactOOo-5.png>
 [31]: <img/gContactOOo-6.png>
-[32]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
-[33]: <https://prrvchr.github.io/eMailerOOo>
-[34]: <https://en.wikipedia.org/wiki/Mail_merge>
-[35]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
-[36]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
+[32]: <img/gContactOOo-7.png>
+[33]: <img/gContactOOo-8.png>
+[34]: <img/gContactOOo-9.png>
+[35]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
+[36]: <https://prrvchr.github.io/eMailerOOo>
+[37]: <https://en.wikipedia.org/wiki/Mail_merge>
+[38]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
+[39]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
