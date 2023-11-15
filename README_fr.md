@@ -114,8 +114,6 @@ Dans Type de base de données:
 A l'étape: **2.Paramètres de connexion**.  
 Dans Général: Entrer ici la chaîne de connexion spécifique au SGDB / pilote.
 - Mettre votre compte Google (ie: votre_compte@gmail.com)
-
-Puis:
 - Cliquez sur le bouton: **Tester la connexion**.
 
 ![gContactOOo screenshot 5][30]

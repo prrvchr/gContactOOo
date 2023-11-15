@@ -114,8 +114,6 @@ In Database type list:
 In step: **2.Connection Settings**.  
 In General: Enter the DBMS/driver-specific connection string here.
 - Put your Google account (ie: your_account@gmail.com)
-
-Then:
 - Click button: **Test connection**.
 
 ![gContactOOo screenshot 5][30]
