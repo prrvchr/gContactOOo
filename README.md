@@ -130,7 +130,7 @@ Please continue this wizard with the button: Next
 
 ![gContactOOo screenshot 8][33]
 
-You must name and create an odb file. To do this you must:
+You must create an odb file. To do this you must:
 - **Uncheck the box**: Embed this address book definition in the current document.
 - Named the odb file in the field: **Location**.
 

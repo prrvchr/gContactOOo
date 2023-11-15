@@ -130,7 +130,7 @@ Veuillez poursuivre cet assistant par le bouton: Suivant
 
 ![gContactOOo screenshot 8][33]
 
-Il faut nommer et créer un fichier odb. Pour cela vous devez:
+Il faut créer un fichier odb. Pour cela vous devez:
 - **Décocher la case**: Intégrer cette définition du carnet d'adresses dans le document actuel.
 - Nommer le fichier odb dans le champ: **Emplacement**.
 
