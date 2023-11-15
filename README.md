@@ -89,6 +89,8 @@ In LibreOffice / OpenOffice go to: **File -> Wizards -> Address Data Source...**
 
 ![gContactOOo screenshot 1][26]
 
+The **Address Book Datasource Wizard** open.
+
 In step: **1.Address Book Type**:
 - Select: **Other external data source**.
 - Click button: **Next**.
@@ -100,7 +102,7 @@ In step: **2.Connection Settings**:
 
 ![gContactOOo screenshot 3][28]
 
-A new wizard opens. **Data source properties**.  
+A new wizard opens. **Data source properties**.
 
 In step: **1.Advanced Properties**.  
 In Database type list:
