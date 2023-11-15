@@ -93,7 +93,7 @@ L'**Assistant source de données du carnet d'adresses** s'ouvre.
 
 À l'étape: **1.Type de carnet d'adresses**:
 - Sélectionner: **Autre source de données externes**.
-- Cliquez sur le bouton : **Suivant**.
+- Cliquez sur le bouton: **Suivant**.
 
 ![gContactOOo screenshot 2][27]
 
