@@ -89,28 +89,32 @@ In LibreOffice / OpenOffice go to: **File -> Wizards -> Address Data Source...**
 
 ![gContactOOo screenshot 1][26]
 
-In step: 1. Address Book Type:
-- select: Other external data source
-- click on: Next(Button)
+In step: **1.Address Book Type**:
+- Select: **Other external data source**.
+- Click button: **Next**.
 
 ![gContactOOo screenshot 2][27]
 
-In step: 2. Connection Settings:
-- click on: Settings(Button)
+In step: **2.Connection Settings**:
+- Click button: **Settings**.
 
 ![gContactOOo screenshot 3][28]
 
+A new wizard opens. **Data source properties**.  
+
+In step: **1.Advanced Properties**.  
 In Database type list:
-- select: Google Contacts
-- click on: Next(Button)
+- Select: **Google Contacts**.
+- Click button: **Next**.
 
 ![gContactOOo screenshot 4][29]
 
-In General: Datasource Url:
-- put: your Google account (ie: your_account@gmail.com)
+In step: **2.Connection Settings**.  
+In General: Enter the DBMS/driver-specific connection string here.
+- Put your Google account (ie: your_account@gmail.com)
 
 Then:
-- click on: Test connection (button)
+- Click button: **Test connection**.
 
 ![gContactOOo screenshot 5][30]
 
@@ -118,17 +122,21 @@ After authorizing the [OAuth2OOo][16] application to access your Contacts, norma
 
 ![gContactOOo screenshot 6][31]
 
-If the connection has been established, you can complete this wizard with the Finish button
+If the connection has been established, you can complete this wizard with the **Finish** button.
 
 ![gContactOOo screenshot 7][32]
 
+In step: **3.Table Selection**.  
 If your data source has multiple tables, you will be asked to select the primary table.  
-In this case select the table: **All my contacts**.
+In this case select the table: **All my contacts**. If necessary and before any connection it is possible to rename the main table name in: **Tools -> Options -> Internet -> gContactOOo -> Main table name**.
 
+In step: **4.Field Assignment**.  
 If necessary it is possible to rename the names of the columns of the data source using the button: **Field Assignment**.  
-Please continue this wizard with the button: Next
+Please continue this wizard with the button: **Next**.
 
 ![gContactOOo screenshot 8][33]
+
+In step: **5.Data Source Title**.
 
 You must create an odb file. To do this you must:
 - **Uncheck the box**: Embed this address book definition in the current document.

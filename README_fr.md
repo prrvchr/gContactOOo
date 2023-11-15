@@ -89,28 +89,32 @@ Dans LibreOffice / OpenOffice aller à: **Fichier -> Assistants -> Source de don
 
 ![gContactOOo screenshot 1][26]
 
-À l'étape: 1. Type de carnet d'adresses:
-- sélectionner: Autre source de données externes
-- cliquez sur: Suivant (bouton)
+À l'étape: 1. **Type de carnet d'adresses**:
+- Sélectionner: **Autre source de données externes**.
+- Cliquez sur le bouton : **Suivant**.
 
 ![gContactOOo screenshot 2][27]
 
-À l'étape: 2. Paramètres de Connexion:
-- cliquez sur: Paramètres (bouton)
+À l'étape: 2. **Paramètres de Connexion**:
+- Cliquez sur le bouton: **Paramètres**.
 
 ![gContactOOo screenshot 3][28]
 
+Un nouvel assistant s'ouvre. **Propriétés de la source de données**.
+
+A l'étape: 1. **Propriétés avancées**.  
 Dans Type de base de données:
-- sélectionner: Contacts Google
-- cliquez sur: Suivant (bouton)
+- Sélectionner: **Contacts Google**.
+- Cliquez sur le bouton: **Suivant**.
 
 ![gContactOOo screenshot 4][29]
 
-Dans Général: URL de la source de données:
-- mettre: votre compte Google (c'est-à-dire: votre_compte@gmail.com)
+A l'étape: 2. **Paramètres de connexion**.  
+Dans Général: Entrer ici la chaîne de connexion spécifique au SGDB / pilote.
+- Mettre votre compte Google (ie: votre_compte@gmail.com)
 
 Puis:
-- cliquez sur: Tester la connexion (bouton)
+- Cliquez sur le bouton: **Tester la connexion**.
 
 ![gContactOOo screenshot 5][30]
 
@@ -118,17 +122,21 @@ Après avoir autorisé l'application [OAuth2OOo][16] à accéder à vos contacts
 
 ![gContactOOo screenshot 6][31]
 
-Si la connexion a été etablie, vous pouvez terminer cet assistant avec le bouton Terminer
+Si la connexion a été etablie, vous pouvez terminer cet assistant avec le bouton **Terminer**.
 
 ![gContactOOo screenshot 7][32]
 
+A l'étape: 3. **Sélection de table**.  
 Si votre source de données comporte plusieurs tables, il vous sera demandé de sélectionner la table principale.  
-Dans ce cas sélectionnez la table: **Tous mes contacts**.
+Dans ce cas sélectionnez la table: **Tous mes contacts**. Si nécessaire et avant toute connexion il est possible de renommer le nom de la table principale dans: **Outils -> Options -> Internet -> gContactOOo -> Nom de la table principale**.
 
+A l'étape: 4. **Assignation de champ**.  
 Si nécessaire il est possible de renommer les noms des colonnes de la source de données à l'aide du bouton: **Assignation de champ**.  
-Veuillez poursuivre cet assistant par le bouton: Suivant
+Veuillez poursuivre cet assistant par le bouton: **Suivant**.
 
 ![gContactOOo screenshot 8][33]
+
+A l'étape: 5. **Titre de source de données**.
 
 Il faut créer un fichier odb. Pour cela vous devez:
 - **Décocher la case**: Intégrer cette définition du carnet d'adresses dans le document actuel.
