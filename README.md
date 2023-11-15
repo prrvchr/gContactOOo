@@ -85,7 +85,7 @@ ___
 
 ## Use:
 
-In LibreOffice / OpenOffice go to File -> Wizards -> Address Data Source...:
+In LibreOffice / OpenOffice go to: **File -> Wizards -> Address Data Source...**
 
 ![gContactOOo screenshot 1][26]
 
@@ -122,18 +122,21 @@ If the connection has been established, you can complete this wizard with the Fi
 
 ![gContactOOo screenshot 7][32]
 
-If necessary it is possible to rename the names of the columns of the data source using the button: Field Assignment
+If your data source has multiple tables, you will be asked to select the primary table.  
+In this case select the table: **All my contacts**.
+
+If necessary it is possible to rename the names of the columns of the data source using the button: **Field Assignment**.  
 Please continue this wizard with the button: Next
 
 ![gContactOOo screenshot 8][33]
 
 You must name and create an odb file. To do this you must:
-- Uncheck the box: Embed this address book definition in the current document.
-- Named the odb file in the field: Location
+- **Uncheck the box**: Embed this address book definition in the current document.
+- Named the odb file in the field: **Location**.
 
 This odb file must also be made accessible. To do this you must:
-- Check the box: Make this address book available to all modules in LibreOffice
-- Named the address book in the field: Address book name
+- **Check the box**: Make this address book available to all modules in LibreOffice
+- Named the address book in the field: **Address book name**.
 
 ![gContactOOo screenshot 9][34]
 

@@ -85,7 +85,7 @@ ___
 
 ## Utilisation:
 
-Dans LibreOffice / OpenOffice aller à: Fichier -> Assistants -> Source de données des adresses...:
+Dans LibreOffice / OpenOffice aller à: **Fichier -> Assistants -> Source de données des adresses...**
 
 ![gContactOOo screenshot 1][26]
 
@@ -122,18 +122,21 @@ Si la connexion a été etablie, vous pouvez terminer cet assistant avec le bout
 
 ![gContactOOo screenshot 7][32]
 
-Si nécessaire il est possible de renommer les noms des colonnes de la source de données à l'aide du bouton: Assignation de champ
+Si votre source de données comporte plusieurs tables, il vous sera demandé de sélectionner la table principale.  
+Dans ce cas sélectionnez la table: **Tous mes contacts**.
+
+Si nécessaire il est possible de renommer les noms des colonnes de la source de données à l'aide du bouton: **Assignation de champ**.  
 Veuillez poursuivre cet assistant par le bouton: Suivant
 
 ![gContactOOo screenshot 8][33]
 
 Il faut nommer et créer un fichier odb. Pour cela vous devez:
-- Décocher la case: Intégrer cette définition du carnet d'adresses dans le document actuel.
-- Nommé le fichier odb dans le champ: Emplacement
+- **Décocher la case**: Intégrer cette définition du carnet d'adresses dans le document actuel.
+- Nommé le fichier odb dans le champ: **Emplacement**.
 
 Il faut également rendre accessible ce fichier odb. Pour cela vous devez:
-- Cocher la case: Rendre ce carnet d'adresses accessible à tous les modules de LibreOffice
-- Nommé le carnet d'adresses dans le champ: Nom du carnet d'adresses
+- **Cocher la case**: Rendre ce carnet d'adresses accessible à tous les modules de LibreOffice
+- Nommé le carnet d'adresses dans le champ: **Nom du carnet d'adresses**.
 
 ![gContactOOo screenshot 9][34]
 
