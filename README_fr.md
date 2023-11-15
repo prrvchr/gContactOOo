@@ -132,11 +132,11 @@ Veuillez poursuivre cet assistant par le bouton: Suivant
 
 Il faut nommer et créer un fichier odb. Pour cela vous devez:
 - **Décocher la case**: Intégrer cette définition du carnet d'adresses dans le document actuel.
-- Nommé le fichier odb dans le champ: **Emplacement**.
+- Nommer le fichier odb dans le champ: **Emplacement**.
 
 Il faut également rendre accessible ce fichier odb. Pour cela vous devez:
 - **Cocher la case**: Rendre ce carnet d'adresses accessible à tous les modules de LibreOffice
-- Nommé le carnet d'adresses dans le champ: **Nom du carnet d'adresses**.
+- Nommer le carnet d'adresses dans le champ: **Nom du carnet d'adresses**.
 
 ![gContactOOo screenshot 9][34]
 
