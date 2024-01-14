@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.0.3][6]
+# version [1.1.0][6]
 
 ## Introduction:
 
@@ -48,19 +48,19 @@ ___
 
 ## Requirement:
 
-In order to take advantage of the latest versions of the Python libraries used in gContactOOo, version 2 of Python has been abandoned in favor of **Python 3.8 minimum**.  
-This means that **gContactOOo no longer supports OpenOffice and LibreOffice 6.x on Windows since version 1.0.0**.
-I can only advise you **to migrate to LibreOffice 7.x**.
+The gContactOOo extension uses the OAuth2OOo extension to work.  
+It must therefore meet the [requirement of the OAuth2OOo extension][12].
 
-gContactOOo uses a local [HsqlDB][12] database version 2.7.2.  
-HsqlDB being a database written in Java, its use requires the [installation and configuration][13] in LibreOffice / OpenOffice of a **JRE version 11 or later**.  
-I recommend [Adoptium][14] as your Java installation source.
+The gContactOOo extension uses the jdbcDriverOOo extension to work.  
+It must therefore meet the [requirement of the jdbcDriverOOo extension][13].
 
-If you are using **LibreOffice on Linux**, you are subject to [bug 139538][15]. To work around the problem, please **uninstall the packages** with commands:
-- `sudo apt remove libreoffice-sdbc-hsqldb` (to uninstall the libreoffice-sdbc-hsqldb package)
-- `sudo apt remove libhsqldb1.8.0-java` (to uninstall the libhsqldb1.8.0-java package)
+**On Linux and macOS the Python packages** used by the extension, if already installed, may come from the system and therefore **may not be up to date**.  
+To ensure that your Python packages are up to date it is recommended to use the **System Info** option in the extension Options accessible by:  
+**Tools -> Options -> Internet -> gContactOOo -> View log -> System Info**  
+If outdated packages appear, you can update them with the command:  
+`pip install --upgrade <package-name>`
 
-If you still want to use the Embedded HsqlDB functionality provided by LibreOffice, then install the [HyperSQLOOo][16] extension.
+For more information see: [What has been done for version 1.1.0][14].
 
 ___
 
@@ -222,7 +222,14 @@ It will give you access to an information system that only larges companies are 
 
 - Support for version **1.2.1** of the **OAuth2OOo** extension. Previous versions will not work with **OAuth2OOo** extension 1.2.1 or higher.
 
-### What remains to be done for version 1.0.3:
+### What has been done for version 1.1.0:
+
+- All Python packages necessary for the extension are now recorded in a [requirements.txt][42] file following [PEP 508][43].
+- Now if you are not on Windows then the Python packages necessary for the extension can be easily installed with the command:  
+  `pip install requirements.txt`
+- Modification of the [Requirement][44] section.
+
+### What remains to be done for version 1.1.0:
 
 - Make the address book locally editable with replication of changes.
 
@@ -241,11 +248,9 @@ It will give you access to an information system that only larges companies are 
 [9]: <https://www.openoffice.org/download/index.html>
 [10]: <https://github.com/prrvchr/gContactOOo>
 [11]: <https://github.com/prrvchr/gContactOOo/issues/new>
-[12]: <http://hsqldb.org/>
-[13]: <https://wiki.documentfoundation.org/Documentation/HowTo/Install_the_correct_JRE_-_LibreOffice_on_Windows_10>
-[14]: <https://adoptium.net/releases.html?variant=openjdk11>
-[15]: <https://bugs.documentfoundation.org/show_bug.cgi?id=139538>
-[16]: <https://prrvchr.github.io/HyperSQLOOo/>
+[12]: <https://prrvchr.github.io/OAuth2OOo/#requirement>
+[13]: <https://prrvchr.github.io/jdbcDriverOOo/#requirement>
+[14]: <https://prrvchr.github.io/gContactOOo/#what-has-been-done-for-version-110>
 [17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
 [18]: <https://prrvchr.github.io/OAuth2OOo>
 [19]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
@@ -256,7 +261,7 @@ It will give you access to an information system that only larges companies are 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.0.3#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.0#right>
 [28]: <img/gContactOOo-1.png>
 [29]: <img/gContactOOo-2.png>
 [30]: <img/gContactOOo-3.png>
@@ -271,3 +276,6 @@ It will give you access to an information system that only larges companies are 
 [39]: <https://en.wikipedia.org/wiki/Mail_merge>
 [40]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
 [41]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
+[42]: <https://github.com/prrvchr/gContactOOo/tree/master/source/gContactOOo/requirements.txt>
+[43]: <https://peps.python.org/pep-0508/>
+[44]: <https://prrvchr.github.io/gContactOOo/#requirement>

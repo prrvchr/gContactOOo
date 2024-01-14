@@ -75,7 +75,7 @@ Le `Fournisseur` est seul responsable de l'expiration des données qu'il collect
 [1]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
 [2]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
 [3]: <https://prrvchr.github.io/gContactOOo/README_fr>
-[4]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
-[5]: <https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt>
+[4]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
+[5]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
 [6]: <https://prrvchr.github.io/OAuth2OOo/source/OAuth2OOo/registration/PrivacyPolicy_fr>
 [7]: <https://developers.google.com/terms/api-services-user-data-policy?hl=fr>

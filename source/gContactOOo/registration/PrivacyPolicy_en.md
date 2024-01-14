@@ -75,7 +75,7 @@ Use of the `Supplier` services through `OAuth2OOo` and/or `gContactOOo` may subj
 [1]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr>
 [2]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [3]: <https://prrvchr.github.io/gContactOOo>
-[4]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
-[5]: <https://github.com/prrvchr/gContactOOo/raw/master/gContactOOo.oxt>
+[4]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
+[5]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
 [6]: <https://prrvchr.github.io/OAuth2OOo/source/OAuth2OOo/registration/PrivacyPolicy_en>
 [7]: <https://developers.google.com/terms/api-services-user-data-policy?hl=en>

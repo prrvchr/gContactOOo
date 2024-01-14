@@ -43,7 +43,7 @@ class DataBase(DataBaseSuper):
             tmps = list(self._getTmps(tag, dot))
             fields = next(self._getFields(default, sep))
         except Exception as e:
-            msg = "Error: %s" % traceback.print_exc()
+            msg = "Error: %s" % traceback.format_exc()
             print(msg)
         return paths, maps, types, tmps, fields
 
