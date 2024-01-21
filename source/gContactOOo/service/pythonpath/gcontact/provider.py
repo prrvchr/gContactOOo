@@ -88,11 +88,7 @@ class Provider(ProviderBase):
         parameter = self._getRequestParameter(request, 'getUser')
         response = request.execute(parameter)
         if not response.Ok:
-            cls, mtd = 'Provider', '_getNewUserId'
-            code = response.StatusCode
-            msg = response.Text
-            response.close()
-            raise getSqlException(self._ctx, source, 1006, 1643, cls, mtd, parameter.Name, code, name, parameter.Url, msg)
+            self.raiseForStatus(response, source, '_getNewUserId()', 1006, parameter.Name, name, parameter.Url)
         userid = self._parseUser(response)
         return userid
 
