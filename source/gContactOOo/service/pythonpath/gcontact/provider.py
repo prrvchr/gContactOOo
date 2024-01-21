@@ -110,12 +110,10 @@ class Provider(ProviderBase):
 
 # Method called from Replicator.run()
     def firstPullCard(self, database, user, addressbook, page, count):
-        cls, mtd = 'Provider', 'firstPullCard()'
-        return self._pullCard(database, cls, mtd, user, addressbook, page, count)
+        return self._pullCard(database, 'firstPullCard()', user, addressbook, page, count)
 
     def pullCard(self, database, user, addressbook, page, count):
-        cls, mtd = 'Provider', 'pullCard()'
-        return self._pullCard(database, cls, mtd, user, addressbook, page, count)
+        return self._pullCard(database, 'pullCard()', user, addressbook, page, count)
 
     def parseCard(self, database):
         start = database.getLastUserSync()
@@ -125,17 +123,16 @@ class Provider(ProviderBase):
         database.updateUserSync(stop)
 
     def syncGroups(self, database, user, addressbook, page, count):
-        cls, mtd = 'Provider', 'syncGroups()'
-        page, count, args = self._pullGroups(database, cls, mtd, user, addressbook, page, count)
+        page, count, args = self._pullGroups(database, user, addressbook, page, count)
         if not args:
-            page, count, args = self._pullGroupMembers(database, cls, mtd, user, addressbook, page, count)
+            page, count, args = self._pullGroupMembers(database, user, addressbook, page, count)
         return  page, count, args
 
     # Private method
-    def _pullCard(self, database, cls, mtd, user, addressbook, page, count):
+    def _pullCard(self, database, mtd, user, addressbook, page, count):
         args = []
         parameter = self._getRequestParameter(user.Request, 'getCards', addressbook)
-        iterator = self._parseCards(user, parameter, cls, mtd, args)
+        iterator = self._parseCards(user, parameter, mtd, args)
         count += database.mergeCard(addressbook.Id, iterator)
         page += parameter.PageCount
         if not args:
@@ -154,15 +151,12 @@ class Provider(ProviderBase):
                     if index:
                         yield book, card, index, value
 
-    def _parseCards(self, user, parameter, cls, mtd, args):
+    def _parseCards(self, user, parameter, mtd, args):
         map = tmp = False
         while parameter.hasNextPage():
             response = user.Request.execute(parameter)
             if not response.Ok:
-                code = response.StatusCode
-                msg = response.Text
-                response.close()
-                args += [cls, mtd, 201, parameter.Name, code, user.Name, parameter.Url, msg]
+                args += self.getLoggerArgs(response, mtd, 201, parameter, user.Name)
                 break
             events = ijson.sendable_list()
             parser = ijson.parse_coro(events)
@@ -208,22 +202,19 @@ class Provider(ProviderBase):
             parser.close()
             response.close()
 
-    def _pullGroups(self, database, cls, mtd, user, addressbook, page, count):
+    def _pullGroups(self, database, user, addressbook, page, count):
         args = []
         parameter = self._getRequestParameter(user.Request, 'getGroups', addressbook)
-        iterator = self._parseGroups(user, parameter, cls, mtd, args)
+        iterator = self._parseGroups(user, parameter, '_pullGroups()', args)
         count += database.mergeGroup(addressbook.Id, iterator)
         page += parameter.PageCount
         return page, count, args
 
-    def _parseGroups(self, user, parameter, cls, mtd, args):
+    def _parseGroups(self, user, parameter, mtd, args):
         while parameter.hasNextPage():
             response = user.Request.execute(parameter)
             if not response.Ok:
-                code = response.StatusCode
-                msg = response.Text
-                response.close()
-                args += [cls, mtd, 201, parameter.Name, code, user.Name, parameter.Url, msg]
+                args += self.getLoggerArgs(response, mtd, 201, parameter, user.Name)
                 break
             events = ijson.sendable_list()
             parser = ijson.parse_coro(events)
@@ -255,17 +246,14 @@ class Provider(ProviderBase):
             parser.close()
             response.close()
 
-    def _pullGroupMembers(self, database, cls, mtd, user, addressbook, page, count):
+    def _pullGroupMembers(self, database, user, addressbook, page, count):
         args = []
         timestamp = currentUnoDateTime()
         for gid, group in database.getGroups(addressbook.Id):
             parameter = self._getRequestParameter(user.Request, 'getGroupMembers', group)
             response = user.Request.execute(parameter)
             if not response.Ok:
-                code = response.StatusCode
-                msg = response.Text
-                response.close()
-                args += [cls, mtd, 201, parameter.Name, code, user.Name, parameter.Url, msg]
+                args += self.getLoggerArgs(response, '_pullGroupMembers()', 201, parameter, user.Name)
                 break
             members = self._parseGroupMembers(response)
             count += database.mergeGroupMembers(gid, timestamp, members)
