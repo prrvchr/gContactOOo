@@ -156,7 +156,7 @@ class Provider(ProviderBase):
         while parameter.hasNextPage():
             response = user.Request.execute(parameter)
             if not response.Ok:
-                args += self.getLoggerArgs(response, mtd, 201, parameter, user.Name)
+                args += self.getLoggerArgs(response, mtd, parameter, user.Name)
                 break
             events = ijson.sendable_list()
             parser = ijson.parse_coro(events)
@@ -214,7 +214,7 @@ class Provider(ProviderBase):
         while parameter.hasNextPage():
             response = user.Request.execute(parameter)
             if not response.Ok:
-                args += self.getLoggerArgs(response, mtd, 201, parameter, user.Name)
+                args += self.getLoggerArgs(response, mtd, parameter, user.Name)
                 break
             events = ijson.sendable_list()
             parser = ijson.parse_coro(events)
@@ -253,7 +253,7 @@ class Provider(ProviderBase):
             parameter = self._getRequestParameter(user.Request, 'getGroupMembers', group)
             response = user.Request.execute(parameter)
             if not response.Ok:
-                args += self.getLoggerArgs(response, '_pullGroupMembers()', 201, parameter, user.Name)
+                args += self.getLoggerArgs(response, '_pullGroupMembers()', parameter, user.Name)
                 break
             members = self._parseGroupMembers(response)
             count += database.mergeGroupMembers(gid, timestamp, members)
