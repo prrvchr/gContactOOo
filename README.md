@@ -36,12 +36,13 @@
 **gContactOOo** is part of a [Suite][7] of [LibreOffice][8] ~~and/or [OpenOffice][9]~~ extensions allowing to offer you innovative services in these office suites.
 
 This extension gives you access, in LibreOffice, to your phone contacts (the contacts of your Android phone).  
-It uses [Google People API][10] to synchronize your remote Google Contacts into a local HsqlDB 2.7.2 database.
+It uses [Google People API][10] to synchronize your remote Google Contacts into a local HsqlDB 2.7.2 database.  
+This extension is seen by LibreOffice as a [database driver][11] responding to the URL: `sdbc:address:google:*`.
 
 Being free software I encourage you:
-- To duplicate its [source code][11].
+- To duplicate its [source code][12].
 - To make changes, corrections, improvements.
-- To open [issue][12] if needed.
+- To open [issue][13] if needed.
 
 In short, to participate in the development of this extension.  
 Because it is together that we can make Free Software smarter.
@@ -51,10 +52,10 @@ ___
 ## Requirement:
 
 The gContactOOo extension uses the OAuth2OOo extension to work.  
-It must therefore meet the [requirement of the OAuth2OOo extension][13].
+It must therefore meet the [requirement of the OAuth2OOo extension][14].
 
 The gContactOOo extension uses the jdbcDriverOOo extension to work.  
-It must therefore meet the [requirement of the jdbcDriverOOo extension][14].
+It must therefore meet the [requirement of the jdbcDriverOOo extension][15].
 
 **On Linux and macOS the Python packages** used by the extension, if already installed, may come from the system and therefore **may not be up to date**.  
 To ensure that your Python packages are up to date it is recommended to use the **System Info** option in the extension Options accessible by:  
@@ -62,7 +63,7 @@ To ensure that your Python packages are up to date it is recommended to use the 
 If outdated packages appear, you can update them with the command:  
 `pip install --upgrade <package-name>`
 
-For more information see: [What has been done for version 1.1.0][15].
+For more information see: [What has been done for version 1.1.0][16].
 
 ___
 
@@ -257,11 +258,12 @@ It will give you access to an information system that only larges companies are 
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
 [10]: <https://developers.google.com/people?hl=en>
-[11]: <https://github.com/prrvchr/gContactOOo>
-[12]: <https://github.com/prrvchr/gContactOOo/issues/new>
-[13]: <https://prrvchr.github.io/OAuth2OOo/#requirement>
-[14]: <https://prrvchr.github.io/jdbcDriverOOo/#requirement>
-[15]: <https://prrvchr.github.io/gContactOOo/#what-has-been-done-for-version-110>
+[11]: <https://wiki.openoffice.org/wiki/Documentation/DevGuide/Database/Driver_Service>
+[12]: <https://github.com/prrvchr/gContactOOo>
+[13]: <https://github.com/prrvchr/gContactOOo/issues/new>
+[14]: <https://prrvchr.github.io/OAuth2OOo/#requirement>
+[15]: <https://prrvchr.github.io/jdbcDriverOOo/#requirement>
+[16]: <https://prrvchr.github.io/gContactOOo/#what-has-been-done-for-version-110>
 [17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
 [18]: <https://prrvchr.github.io/OAuth2OOo>
 [19]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
