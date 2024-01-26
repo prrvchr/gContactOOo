@@ -169,7 +169,7 @@ ___
 * **Does not work with OpenOffice on Windows** see [bug 128569][37]. Having no solution, I encourage you to install **LibreOffice**.
 
 I encourage you in case of problem :confused:  
-to create an [issue][11]  
+to create an [issue][13]  
 I will try to solve it :smile:
 
 ___

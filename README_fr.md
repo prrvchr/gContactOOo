@@ -169,7 +169,7 @@ ___
 * **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][37]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
 
 Je vous encourage en cas de problème :confused:  
-de créer un [dysfonctionnement][11]  
+de créer un [dysfonctionnement][13]  
 J'essaierai de le résoudre :smile:
 
 ___
