@@ -33,13 +33,15 @@
 
 ## Introduction:
 
-**gContactOOo** is part of a [Suite][7] of [LibreOffice][8] ~~and/or [OpenOffice][9]~~ extensions allowing to offer you innovative services in these office suites.  
-This extension gives you access, in LibreOffice, to your phone contacts (the contacts of your Android phone).
+**gContactOOo** is part of a [Suite][7] of [LibreOffice][8] ~~and/or [OpenOffice][9]~~ extensions allowing to offer you innovative services in these office suites.
+
+This extension gives you access, in LibreOffice, to your phone contacts (the contacts of your Android phone).  
+It uses [Google People API][10] to synchronize your remote Google Contacts into a local HsqlDB 2.7.2 database.
 
 Being free software I encourage you:
-- To duplicate its [source code][10].
+- To duplicate its [source code][11].
 - To make changes, corrections, improvements.
-- To open [issue][11] if needed.
+- To open [issue][12] if needed.
 
 In short, to participate in the development of this extension.  
 Because it is together that we can make Free Software smarter.
@@ -49,10 +51,10 @@ ___
 ## Requirement:
 
 The gContactOOo extension uses the OAuth2OOo extension to work.  
-It must therefore meet the [requirement of the OAuth2OOo extension][12].
+It must therefore meet the [requirement of the OAuth2OOo extension][13].
 
 The gContactOOo extension uses the jdbcDriverOOo extension to work.  
-It must therefore meet the [requirement of the jdbcDriverOOo extension][13].
+It must therefore meet the [requirement of the jdbcDriverOOo extension][14].
 
 **On Linux and macOS the Python packages** used by the extension, if already installed, may come from the system and therefore **may not be up to date**.  
 To ensure that your Python packages are up to date it is recommended to use the **System Info** option in the extension Options accessible by:  
@@ -60,7 +62,7 @@ To ensure that your Python packages are up to date it is recommended to use the 
 If outdated packages appear, you can update them with the command:  
 `pip install --upgrade <package-name>`
 
-For more information see: [What has been done for version 1.1.0][14].
+For more information see: [What has been done for version 1.1.0][15].
 
 ___
 
@@ -79,10 +81,10 @@ If necessary, rename it before installing it.
 
 - ![gContactOOo logo][25] Install **[gContactOOo.oxt][26]** extension [![Version][27]][26]
 
-Restart LibreOffice after installation.
-
-**On Windows, restarting LibreOffice may not be enough.**  
-To ensure that LibreOffice restarts correctly, use the Windows Task Manager to verify that no LibreOffice services are visible after LibreOffice is shut down.
+Restart LibreOffice after installation.  
+**Be careful, restarting LibreOffice may not be enough.**
+- **On Windows** to ensure that LibreOffice restarts correctly, use Windows Task Manager to verify that no LibreOffice services are visible after LibreOffice shuts down (and kill it if so).
+- **Under Linux or macOS** you can also ensure that LibreOffice restarts correctly, by launching it from a terminal with the command `soffice` and using the key combination `Ctrl + C` if after stopping LibreOffice, the terminal is not active (no command prompt).
 
 ___
 
@@ -254,11 +256,12 @@ It will give you access to an information system that only larges companies are 
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
-[10]: <https://github.com/prrvchr/gContactOOo>
-[11]: <https://github.com/prrvchr/gContactOOo/issues/new>
-[12]: <https://prrvchr.github.io/OAuth2OOo/#requirement>
-[13]: <https://prrvchr.github.io/jdbcDriverOOo/#requirement>
-[14]: <https://prrvchr.github.io/gContactOOo/#what-has-been-done-for-version-110>
+[10]: <https://developers.google.com/people?hl=en>
+[11]: <https://github.com/prrvchr/gContactOOo>
+[12]: <https://github.com/prrvchr/gContactOOo/issues/new>
+[13]: <https://prrvchr.github.io/OAuth2OOo/#requirement>
+[14]: <https://prrvchr.github.io/jdbcDriverOOo/#requirement>
+[15]: <https://prrvchr.github.io/gContactOOo/#what-has-been-done-for-version-110>
 [17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
 [18]: <https://prrvchr.github.io/OAuth2OOo>
 [19]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>

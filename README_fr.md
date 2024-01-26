@@ -33,13 +33,15 @@
 
 ## Introduction:
 
-**gContactOOo** fait partie d'une [Suite][7] d'extensions [LibreOffice][8] ~~et/ou [OpenOffice][9]~~ permettant de vous offrir des services inovants dans ces suites bureautique.  
-Cette extension vous donne l'accès, dans LibreOffice, à vos contacts Google (les contacts de votre téléphone Android).
+**gContactOOo** fait partie d'une [Suite][7] d'extensions [LibreOffice][8] ~~et/ou [OpenOffice][9]~~ permettant de vous offrir des services inovants dans ces suites bureautique.
+
+Cette extension vous donne l'accès, dans LibreOffice, à vos contacts Google (les contacts de votre téléphone Android).  
+Elle utilise [l'API Google People][10] pour synchroniser vos Contacts Google distant dans une base de données locale HsqlDB 2.7.2.
 
 Etant un logiciel libre je vous encourage:
-- A dupliquer son [code source][10].
+- A dupliquer son [code source][11].
 - A apporter des modifications, des corrections, des améliorations.
-- D'ouvrir un [dysfonctionnement][11] si nécessaire.
+- D'ouvrir un [dysfonctionnement][12] si nécessaire.
 
 Bref, à participer au developpement de cette extension.  
 Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
@@ -49,10 +51,10 @@ ___
 ## Prérequis:
 
 L'extension gContactOOo utilise l'extension OAuth2OOo pour fonctionner.  
-Elle doit donc répondre aux [prérequis de l'extension OAuth2OOo][12].
+Elle doit donc répondre aux [prérequis de l'extension OAuth2OOo][13].
 
 L'extension gContactOOo utilise l'extension jdbcDriverOOo pour fonctionner.  
-Elle doit donc répondre aux [prérequis de l'extension jdbcDriverOOo][13].
+Elle doit donc répondre aux [prérequis de l'extension jdbcDriverOOo][14].
 
 **Sous Linux et macOS les paquets Python** utilisés par l'extension, peuvent s'il sont déja installé provenir du système et donc, **peuvent ne pas être à jour**.  
 Afin de s'assurer que vos paquets Python sont à jour il est recommandé d'utiliser l'option **Info système** dans les Options de l'extension accessible par:  
@@ -60,7 +62,7 @@ Afin de s'assurer que vos paquets Python sont à jour il est recommandé d'utili
 Si des paquets obsolètes apparaissent, vous pouvez les mettre à jour avec la commande:  
 `pip install --upgrade <package-name>`
 
-Pour plus d'information voir: [Ce qui a été fait pour la version 1.1.0][14].
+Pour plus d'information voir: [Ce qui a été fait pour la version 1.1.0][15].
 
 ___
 
@@ -79,10 +81,10 @@ Si nécessaire, renommez-le avant de l'installer.
 
 - ![gContactOOo logo][25] Installer l'extension **[gContactOOo.oxt][26]** [![Version][27]][26]
 
-Redémarrez LibreOffice après l'installation.
-
-**Sous Windows, redémarrer LibreOffice peut ne pas suffire.**  
-Pour vous assurer que LibreOffice redémarre correctement, utilisez le Gestionnaire de tâche de Windows pour vérifier qu'aucun service LibreOffice n'est visible après l'arrêt de LibreOffice.
+Redémarrez LibreOffice après l'installation.  
+**Attention, redémarrer LibreOffice peut ne pas suffire.**
+- **Sous Windows** pour vous assurer que LibreOffice redémarre correctement, utilisez le Gestionnaire de tâche de Windows pour vérifier qu'aucun service LibreOffice n'est visible après l'arrêt de LibreOffice (et tuez-le si ç'est le cas).
+- **Sous Linux ou macOS** vous pouvez également vous assurer que LibreOffice redémarre correctement, en le lançant depuis un terminal avec la commande `soffice` et en utilisant la combinaison de touches `Ctrl + C` si après l'arrêt de LibreOffice, le terminal n'est pas actif (pas d'invité de commande).
 
 ___
 
@@ -254,11 +256,12 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [7]: <https://prrvchr.github.io/README_fr>
 [8]: <https://fr.libreoffice.org/download/telecharger-libreoffice/>
 [9]: <https://www.openoffice.org/fr/Telecharger/>
-[10]: <https://github.com/prrvchr/gContactOOo>
-[11]: <https://github.com/prrvchr/gContactOOo/issues/new>
-[12]: <https://prrvchr.github.io/OAuth2OOo/README_fr#pr%C3%A9requis>
-[13]: <https://prrvchr.github.io/jdbcDriverOOo/README_fr#pr%C3%A9requis>
-[14]: <https://prrvchr.github.io/gContactOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-110>
+[10]: <https://developers.google.com/people?hl=fr>
+[11]: <https://github.com/prrvchr/gContactOOo>
+[12]: <https://github.com/prrvchr/gContactOOo/issues/new>
+[13]: <https://prrvchr.github.io/OAuth2OOo/README_fr#pr%C3%A9requis>
+[14]: <https://prrvchr.github.io/jdbcDriverOOo/README_fr#pr%C3%A9requis>
+[15]: <https://prrvchr.github.io/gContactOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-110>
 [17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
 [18]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
 [19]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
