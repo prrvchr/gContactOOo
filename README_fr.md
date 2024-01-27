@@ -289,6 +289,6 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [39]: <https://en.wikipedia.org/wiki/Mail_merge>
 [40]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
 [41]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
-[42]: <https://github.com/prrvchr/gContactOOo/tree/master/source/gContactOOo/requirements.txt>
+[42]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/requirements.txt>
 [43]: <https://peps.python.org/pep-0508/>
 [44]: <https://prrvchr.github.io/gContactOOo/README_fr#pr%C3%A9requis>
