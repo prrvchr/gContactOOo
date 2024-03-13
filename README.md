@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.1.1][6]
+# version [1.1.2][6]
 
 ## Introduction:
 
@@ -240,6 +240,10 @@ It will give you access to an information system that only larges companies are 
 - Using Python package `dateutil` to convert timestamp strings to UNO DateTime.
 - Many other fixes...
 
+### What has been done for version 1.1.2:
+
+- Integration of a fix to workaround the [issue #159988][45].
+
 ### What remains to be done for version 1.1.1:
 
 - Make the address book locally editable with replication of changes.
@@ -253,7 +257,7 @@ It will give you access to an information system that only larges companies are 
 [3]: <https://prrvchr.github.io/gContactOOo/README_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [5]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
-[6]: <https://prrvchr.github.io/gContactOOo#historical>
+[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-110>
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
@@ -274,7 +278,7 @@ It will give you access to an information system that only larges companies are 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.1#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.2#right>
 [28]: <img/gContactOOo-1.png>
 [29]: <img/gContactOOo-2.png>
 [30]: <img/gContactOOo-3.png>
@@ -292,3 +296,4 @@ It will give you access to an information system that only larges companies are 
 [42]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/requirements.txt>
 [43]: <https://peps.python.org/pep-0508/>
 [44]: <https://prrvchr.github.io/gContactOOo/#requirement>
+[45]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
