@@ -38,6 +38,8 @@ from com.sun.star.sdbc.DataType import VARCHAR
 
 from com.sun.star.sdbc.KeyRule import CASCADE
 
+from com.sun.star.sdbcx.PrivilegeObject import TABLE
+
 from .dbtool import createStaticTables
 from .dbtool import createStaticIndexes
 from .dbtool import createStaticForeignKeys
@@ -46,6 +48,7 @@ from .dbtool import createTables
 from .dbtool import createIndexes
 from .dbtool import createForeignKeys
 from .dbtool import createRoleAndPrivileges
+from .dbtool import createViews
 from .dbtool import executeQueries
 from .dbtool import getConnectionInfos
 from .dbtool import getDataBaseTables
@@ -55,18 +58,21 @@ from .dbtool import getDataSourceConnection
 from .dbtool import getDriverInfos
 from .dbtool import getTableNames
 from .dbtool import getTables
+from .dbtool import getTablePrivileges
 from .dbtool import getIndexes
 from .dbtool import getForeignKeys
 from .dbtool import getPrivileges
 
-from .configuration import g_separator
-
+from .dbconfig import g_catalog
+from .dbconfig import g_schema
 from .dbconfig import g_csv
 from .dbconfig import g_role
+from .dbconfig import g_queries
 from .dbconfig import g_drvinfos
 
-
+from collections import OrderedDict
 import traceback
+
 
 def getDataBaseConnection(ctx, url, user, pwd, new, infos=None):
     if new:
@@ -75,17 +81,22 @@ def getDataBaseConnection(ctx, url, user, pwd, new, infos=None):
 
 def createDataBase(ctx, logger, connection, odb, version):
     logger.logprb(INFO, 'DataBase', '_createDataBase()', 411, version)
+    # XXX Creation order are very important here...
     tables = connection.getTables()
     statement = connection.createStatement()
-    statics = createStaticTables(tables, **_getStaticTables())
-    createStaticIndexes(tables)
-    createStaticForeignKeys(tables, *_getForeignKeys())
+    statics = createStaticTables(g_catalog, g_schema, tables, **_getStaticTables())
+    createStaticIndexes(g_catalog, g_schema, tables)
+    createStaticForeignKeys(g_catalog, g_schema, tables, *_getForeignKeys())
     setStaticTable(statement, statics, g_csv, True)
     _createTables(connection, statement, tables)
     _createIndexes(statement, tables)
     _createForeignKeys(statement, tables)
-    _createRoleAndPrivileges(statement, tables, connection.getGroups())
-    executeQueries(ctx, statement, _getQueries())
+    groups = connection.getGroups()
+    _createRoleAndPrivileges(statement, tables, groups)
+    executeQueries(ctx, statement, _getFunctions(), 'create%s', g_queries)
+    createViews(ctx, connection.getViews(), _getViews(), 'get%sViewCommand', g_queries)
+    createRoleAndPrivileges(tables, groups, _getViews(g_catalog, g_schema, TABLE, g_role, 1))
+    executeQueries(ctx, statement, _getProcedures(), 'create%s', g_queries)
     statement.close()
     connection.getParent().DatabaseDocument.storeAsURL(odb, ())
     logger.logprb(INFO, 'DataBase', '_createDataBase()', 412)
@@ -101,11 +112,13 @@ def _createForeignKeys(statement, tables):
     createForeignKeys(tables, getDataBaseForeignKeys(statement, getForeignKeys()))
 
 def _createRoleAndPrivileges(statement, tables, groups):
-    createRoleAndPrivileges(statement, tables, groups, getPrivileges())
+    privileges = getTablePrivileges(statement, getPrivileges())
+    createRoleAndPrivileges(tables, groups, privileges)
 
 def _getStaticTables():
-    return {'Privileges':    {'CatalogName': 'PUBLIC',
-                              'SchemaName':  'PUBLIC',
+    tables = OrderedDict()
+    tables['Privileges'] =   {'CatalogName': g_catalog,
+                              'SchemaName':  g_schema,
                               'Type':        'TEXT TABLE',
                               'Columns': ({'Name': 'Table',
                                            'TypeName': 'INTEGER',
@@ -124,68 +137,24 @@ def _getStaticTables():
                                           {'Name': 'Privilege',
                                            'TypeName': 'INTEGER',
                                            'Type': INTEGER,
-                                           'IsNullable': NO_NULLS})},
-            'Settings':      {'CatalogName': 'PUBLIC',
-                              'SchemaName':  'PUBLIC',
-                              'Type':        'TEXT TABLE',
-                              'Columns': ({'Name': 'Id',
-                                           'TypeName': 'INTEGER',
-                                           'Type': INTEGER,
-                                           'IsNullable': NO_NULLS},
-                                          {'Name': 'Name',
-                                           'TypeName': 'VARCHAR',
-                                           'Type': VARCHAR,
-                                           'Scale': 100,
-                                           'IsNullable': NO_NULLS},
-                                          {'Name': 'Value1',
-                                           'TypeName': 'VARCHAR',
-                                           'Type': VARCHAR,
-                                           'Scale': 100,
-                                           'IsNullable': NO_NULLS},
-                                          {'Name': 'Value2',
-                                           'TypeName': 'VARCHAR',
-                                           'Type': VARCHAR,
-                                           'Scale': 100,
-                                           'IsNullable': NULLABLE,
-                                           'DefaultValue': 'NULL'},
-                                          {'Name': 'Value3',
-                                           'TypeName': 'VARCHAR',
-                                           'Type': VARCHAR,
-                                           'Scale': 100,
-                                           'IsNullable': NULLABLE,
-                                           'DefaultValue': 'NULL'}),
-                              'PrimaryKeys': ('Id', )}}
+                                           'IsNullable': NO_NULLS})}
+    return tables
 
 def _getForeignKeys():
-    return (('PUBLIC.PUBLIC.Privileges', 'Table',  'PUBLIC.PUBLIC.Tables',  'Table',  CASCADE, CASCADE),
-            ('PUBLIC.PUBLIC.Privileges', 'Column', 'PUBLIC.PUBLIC.Columns', 'Column', CASCADE, CASCADE))
+    return ((f'{g_catalog}.{g_schema}.Privileges', 'Table',  f'{g_catalog}.{g_schema}.Tables',  'Table',  CASCADE, CASCADE),
+            (f'{g_catalog}.{g_schema}.Privileges', 'Column', f'{g_catalog}.{g_schema}.Columns', 'Column', CASCADE, CASCADE))
 
-def _getQueries():
-    return (('createGetTitle',{'Role': g_role}),
-            ('createGetUniqueName',{'Role': g_role, 'Prefix': ' ~', 'Suffix': ''}),
+def _getFunctions():
+    for name in ('GetIsFolder', 'GetContentType', 'GetUniqueName'):
+        yield name
 
-            ('createChildView',{'Role': g_role}),
-            ('createTwinView',{'Role': g_role}),
-            ('createUriView',{'Role': g_role}),
-            ('createItemView',{'Role': g_role}),
-            ('createTitleView',{'Role': g_role}),
-            ('createChildrenView',{'Role': g_role}),
-            ('createPathView',{'Role': g_role, 'Separator': g_separator}),
+def _getViews(catalog=g_catalog, schema=g_schema, *options):
+    for name in ('Child', 'Twin', 'Duplicate', 'Path', 'Children'):
+        yield catalog, schema, name, *options
 
-            ('createGetPath',{'Role': g_role}),
-            ('createGetItemId',{'Role': g_role, 'Separator': g_separator}),
-            ('createGetRoot',{'Role': g_role}),
-            ('createGetItem',{'Role': g_role}),
-            ('createGetNewTitle',{'Role': g_role}),
-            ('createUpdatePushItems',{'Role': g_role}),
-            ('createGetPushItems',{'Role': g_role}),
-            ('createGetPushProperties',{'Role': g_role}),
-            ('createGetItemParentIds',{'Role': g_role}),
-            ('createInsertUser',{'Role': g_role}),
-            ('createInsertSharedFolder',{'Role': g_role}),
-            ('createMergeItem',{'Role': g_role}),
-            ('createMergeParent',{'Role': g_role}),
-            ('createInsertItem',{'Role': g_role}),
-            ('createPullChanges',{'Role': g_role}),
-            ('createUpdateNewItemId',{'Role': g_role}))
+def _getProcedures():
+    for name in ('GetItem', 'GetNewTitle', 'UpdatePushItems', 'GetPushItems', 'GetPushProperties',
+                 'GetItemParentIds', 'InsertUser', 'InsertSharedFolder', 'MergeItem', 'MergeParent',
+                 'InsertItem', 'PullChanges', 'UpdateNewItemId'):
+        yield name
 

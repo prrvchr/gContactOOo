@@ -27,11 +27,12 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-# OAuth2 configuration
-g_extension = 'OAuth2OOo'
-g_identifier = 'io.github.prrvchr.%s' % g_extension
-g_service = '%s.OAuth2Service' % g_identifier
-g_version = '1.3.4'
+g_ucbseparator = '/'
+g_ucbprefix =    ' ~'
+g_ucbsuffix =    ''
 
-g_oauth2 = g_service
+g_ucboffice = 'application/vnd.oasis.opendocument'
 
+g_ucbfolder = 'application/vnd.sun.star.hierarchy-folder'
+g_ucbfile = 'application/vnd.sun.star.hierarchy-file'
+g_ucblink = 'application/vnd.sun.star.hierarchy-link'
