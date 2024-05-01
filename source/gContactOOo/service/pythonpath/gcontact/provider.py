@@ -116,11 +116,15 @@ class Provider(ProviderBase):
         return self._pullCard(database, 'pullCard()', user, addressbook, page, count)
 
     def parseCard(self, database):
-        start = database.getLastUserSync()
-        stop = currentDateTimeInTZ()
-        iterator = self._parseCardValue(database, start, stop)
-        count = database.mergeCardValue(iterator)
-        database.updateUserSync(stop)
+        try:
+            start = database.getLastSync('CardSync')
+            stop = currentDateTimeInTZ()
+            iterator = self._parseCardValue(database, start, stop)
+            count = database.mergeCardValue(iterator)
+            database.updateCardSync(stop)
+            return count
+        except Exception as e:
+            print("Provider.parseCard() ERROR: %s" % traceback.format_exc())
 
     def syncGroups(self, database, user, addressbook, page, count):
         page, count, args = self._pullGroups(database, user, addressbook, page, count)
