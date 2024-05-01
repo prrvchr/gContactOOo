@@ -29,7 +29,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][4] et à notre [Politique de protection des données][5].**
 
-# version [1.1.2][6]
+# version [1.1.3][6]
 
 ## Introduction:
 
@@ -244,7 +244,13 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 
 - Intégration d'un correctif pour contourner le [dysfonctionnement #159988][45].
 
-### Que reste-t-il à faire pour la version 1.1.2:
+### Ce qui a été fait pour la version 1.1.3:
+
+- La création de la base de données, lors de la première connexion, utilise l'API UNO proposée par l'extension jdbcDriverOOo depuis la version 1.3.2. Cela permet d'enregistrer toutes les informations nécessaires à la création de la base de données dans 9 tables texte qui sont en fait [9 fichiers csv][46].
+- L'extension vous demandera d'installer les extensions OAuth2OOo et jdbcDriverOOo en version respectivement 1.3.4 et 1.3.2 minimum.
+- De nombreuses corrections.
+
+### Que reste-t-il à faire pour la version 1.1.3:
 
 - Rendre le carnet d'adresses modifiable localement avec la réplication des modifications.
 
@@ -278,7 +284,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.2#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.3#right>
 [28]: <img/gContactOOo-1_fr.png>
 [29]: <img/gContactOOo-2_fr.png>
 [30]: <img/gContactOOo-3_fr.png>
@@ -297,3 +303,4 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [43]: <https://peps.python.org/pep-0508/>
 [44]: <https://prrvchr.github.io/gContactOOo/README_fr#pr%C3%A9requis>
 [45]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
+[46]: <https://github.com/prrvchr/gContactOOo/tree/master/uno/lib/uno/ucb/hsqldb>

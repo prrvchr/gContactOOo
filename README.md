@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.1.2][6]
+# version [1.1.3][6]
 
 ## Introduction:
 
@@ -244,7 +244,13 @@ It will give you access to an information system that only larges companies are 
 
 - Integration of a fix to workaround the [issue #159988][45].
 
-### What remains to be done for version 1.1.1:
+### What has been done for version 1.1.3:
+
+- The creation of the database, during the first connection, uses the UNO API offered by the jdbcDriverOOo extension since version 1.3.2. This makes it possible to record all the information necessary for creating the database in 9 text tables which are in fact [9 csv files][46].
+- The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.4 and 1.3.2 respectively minimum.
+- Many fixes.
+
+### What remains to be done for version 1.1.3:
 
 - Make the address book locally editable with replication of changes.
 
@@ -278,7 +284,7 @@ It will give you access to an information system that only larges companies are 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.2#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.3#right>
 [28]: <img/gContactOOo-1.png>
 [29]: <img/gContactOOo-2.png>
 [30]: <img/gContactOOo-3.png>
@@ -297,3 +303,4 @@ It will give you access to an information system that only larges companies are 
 [43]: <https://peps.python.org/pep-0508/>
 [44]: <https://prrvchr.github.io/gContactOOo/#requirement>
 [45]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
+[46]: <https://github.com/prrvchr/gContactOOo/tree/master/uno/lib/uno/ucb/hsqldb>
