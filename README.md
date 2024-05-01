@@ -303,4 +303,4 @@ It will give you access to an information system that only larges companies are 
 [43]: <https://peps.python.org/pep-0508/>
 [44]: <https://prrvchr.github.io/gContactOOo/#requirement>
 [45]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
-[46]: <https://github.com/prrvchr/gContactOOo/tree/master/uno/lib/uno/ucb/hsqldb>
+[46]: <https://github.com/prrvchr/gContactOOo/tree/main/source/gContactOOo/hsqldb>
