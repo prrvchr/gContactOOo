@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.1.3][6]
+# version [1.1.4][6]
 
 ## Introduction:
 
@@ -250,7 +250,17 @@ It will give you access to an information system that only larges companies are 
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.4 and 1.3.2 respectively minimum.
 - Many fixes.
 
-### What remains to be done for version 1.1.3:
+### What has been done for version 1.1.4:
+
+- Updated the [Python python-dateutil][47] package to version 2.9.0.post0.
+- Updated the [Python decorator][48] package to version 5.1.1.
+- Updated the [Python ijson][49] package to version 3.3.0.
+- Updated the [Python packaging][50] package to version 24.1.
+- Updated the [Python setuptools][51] package to version 72.1.0 in order to respond to the [Dependabot security alert][52].
+- Updated the [Python validators][53] package to version 0.33.0.
+- The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.6 and 1.4.2 respectively minimum.
+
+### What remains to be done for version 1.1.4:
 
 - Make the address book locally editable with replication of changes.
 
@@ -263,7 +273,7 @@ It will give you access to an information system that only larges companies are 
 [3]: <https://prrvchr.github.io/gContactOOo/README_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [5]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
-[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-110>
+[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-114>
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
@@ -284,7 +294,7 @@ It will give you access to an information system that only larges companies are 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.3#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.4#right>
 [28]: <img/gContactOOo-1.png>
 [29]: <img/gContactOOo-2.png>
 [30]: <img/gContactOOo-3.png>
@@ -304,3 +314,10 @@ It will give you access to an information system that only larges companies are 
 [44]: <https://prrvchr.github.io/gContactOOo/#requirement>
 [45]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
 [46]: <https://github.com/prrvchr/gContactOOo/tree/main/source/gContactOOo/hsqldb>
+[47]: <https://pypi.org/project/python-dateutil/>
+[48]: <https://pypi.org/project/decorator/>
+[49]: <https://pypi.org/project/ijson/>
+[50]: <https://pypi.org/project/packaging/>
+[51]: <https://pypi.org/project/setuptools/>
+[52]: <https://github.com/prrvchr/gContactOOo/security/dependabot/1>
+[53]: <https://pypi.org/project/validators/>
