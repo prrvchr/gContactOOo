@@ -7,6 +7,7 @@ plugins:
 favicon: true
 logo: /img/contact.svg
 email: prrvchr@gmail.com
+google_analytics: G-RHJ1XTD5LQ
 title: gContactOOo
 blank_title: true
 description: Your contacts from your Android phone as an HsqlDB database in LibreOffice

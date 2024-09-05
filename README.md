@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.1.4][6]
+# version [1.1.5][6]
 
 ## Introduction:
 
@@ -166,6 +166,8 @@ ___
 
 * LibreOffice 7.4.3.2(x64) - Windows 10(x64) - Python version 3.8.15  - Adoptium JDK Hotspot 11.0.17 (x64) (under Lubuntu 22.04 / VirtualBox 6.1.38)
 
+* LibreOffice 24.8.0.3 (x86_64) - Windows 10(x64) - Python version 3.9.19 (under Lubuntu 22.04 / VirtualBox 6.1.38)
+
 * **Does not work with OpenOffice on Windows** see [bug 128569][37]. Having no solution, I encourage you to install **LibreOffice**.
 
 I encourage you in case of problem :confused:  
@@ -260,7 +262,14 @@ It will give you access to an information system that only larges companies are 
 - Updated the [Python validators][53] package to version 0.33.0.
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.6 and 1.4.2 respectively minimum.
 
-### What remains to be done for version 1.1.4:
+### What has been done for version 1.1.5:
+
+- Updated the [Python setuptools][51] package to version 73.0.1.
+- The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.7 and 1.4.4 respectively minimum.
+- Changes to extension options that require a restart of LibreOffice will result in a message being displayed.
+- Support for LibreOffice version 24.8.x.
+
+### What remains to be done for version 1.1.5:
 
 - Make the address book locally editable with replication of changes.
 
@@ -273,7 +282,7 @@ It will give you access to an information system that only larges companies are 
 [3]: <https://prrvchr.github.io/gContactOOo/README_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [5]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
-[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-114>
+[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-115>
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
@@ -294,7 +303,7 @@ It will give you access to an information system that only larges companies are 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.4#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.5#right>
 [28]: <img/gContactOOo-1.png>
 [29]: <img/gContactOOo-2.png>
 [30]: <img/gContactOOo-3.png>
