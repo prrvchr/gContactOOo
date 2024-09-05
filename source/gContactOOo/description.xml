@@ -28,7 +28,7 @@
   xmlns="http://openoffice.org/extensions/description/2006"
   xmlns:d="http://openoffice.org/extensions/description/2006"
   xmlns:xlink="http://www.w3.org/1999/xlink">
-    <version value="1.1.4"/>
+    <version value="1.1.5"/>
     <identifier value="io.github.prrvchr.gContactOOo"/>
     <platform value="all"/>
     <dependencies>
@@ -55,8 +55,8 @@
         <name lang="en-US">gContactOOo</name>
     </display-name>
     <icon>
-        <default xlink:href="gContactOOo/gContactOOo.svg"/>
-        <high-contrast xlink:href="gContactOOo/gContactOOo.svg"/>
+        <default xlink:href="img/gContactOOo.svg"/>
+        <high-contrast xlink:href="img/gContactOOo.svg"/>
     </icon>
     <extension-description>
         <src xlink:href="description/desc_en.txt" lang="en-US"/>
