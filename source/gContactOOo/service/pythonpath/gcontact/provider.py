@@ -85,10 +85,11 @@ class Provider(ProviderBase):
 
     # Private method
     def _getNewUserId(self, source, request, scheme, server, name, pwd):
+        cls, mtd = 'Provider', '_getNewUserId()'
         parameter = self._getRequestParameter(request, 'getUser')
         response = request.execute(parameter)
         if not response.Ok:
-            self.raiseForStatus(response, source, '_getNewUserId()', 1006, parameter.Name, name, parameter.Url)
+            self.raiseForStatus(source, cls, mtd, response, parameter, name)
         userid = self._parseUser(response)
         return userid
 
