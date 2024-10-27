@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.1.5][6]
+# version [1.1.6][6]
 
 ## Introduction:
 
@@ -269,7 +269,12 @@ It will give you access to an information system that only larges companies are 
 - Changes to extension options that require a restart of LibreOffice will result in a message being displayed.
 - Support for LibreOffice version 24.8.x.
 
-### What remains to be done for version 1.1.5:
+### What has been done for version 1.1.6:
+
+- The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.8 and 1.4.6 respectively minimum.
+- Modification of the extension options accessible via: **Tools -> Options... -> Internet -> gContactOOo** in order to comply with the new graphic charter.
+
+### What remains to be done for version 1.1.6:
 
 - Make the address book locally editable with replication of changes.
 
@@ -282,7 +287,7 @@ It will give you access to an information system that only larges companies are 
 [3]: <https://prrvchr.github.io/gContactOOo/README_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [5]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
-[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-115>
+[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-116>
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
@@ -303,7 +308,7 @@ It will give you access to an information system that only larges companies are 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.5#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.6#right>
 [28]: <img/gContactOOo-1.png>
 [29]: <img/gContactOOo-2.png>
 [30]: <img/gContactOOo-3.png>
