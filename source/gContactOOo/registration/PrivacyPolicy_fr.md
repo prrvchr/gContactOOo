@@ -1,10 +1,10 @@
-# Politique de protection des données
+# Politique de Protection des Données
 
-**This [document][1] in English.**
+**This [document][1] in english.**
 
-**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation][2].**
+**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'Utilisation][2].**
 
-Concernant l'installation, la configuration et l'utilisation, veuillez consulter la **[documentation][3]**.
+Concernant l'installation, la configuration et l'utilisation, veuillez consulter la **[Documentation][3]**.
 
 ## Introduction:
 
@@ -16,10 +16,10 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 - `OAuth2OOo`: le logiciel [OAuth2OOo][4] dans son intégralité.
 - `gContactOOo`: le logiciel [gContactOOo][5] dans son intégralité.
 - `Utilisateur`: l'utilisateur des logiciels `OAuth2OOo` et/ou `gContactOOo`.
-- `Ordinateur` : l'ordinateur personnel de l'`Utilisateur` sur lequel est installé `OAuth2OOo` et/ou `gContactOOo`.
+- `Ordinateur`: l'ordinateur personnel de l'`Utilisateur` sur lequel est installé `OAuth2OOo` et/ou `gContactOOo`.
 - `Fournisseur`: fournisseur de services Internet fournissant des jetons OAuth2 à `OAuth2OOo` et des services Internet à `gContactOOo`.
 
-`gContactOOo` utilisant des services logiciels fourni par `OAuth2OOo`, **son utilisation vous soumet également à la [Politique de protection des données][6]** de `OAuth2OOo`.
+`gContactOOo` utilisant des services logiciels fourni par `OAuth2OOo`, **son utilisation vous soumet également à la [Politique de Protection des Données][6]** de `OAuth2OOo`.
 
 Bien que `OAuth2OOo` et/ou `gContactOOo` **ne partagent ni ne transfèrent aucune données avec toutes autres applications**, `OAuth2OOo` et/ou `gContactOOo` respecte [la politique de données utilisateur des services API Google][7], y compris les exigences d'utilisation limitée.
 
@@ -41,21 +41,29 @@ L'emplacement de ces données est le répertoire d'installation de l'application
 
 La suppression des données collectées par `OAuth2OOo` et/ou `gContactOOo` est garantie par la désinstallation de l'application `OAuth2OOo` et/ou `gContactOOo`, respectivement.
 
-L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
+L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la Politique de Protection des Données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
-Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa politique de protection des données.
+Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
 ___
 ## Nature et étendue des droits sur vos données:
 
 `gContactOOo` vous permet d'obtenir une copie de vos Contacts Google sur votre `Ordinateur`. En conséquence, `gContactOOo` revendique au travers de `OAuth2OOo` le droit de **consulter, modifier et supprimer vos Contacts Google**.
 
+**L'étendue exacte des droits revendiqués sur vos données est la suivante:**
+- [https://www.googleapis.com/auth/contacts][8]
+- [https://www.googleapis.com/auth/userinfo.profile][8]
+
+L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la Politique de Protection des Données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
+
+Le `Fournisseur` est seul responsable de la nature et de l’étendue des droits sur les données qu’il collecte, comme décrit dans sa Politique de Protection des Données.
+
 ___
 ## Sécurité des données collectées:
 
 Étant donné que les données collectées par `OAuth2OOo` et/ou `gContactOOo` sont situées sur l'`Ordinateur`, **seul l'**`Utilisateur` **est responsable de la sécurité des données collectées**.
 
-L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
+L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la Politique de Protection des Données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
 Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
@@ -68,9 +76,9 @@ La mise à jour des données collectées localement est effectuée chaque fois q
 
 Il est de la responsabilité de l'`Utilisateur` de désinstaller `OAuth2OOo` et/ou `gContactOOo` afin de supprimer les données collectées.
 
-L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
+L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `gContactOOo` peut vous soumettre à la Politique de Protection des Données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
-Le `Fournisseur` est seul responsable de l'expiration des données qu'il collecte comme décrit dans sa politique de protection des données.
+Le `Fournisseur` est seul responsable de l'expiration des données qu'il collecte comme décrit dans sa Politique de Protection des Données.
 
 [1]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
 [2]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
@@ -79,3 +87,4 @@ Le `Fournisseur` est seul responsable de l'expiration des données qu'il collect
 [5]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
 [6]: <https://prrvchr.github.io/OAuth2OOo/source/OAuth2OOo/registration/PrivacyPolicy_fr>
 [7]: <https://developers.google.com/terms/api-services-user-data-policy?hl=fr>
+[8]: <https://developers.google.com/identity/protocols/oauth2/scopes#people>
