@@ -58,7 +58,6 @@ from mcontact import g_scope
 from gcontact import g_host
 
 import validators
-import traceback
 
 
 # pythonloader looks for a static g_ImplementationHelper variable
@@ -95,30 +94,25 @@ class Driver(unohelper.Base,
 # XDataDefinitionSupplier
     def getDataDefinitionByConnection(self, connection):
         return connection
+
     def getDataDefinitionByURL(self, url, infos):
-        connection = self.connect(url, infos)
-        return connection
+        return self.connect(url, infos)
 
 # XDriver
     def connect(self, url, infos):
         mtd = 'connect'
-        try:
-            self._logger.logprb(INFO, self._cls, mtd, 1111, url)
-            protocols = url.strip().split(':')
-            if len(protocols) != 4 or not all(protocols):
-                raise getLogException(self._logger, self, 1000, 1112, self._cls, mtd, url)
-            username = protocols[3]
-            if not validators.email(username):
-                raise getLogException(self._logger, self, 1001, 1114, self._cls, mtd, username)
-            connection = self.DataSource.getConnection(self, g_scope, g_scheme, g_host, username)
-            version = self.DataSource.DataBase.Version
-            name = connection.getMetaData().getUserName()
-            self._logger.logprb(INFO, self._cls, mtd, 1115, version, name)
-            return connection
-        except SQLException as e:
-            raise e
-        except Exception as e:
-            self._logger.logprb(SEVERE, self._cls, mtd, 1116, e, traceback.format_exc())
+        self._logger.logprb(INFO, self._cls, mtd, 1111, url)
+        protocols = url.strip().split(':')
+        if len(protocols) != 4 or not all(protocols):
+            raise getLogException(self._logger, self, 1000, 1112, self._cls, mtd, url)
+        username = protocols[3]
+        if not validators.email(username):
+            raise getLogException(self._logger, self, 1001, 1114, self._cls, mtd, username)
+        connection = self.DataSource.getConnection(self, g_scope, g_scheme, g_host, username)
+        version = self.DataSource.DataBase.Version
+        name = connection.getMetaData().getUserName()
+        self._logger.logprb(INFO, self._cls, mtd, 1115, version, name)
+        return connection
 
     def acceptsURL(self, url):
         accept = url.startswith(self._supportedProtocol)
@@ -132,6 +126,7 @@ class Driver(unohelper.Base,
 
     def getMajorVersion(self):
         return 1
+
     def getMinorVersion(self):
         return 0
 
@@ -142,8 +137,10 @@ class Driver(unohelper.Base,
 # XServiceInfo
     def supportsService(self, service):
         return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+
     def getImplementationName(self):
         return g_ImplementationName
+
     def getSupportedServiceNames(self):
         return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
 

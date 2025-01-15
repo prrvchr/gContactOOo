@@ -32,8 +32,6 @@ import unohelper
 
 from com.sun.star.rest.ParameterType import QUERY
 
-from .card import Provider as ProviderBase
-
 from .dbtool import currentDateTimeInTZ
 from .dbtool import currentUnoDateTime
 
@@ -48,15 +46,9 @@ import ijson
 import traceback
 
 
-class Provider(ProviderBase):
-    def __init__(self, ctx, database):
-        ProviderBase.__init__(self, ctx)
-        paths, maps, types, tmps, fields = database.getMetaData('item', 'metadata')
-        self._paths = paths
-        self._maps = maps
-        self._types = types
-        self._tmps = tmps
-        self._fields = fields
+class Provider():
+    def __init__(self):
+        pass
 
     @property
     def Host(self):

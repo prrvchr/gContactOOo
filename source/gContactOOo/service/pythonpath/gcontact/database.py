@@ -27,13 +27,11 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-from .card import DataBase as DataBaseSuper
-
 import json
 import traceback
 
 
-class DataBase(DataBaseSuper):
+class DataBase():
 
     def getMetaData(self, tag, default=None, dot='.', sep=','):
         try:
