@@ -75,7 +75,7 @@ class Provider(ProviderBase):
         iterator = (item for item in ((user.Uri, name, '', ''), ))
         self.initUserBooks(source, database, user, iterator)
 
-    def initUserGroups(self, database, user, book):
+    def initUserGroups(self, source, database, user, book):
         pass
 
     # Method called from User.__init__()
