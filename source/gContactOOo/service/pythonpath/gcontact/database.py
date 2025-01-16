@@ -33,7 +33,7 @@ import traceback
 
 class DataBase():
 
-    def getMetaData(self, tag, default=None, dot='.', sep=','):
+    def getMetaData(self, tag, default, dot='.', sep=','):
         try:
             paths =  dict(list(self._getPaths(tag, dot)))
             maps = dict(list(self._getMaps(tag, dot)))

@@ -47,8 +47,13 @@ import traceback
 
 
 class Provider():
-    def __init__(self):
-        pass
+    def __init__(self, database):
+        paths, maps, types, tmps, fields = database.getMetaData('item', 'metadata')
+        self._paths = paths
+        self._maps = maps
+        self._types = types
+        self._tmps = tmps
+        self._fields = fields
 
     @property
     def Host(self):

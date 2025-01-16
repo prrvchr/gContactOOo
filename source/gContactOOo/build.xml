@@ -94,8 +94,6 @@
         <property name="project.jar" value="${ant.project.name}.jar"/>
         <property name="build.jar" value="${build.dir}${file.separator}${project.jar}"/>
 
-        <echo message="Project is Java: ${project.isjava}"/>
-
         <property name="lib.dir" value="lib"/>
         <property name="project.jar" value="${ant.project.name}.jar"/>
         <property name="build.jar" value="${build.dir}${file.separator}${project.jar}"/>
@@ -121,8 +119,6 @@
                 </chainedmapper>
             </mapper>
         </pathconvert>
-
-        <echo message="Manifest Class-Path: ${manifest.class.path}"/>
 
         <!-- create a few empty directories -->
         <mkdir dir="${build.classes.dir}"/>
@@ -186,8 +182,7 @@
             destdir="${build.classes.dir}" excludes="**/*Test*">
             <classpath>
                 <pathelement location="${build.classes.dir}"/>
-                <!-- Add external libraries here if you need them -->
-                <!-- <pathelement location="${lib.dir}${file.separator}libraryname.jar"/> -->
+                <path refid="build.class.path"/>
                 <path refid="office.class.path"/>
             </classpath>
         </javac>

@@ -50,11 +50,11 @@ from gcontact import getLogException
 
 from gcontact import g_defaultlog
 from gcontact import g_protocol
-from mcontact import g_version
+from gcontact import g_version
 
 from gcontact import g_identifier
 from gcontact import g_scheme
-from mcontact import g_scope
+from gcontact import g_scope
 from gcontact import g_host
 
 import validators
