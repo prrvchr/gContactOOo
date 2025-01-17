@@ -72,11 +72,14 @@ class Provider(ProviderMain):
     def getUserUri(self, server, name):
         return name
 
-    def initAddressbooks(self, source, database, user):
+    def initAddressbooks(self, source, logger, database, user):
+        mtd = 'initAddressbooks'
+        logger.logprb(INFO, self._cls, mtd, 1321, user.Name)
         # FIXME: Google Contact only offers one address book...
         name = 'Tous mes Contacts'
         iterator = (item for item in ((user.Uri, name, '', ''), ))
-        self.initUserBooks(source, database, user, iterator)
+        self.initUserBooks(source, logger, database, user, iterator)
+        logger.logprb(INFO, self._cls, mtd, 1322, user.Name)
 
     def initUserGroups(self, source, database, user, uri):
         pass
