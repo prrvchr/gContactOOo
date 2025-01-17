@@ -58,7 +58,7 @@ from gcontact import g_scope
 from gcontact import g_host
 
 import validators
-
+import traceback
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
