@@ -81,7 +81,7 @@ class Provider(ProviderMain):
         self.initUserBooks(source, logger, database, user, iterator)
         logger.logprb(INFO, self._cls, mtd, 1322, user.Name)
 
-    def initUserGroups(self, source, database, user, uri):
+    def initUserGroups(self, source, logger, database, user, uri):
         pass
 
     # Method called from User.__init__()
