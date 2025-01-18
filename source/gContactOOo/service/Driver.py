@@ -154,7 +154,7 @@ class Driver(unohelper.Base,
         mtd = '_getDataSource'
         url = getDataSourceUrl(self._ctx, self._logger, self, 1003, 1121, self._cls, mtd)
         try:
-            datasource = DataSource(self._ctx, self._logger, url)
+            datasource = DataSource(self._ctx, self, self._logger, url)
         except SQLException as e:
             raise getLogException(self._logger, self, 1005, 1123, self._cls, mtd, url, e.Message)
         except Exception as e:
