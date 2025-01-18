@@ -52,8 +52,8 @@ import traceback
 
 
 class Provider(ProviderMain):
-    def __init__(self, ctx, database):
-        ProviderMain.__init__(self, ctx)
+    def __init__(self, ctx, scr, database):
+        ProviderMain.__init__(self, ctx, src)
         paths, maps, types, tmps, fields = database.getMetaData('item', 'metadata')
         self._paths = paths
         self._maps = maps
@@ -72,32 +72,32 @@ class Provider(ProviderMain):
     def getUserUri(self, server, name):
         return name
 
-    def initAddressbooks(self, source, logger, database, user):
+    def initAddressbooks(self, logger, database, user):
         mtd = 'initAddressbooks'
         logger.logprb(INFO, self._cls, mtd, 1321, user.Name)
         # FIXME: Google Contact only offers one address book...
         name = 'Tous mes Contacts'
         iterator = (item for item in ((user.Uri, name, '', ''), ))
-        self.initUserBooks(source, logger, database, user, iterator)
+        self.initUserBooks(logger, database, user, iterator)
         logger.logprb(INFO, self._cls, mtd, 1322, user.Name)
 
-    def initUserGroups(self, source, logger, database, user, uri):
+    def initUserGroups(self, logger, database, user, uri):
         pass
 
     # Method called from User.__init__()
-    def insertUser(self, source, logger, database, request, scheme, server, name, pwd):
+    def insertUser(self, logger, database, request, scheme, server, name, pwd):
         mtd = 'insertUser'
         logger.logprb(INFO, self._cls, mtd, 1301, name)
-        userid = self._getNewUserId(source, request, scheme, server, name, pwd)
+        userid = self._getNewUserId(request, scheme, server, name, pwd)
         logger.logprb(INFO, self._cls, mtd, 1302, userid, name)
         return database.insertUser(userid, scheme, server, '', name)
 
     # Private method
-    def _getNewUserId(self, source, request, scheme, server, name, pwd):
+    def _getNewUserId(self, request, scheme, server, name, pwd):
         parameter = self._getRequestParameter(request, 'getUser')
         response = request.execute(parameter)
         if not response.Ok:
-            self.raiseForStatus(source, self._cls, '_getNewUserId', response, name)
+            self.raiseForStatus('_getNewUserId', response, name)
         userid = self._parseUser(response)
         return userid
 
