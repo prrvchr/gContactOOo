@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.1.6][6]
+# version [1.2.0][6]
 
 ## Introduction:
 
@@ -274,7 +274,13 @@ It will give you access to an information system that only larges companies are 
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.8 and 1.4.6 respectively minimum.
 - Modification of the extension options accessible via: **Tools -> Options... -> Internet -> gContactOOo** in order to comply with the new graphic charter.
 
-### What remains to be done for version 1.1.6:
+### What has been done for version 1.2.0:
+
+- The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.4.0 and 1.4.6 respectively minimum.
+- It is possible to build the extension archive (ie: the oxt file) with the [Apache Ant][54] utility and the [build.xml][55] script file.
+- The extension will refuse to install under OpenOffice regardless of version or LibreOffice other than 7.x or higher.
+
+### What remains to be done for version 1.2.0:
 
 - Make the address book locally editable with replication of changes.
 
@@ -287,7 +293,7 @@ It will give you access to an information system that only larges companies are 
 [3]: <https://prrvchr.github.io/gContactOOo/README_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [5]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
-[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-116>
+[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-120>
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
@@ -308,7 +314,7 @@ It will give you access to an information system that only larges companies are 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/gContactOOo.svg#middle>
 [26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.1.6#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.2.0#right>
 [28]: <img/gContactOOo-1.png>
 [29]: <img/gContactOOo-2.png>
 [30]: <img/gContactOOo-3.png>
@@ -335,3 +341,5 @@ It will give you access to an information system that only larges companies are 
 [51]: <https://pypi.org/project/setuptools/>
 [52]: <https://github.com/prrvchr/gContactOOo/security/dependabot/1>
 [53]: <https://pypi.org/project/validators/>
+[54]: <https://ant.apache.org/>
+[55]: <https://github.com/prrvchr/gContactOOo/blob/master/source/gContactOOo/build.xml>
