@@ -279,6 +279,7 @@ It will give you access to an information system that only larges companies are 
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.4.0 and 1.4.6 respectively minimum.
 - It is possible to build the extension archive (ie: the oxt file) with the [Apache Ant][54] utility and the [build.xml][55] script file.
 - The extension will refuse to install under OpenOffice regardless of version or LibreOffice other than 7.x or higher.
+- Added binaries needed for Python libraries to work on Linux and LibreOffice 24.8 (ie: Python 3.9).
 
 ### What remains to be done for version 1.2.0:
 

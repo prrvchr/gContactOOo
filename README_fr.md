@@ -279,6 +279,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 - L'extension vous demandera d'installer les extensions OAuth2OOo et jdbcDriverOOo en version respectivement 1.4.0 et 1.4.6 minimum.
 - Il est possible de construire l'archive de l'extension (ie: le fichier oxt) avec l'utilitaire [Apache Ant][54] et le fichier script [build.xml][55].
 - L'extension refusera de s'installer sous OpenOffice quelle que soit la version ou LibreOffice autre que 7.x ou supérieur.
+- Ajout des fichiers binaires nécessaires aux bibliothèques Python pour fonctionner sous Linux et LibreOffice 24.8 (ie: Python 3.9).
 
 ### Que reste-t-il à faire pour la version 1.2.0:
 
