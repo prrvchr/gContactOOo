@@ -4,7 +4,7 @@
 """
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
-║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
+║   Copyright (c) 2020-25 https://prrvchr.github.io                                  ║
 ║                                                                                    ║
 ║   Permission is hereby granted, free of charge, to any person obtaining            ║
 ║   a copy of this software and associated documentation files (the "Software"),     ║
@@ -47,8 +47,8 @@ import traceback
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationName = f'{g_identifier}.OptionsHandler'
-
+g_ImplementationName = 'io.github.prrvchr.gContactOOo.OptionsHandler'
+g_ServiceNames = ('io.github.prrvchr.gContactOOo.OptionsHandler', )
 
 class OptionsHandler(unohelper.Base,
                      XServiceInfo,
@@ -93,7 +93,6 @@ class OptionsHandler(unohelper.Base,
     def getSupportedServiceNames(self):
         return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
 
-
-g_ImplementationHelper.addImplementation(OptionsHandler,                             # UNO object class
-                                         g_ImplementationName,                       # Implementation name
-                                         (g_ImplementationName,))                    # List of implemented services
+g_ImplementationHelper.addImplementation(OptionsHandler,                  # UNO object class
+                                         g_ImplementationName,            # Implementation name
+                                         g_ServiceNames)                  # List of implemented services

@@ -4,7 +4,7 @@
 """
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
-║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
+║   Copyright (c) 2020-25 https://prrvchr.github.io                                  ║
 ║                                                                                    ║
 ║   Permission is hereby granted, free of charge, to any person obtaining            ║
 ║   a copy of this software and associated documentation files (the "Software"),     ║
@@ -62,8 +62,8 @@ import traceback
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationName = f'{g_identifier}.Driver'
-
+g_ImplementationName = 'io.github.prrvchr.gContactOOo.Driver'
+g_ServiceNames = ('io.github.prrvchr.gContactOOo.Driver', 'com.sun.star.sdbc.Driver')
 
 class Driver(unohelper.Base,
              XCreateCatalog,
@@ -163,9 +163,6 @@ class Driver(unohelper.Base,
             raise getLogException(self._logger, self, 1005, 1124, self._cls, mtd, datasource.getDataBaseVersion(), g_version)
         return datasource
 
-
-g_ImplementationHelper.addImplementation(Driver,
-                                         g_ImplementationName,
-                                        (g_ImplementationName,
-                                        'com.sun.star.sdbc.Driver',
-                                        'com.sun.star.sdbcx.Driver'))
+g_ImplementationHelper.addImplementation(Driver,                          # UNO object class
+                                         g_ImplementationName,            # Implementation name
+                                         g_ServiceNames)                  # List of implemented services
