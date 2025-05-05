@@ -57,14 +57,6 @@ Elle doit donc répondre aux [prérequis de l'extension OAuth2OOo][14].
 L'extension gContactOOo utilise l'extension jdbcDriverOOo pour fonctionner.  
 Elle doit donc répondre aux [prérequis de l'extension jdbcDriverOOo][15].
 
-**Sous Linux et macOS les paquets Python** utilisés par l'extension, peuvent s'il sont déja installé provenir du système et donc, **peuvent ne pas être à jour**.  
-Afin de s'assurer que vos paquets Python sont à jour il est recommandé d'utiliser l'option **Info système** dans les Options de l'extension accessible par:  
-**Outils -> Options -> Internet -> gContactOOo -> Voir journal -> Info système**  
-Si des paquets obsolètes apparaissent, vous pouvez les mettre à jour avec la commande:  
-`pip install --upgrade <package-name>`
-
-Pour plus d'information voir: [Ce qui a été fait pour la version 1.1.0][16].
-
 ___
 
 ## Installation:
@@ -86,6 +78,13 @@ Redémarrez LibreOffice après l'installation.
 **Attention, redémarrer LibreOffice peut ne pas suffire.**
 - **Sous Windows** pour vous assurer que LibreOffice redémarre correctement, utilisez le Gestionnaire de tâche de Windows pour vérifier qu'aucun service LibreOffice n'est visible après l'arrêt de LibreOffice (et tuez-le si ç'est le cas).
 - **Sous Linux ou macOS** vous pouvez également vous assurer que LibreOffice redémarre correctement, en le lançant depuis un terminal avec la commande `soffice` et en utilisant la combinaison de touches `Ctrl + C` si après l'arrêt de LibreOffice, le terminal n'est pas actif (pas d'invité de commande).
+
+Après avoir redémarré LibreOffice, vous pouvez vous assurer que l'extension et son pilote sont correctement installés en vérifiant que le pilote `io.github.prrvchr.gContactOOo.Driver` est répertorié dans le **Pool de Connexions**, accessible via le menu: **Outils -> Options -> LibreOffice Base -> Connexions**. Il n'est pas nécessaire d'activer le pool de connexions.
+
+Si le pilote n'est pas répertorié, la raison de l'échec du chargement du pilote peut être trouvée dans la journalisation de l'extension. Cette journalisation est accessible via le menu: **Outils -> Options -> LibreOffice Base -> Contacts Google -> Options de journalisation**.  
+La journalisation `gContactLog` doit d'abord être activée, puis LibreOffice redémarré pour obtenir le message d'erreur dans le journal.
+
+N'oubliez pas au préalable de mettre à jour la version du JRE ou JDK Java installée sur votre ordinateur, cette nouvelle version de jdbcDriverOOo nécessite **Java version 17 ou ultérieure** au lieu de Java 11 auparavant.
 
 ___
 
@@ -155,6 +154,21 @@ Il faut également rendre accessible ce fichier odb. Pour cela vous devez:
 ![gContactOOo screenshot 9][36]
 
 Maintenant à vous d'en profiter...
+
+___
+
+## Comment créer l'extension:
+
+Normalement, l'extension est créée avec Eclipse pour Java et [LOEclipse][37]. Pour contourner Eclipse, j'ai modifié LOEclipse afin de permettre la création de l'extension avec Apache Ant.  
+Pour créer l'extension gContactOOo avec l'aide d'Apache Ant, vous devez:
+- Installer le [SDK Java][38] version 8 ou supérieure.
+- Installer [Apache Ant][39] version 1.9.1 ou supérieure.
+- Installer [LibreOffice et son SDK][40] version 7.x ou supérieure.
+- Cloner le dépôt [gContactOOo][41] sur GitHub dans un dossier.
+- Depuis ce dossier, accédez au répertoire: `source/gContactOOo/`
+- Dans ce répertoire, modifiez le fichier `build.properties` afin que les propriétés `office.install.dir` et `sdk.dir` pointent vers les dossiers d'installation de LibreOffice et de son SDK, respectivement.
+- Lancez la création de l'archive avec la commande: `ant`
+- Vous trouverez l'archive générée dans le sous-dossier: `dist/`
 
 ___
 
@@ -289,7 +303,19 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 - Mise à jour du paquet [Python validators][53] vers la version 0.34.0.
 - Support de Python version 3.13.
 
-### Que reste-t-il à faire pour la version 1.2.1:
+### Ce qui a été fait pour la version 1.3.0:
+
+- Mise à jour du paquet [Python packaging][50] vers la version 25.0.
+- Rétrogradage du paquet [Python setuptools][51] vers la version 75.3.2, afin d'assurer la prise en charge de Python 3.8.
+- Déploiement de l'enregistrement passif permettant une installation beaucoup plus rapide des extensions et de différencier les services UNO enregistrés de ceux fournis par une implémentation Java ou Python. Cet enregistrement passif est assuré par l'extension [LOEclipse][37] via les [PR#152][62] et [PR#157][63].
+- Il est désormais possible de créer le fichier oxt de l'extension gContactOOo uniquement avec Apache Ant et une copie du dépôt GitHub. La section [Comment créer l'extension][64] a été ajoutée à la documentation.
+- Implémentation de [PEP 570][65] dans la [journalisation][66] pour prendre en charge les arguments multiples uniques.
+- Toute erreur survenant lors du chargement du pilote sera consignée dans le journal de l'extension si la journalisation a été préalablement activé. Cela facilite l'identification des problèmes d'installation sous Windows.
+- Pour garantir la création correcte de la base de données gContactOOo, il sera vérifié que l'extension jdbcDriverOOo a `com.sun.star.sdb` comme niveau d'API.
+- Nécessite l'extension **jdbcDriverOOo en version 1.5.0 minimum**.
+- Nécessite l'extension **OAuth2OOo en version 1.5.0 minimum**.
+
+### Que reste-t-il à faire pour la version 1.3.0:
 
 - Rendre le carnet d'adresses modifiable localement avec la réplication des modifications.
 
@@ -333,23 +359,30 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [34]: <img/gContactOOo-7_fr.png>
 [35]: <img/gContactOOo-8_fr.png>
 [36]: <img/gContactOOo-9_fr.png>
-[37]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
-[38]: <https://prrvchr.github.io/eMailerOOo/README_fr>
-[39]: <https://en.wikipedia.org/wiki/Mail_merge>
-[40]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
-[41]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
-[42]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/requirements.txt>
-[43]: <https://peps.python.org/pep-0508/>
-[44]: <https://prrvchr.github.io/gContactOOo/README_fr#pr%C3%A9requis>
-[45]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
-[46]: <https://github.com/prrvchr/gContactOOo/tree/main/source/gContactOOo/hsqldb>
-[47]: <https://pypi.org/project/python-dateutil/>
-[48]: <https://pypi.org/project/decorator/>
-[49]: <https://pypi.org/project/ijson/>
-[50]: <https://pypi.org/project/packaging/>
-[51]: <https://pypi.org/project/setuptools/>
-[52]: <https://github.com/prrvchr/gContactOOo/security/dependabot/1>
-[53]: <https://pypi.org/project/validators/>
-[54]: <https://ant.apache.org/>
-[55]: <https://github.com/prrvchr/gContactOOo/blob/master/source/gContactOOo/build.xml>
-[56]: <https://pypi.org/project/six/>
+[37]: <https://github.com/LibreOffice/loeclipse>
+[38]: <https://adoptium.net/temurin/releases/?version=8&package=jdk>
+[39]: <https://ant.apache.org/manual/install.html>
+[40]: <https://downloadarchive.documentfoundation.org/libreoffice/old/7.6.7.2/>
+[41]: <https://github.com/prrvchr/gContactOOo.git>
+
+
+[42]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
+[43]: <https://prrvchr.github.io/eMailerOOo/README_fr>
+[44]: <https://en.wikipedia.org/wiki/Mail_merge>
+[45]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
+[46]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
+[47]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/requirements.txt>
+[48]: <https://peps.python.org/pep-0508/>
+[49]: <https://prrvchr.github.io/gContactOOo/README_fr#pr%C3%A9requis>
+[50]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
+[51]: <https://github.com/prrvchr/gContactOOo/tree/main/source/gContactOOo/hsqldb>
+[52]: <https://pypi.org/project/python-dateutil/>
+[53]: <https://pypi.org/project/decorator/>
+[54]: <https://pypi.org/project/ijson/>
+[55]: <https://pypi.org/project/packaging/>
+[56]: <https://pypi.org/project/setuptools/>
+[57]: <https://github.com/prrvchr/gContactOOo/security/dependabot/1>
+[58]: <https://pypi.org/project/validators/>
+[59]: <https://ant.apache.org/>
+[60]: <https://github.com/prrvchr/gContactOOo/blob/master/source/gContactOOo/build.xml>
+[61]: <https://pypi.org/project/six/>

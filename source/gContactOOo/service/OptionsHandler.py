@@ -77,7 +77,7 @@ class OptionsHandler(unohelper.Base,
                 handled = True
             return handled
         except Exception as e:
-            self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod()', 101, e, traceback.format_exc())
+            self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod()', 201, e, traceback.format_exc())
 
     def getSupportedMethodNames(self):
         return ('external_event',
