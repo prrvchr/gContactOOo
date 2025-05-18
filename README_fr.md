@@ -1,7 +1,7 @@
 <!--
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
-║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
+║   Copyright (c) 2020-25 https://prrvchr.github.io                                  ║
 ║                                                                                    ║
 ║   Permission is hereby granted, free of charge, to any person obtaining            ║
 ║   a copy of this software and associated documentation files (the "Software"),     ║
@@ -36,7 +36,7 @@
 **gContactOOo** fait partie d'une [Suite][7] d'extensions [LibreOffice][8] ~~et/ou [OpenOffice][9]~~ permettant de vous offrir des services inovants dans ces suites bureautique.
 
 Cette extension vous donne l'accès, dans LibreOffice, à vos contacts Google (les contacts de votre téléphone Android).  
-Elle utilise [l'API Google People][10] pour synchroniser vos Contacts Google distant dans une base de données locale HsqlDB 2.7.2.  
+Elle utilise [l'API Google People][10] pour synchroniser vos Contacts Google distant dans une base de données locale HsqlDB 2.7.4.  
 Cette extension est vu par LibreOffice comme un [pilote de base de données][11] répondant à l'URL: `sdbc:address:google:*`.
 
 Etant un logiciel libre je vous encourage:
@@ -83,8 +83,6 @@ Après avoir redémarré LibreOffice, vous pouvez vous assurer que l'extension e
 
 Si le pilote n'est pas répertorié, la raison de l'échec du chargement du pilote peut être trouvée dans la journalisation de l'extension. Cette journalisation est accessible via le menu: **Outils -> Options -> LibreOffice Base -> Contacts Google -> Options de journalisation**.  
 La journalisation `gContactLog` doit d'abord être activée, puis LibreOffice redémarré pour obtenir le message d'erreur dans le journal.
-
-N'oubliez pas au préalable de mettre à jour la version du JRE ou JDK Java installée sur votre ordinateur, cette nouvelle version de jdbcDriverOOo nécessite **Java version 17 ou ultérieure** au lieu de Java 11 auparavant.
 
 ___
 
@@ -162,7 +160,7 @@ ___
 Normalement, l'extension est créée avec Eclipse pour Java et [LOEclipse][37]. Pour contourner Eclipse, j'ai modifié LOEclipse afin de permettre la création de l'extension avec Apache Ant.  
 Pour créer l'extension gContactOOo avec l'aide d'Apache Ant, vous devez:
 - Installer le [SDK Java][38] version 8 ou supérieure.
-- Installer [Apache Ant][39] version 1.9.1 ou supérieure.
+- Installer [Apache Ant][39] version 1.10.0 ou supérieure.
 - Installer [LibreOffice et son SDK][40] version 7.x ou supérieure.
 - Cloner le dépôt [gContactOOo][41] sur GitHub dans un dossier.
 - Depuis ce dossier, accédez au répertoire: `source/gContactOOo/`
@@ -328,7 +326,7 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [3]: <https://prrvchr.github.io/gContactOOo>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_fr>
 [5]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_fr>
-[6]: <https://prrvchr.github.io/gContactOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-121>
+[6]: <https://prrvchr.github.io/gContactOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-130>
 [7]: <https://prrvchr.github.io/README_fr>
 [8]: <https://fr.libreoffice.org/download/telecharger-libreoffice/>
 [9]: <https://www.openoffice.org/fr/Telecharger/>
@@ -364,8 +362,6 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [39]: <https://ant.apache.org/manual/install.html>
 [40]: <https://downloadarchive.documentfoundation.org/libreoffice/old/7.6.7.2/>
 [41]: <https://github.com/prrvchr/gContactOOo.git>
-
-
 [42]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
 [43]: <https://prrvchr.github.io/eMailerOOo/README_fr>
 [44]: <https://en.wikipedia.org/wiki/Mail_merge>
@@ -386,3 +382,8 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 [59]: <https://ant.apache.org/>
 [60]: <https://github.com/prrvchr/gContactOOo/blob/master/source/gContactOOo/build.xml>
 [61]: <https://pypi.org/project/six/>
+[62]: <https://github.com/LibreOffice/loeclipse/pull/152>
+[63]: <https://github.com/LibreOffice/loeclipse/pull/157>
+[64]: <https://prrvchr.github.io/gContactOOo/README_fr#comment-cr%C3%A9er-lextension>
+[65]: <https://peps.python.org/pep-0570/>
+[66]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/logger/logwrapper.py#L109>

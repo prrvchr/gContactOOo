@@ -27,15 +27,11 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-from .jdbcdriver import g_services
-
 # General configuration
 g_extension = 'gContactOOo'
 g_identifier = 'io.github.prrvchr.%s' % g_extension
 g_protocol = 'sdbc:address:google'
-g_service = g_services['com.sun.star.sdb']
 g_implementation = '%s.Driver' % g_identifier
-g_services = (g_implementation, 'com.sun.star.sdbc.Driver')
 
 # Resource strings files folder
 g_resource = 'resource'

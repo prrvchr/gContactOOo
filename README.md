@@ -1,7 +1,7 @@
 <!--
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
-║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
+║   Copyright (c) 2020-25 https://prrvchr.github.io                                  ║
 ║                                                                                    ║
 ║   Permission is hereby granted, free of charge, to any person obtaining            ║
 ║   a copy of this software and associated documentation files (the "Software"),     ║
@@ -36,7 +36,7 @@
 **gContactOOo** is part of a [Suite][7] of [LibreOffice][8] ~~and/or [OpenOffice][9]~~ extensions allowing to offer you innovative services in these office suites.
 
 This extension gives you access, in LibreOffice, to your phone contacts (the contacts of your Android phone).  
-It uses [Google People API][10] to synchronize your remote Google Contacts into a local HsqlDB 2.7.2 database.  
+It uses [Google People API][10] to synchronize your remote Google Contacts into a local HsqlDB 2.7.4 database.  
 This extension is seen by LibreOffice as a [database driver][11] responding to the URL: `sdbc:address:google:*`.
 
 Being free software I encourage you:
@@ -83,8 +83,6 @@ After restarting LibreOffice, you can ensure that the extension and its driver a
 
 If the driver is not listed, the reason for the driver failure can be found in the extension's logging. This log is accessible via the menu: **Tools -> Options -> LibreOffice Base -> Google Contacts -> Logging Options**.  
 The `gContactLog` logging must first be enabled and then LibreOffice restarted to get the error message in the log.
-
-Remember to first update the version of the Java JRE or JDK installed on your computer, this new version of jdbcDriverOOo requires **Java version 17 or later** instead of Java 11 previously.
 
 ___
 
@@ -162,7 +160,7 @@ ___
 Normally, the extension is created with Eclipse for Java and [LOEclipse][37]. To work around Eclipse, I modified LOEclipse to allow the extension to be created with Apache Ant.  
 To create the gContactOOo extension with the help of Apache Ant, you need to:
 - Install the [Java SDK][38] version 8 or higher.
-- Install [Apache Ant][39] version 1.9.1 or higher.
+- Install [Apache Ant][39] version 1.10.0 or higher.
 - Install [LibreOffice and its SDK][40] version 7.x or higher.
 - Clone the [gContactOOo][41] repository on GitHub into a folder.
 - From this folder, move to the directory: `source/gContactOOo/`
@@ -328,7 +326,7 @@ It will give you access to an information system that only larges companies are 
 [3]: <https://prrvchr.github.io/gContactOOo/README_fr>
 [4]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/TermsOfUse_en>
 [5]: <https://prrvchr.github.io/gContactOOo/source/gContactOOo/registration/PrivacyPolicy_en>
-[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-121>
+[6]: <https://prrvchr.github.io/gContactOOo#what-has-been-done-for-version-130>
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
@@ -364,8 +362,6 @@ It will give you access to an information system that only larges companies are 
 [39]: <https://ant.apache.org/manual/install.html>
 [40]: <https://downloadarchive.documentfoundation.org/libreoffice/old/7.6.7.2/>
 [41]: <https://github.com/prrvchr/gContactOOo.git>
-
-
 [42]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
 [43]: <https://prrvchr.github.io/eMailerOOo>
 [44]: <https://en.wikipedia.org/wiki/Mail_merge>
@@ -386,3 +382,8 @@ It will give you access to an information system that only larges companies are 
 [59]: <https://ant.apache.org/>
 [60]: <https://github.com/prrvchr/gContactOOo/blob/master/source/gContactOOo/build.xml>
 [61]: <https://pypi.org/project/six/>
+[62]: <https://github.com/LibreOffice/loeclipse/pull/152>
+[63]: <https://github.com/LibreOffice/loeclipse/pull/157>
+[64]: <https://prrvchr.github.io/gContactOOo/#how-to-build-the-extension>
+[65]: <https://peps.python.org/pep-0570/>
+[66]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/logger/logwrapper.py#L109>
