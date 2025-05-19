@@ -82,12 +82,12 @@ class Provider(ProviderMain):
         return name
 
 # Method called from Provider.initAddressbooks()
-    def getAddressbooks(self, logger, database, user):
+    def getAddressbooks(self, database, user):
         # FIXME: Google Contact only offers one address book...
-        name = 'Tous mes Contacts'
+        name = 'Google Contacts'
         return (item for item in ((user.Uri, name, '', ''), ))
 
-    def initUserGroups(self, logger, database, user, book):
+    def initUserGroups(self, database, user, book):
         pass
 
     # Private method
