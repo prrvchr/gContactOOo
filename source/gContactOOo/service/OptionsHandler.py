@@ -27,7 +27,6 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import uno
 import unohelper
 
 from com.sun.star.logging.LogLevel import SEVERE
@@ -49,6 +48,7 @@ import traceback
 g_ImplementationHelper = unohelper.ImplementationHelper()
 g_ImplementationName = 'io.github.prrvchr.gContactOOo.OptionsHandler'
 g_ServiceNames = ('io.github.prrvchr.gContactOOo.OptionsHandler', )
+
 
 class OptionsHandler(unohelper.Base,
                      XServiceInfo,
