@@ -1,14 +1,22 @@
 namespace: gContactOOo
+
 output:
   file_path: ./Fluid-Attacks-Results.csv
   format: CSV
+
 working_dir: .
+
 sast:
   include:
     - glob(source/gContactOOo/service/*.py)
     - glob(source/gContactOOo/service/pythonpath/gcontact/*)
+
 sca:
+  exclude:
+    - dependency_name: setuptools
+      reason: False Positive
   include:
     - .
+
 language: EN
 strict: true
