@@ -1,5 +1,7 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!--
+#!
+# -*- coding: utf-8 -*-
+
+"""
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020-25 https://prrvchr.github.io                                  ║
@@ -23,16 +25,7 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
--->
-<oor:component-data oor:name="gContactOOo" oor:package="io.github.prrvchr"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:oor="http://openoffice.org/2001/registry"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <prop oor:name="AddressBookName">
-    <value xml:lang="en">All my contacts</value>
-    <value xml:lang="fr">Tous mes contacts</value>
-  </prop>
-  <prop oor:name="ReplicateTimeout">
-    <value>600</value>
-  </prop>
-</oor:component-data>
+"""
+
+from .options import OptionsManager
+
