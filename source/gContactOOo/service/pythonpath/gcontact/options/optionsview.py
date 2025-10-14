@@ -27,68 +27,32 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import unohelper
-
-from com.sun.star.logging.LogLevel import SEVERE
-
-from com.sun.star.lang import XServiceInfo
-
-from com.sun.star.awt import XContainerWindowEventHandler
-
-from gcontact import OptionsManager
-
-from gcontact import getLogger
-
-from gcontact import g_identifier
-from gcontact import g_defaultlog
-
 import traceback
 
-# pythonloader looks for a static g_ImplementationHelper variable
-g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationName = 'io.github.prrvchr.gContactOOo.OptionsHandler'
-g_ServiceNames = ('io.github.prrvchr.gContactOOo.OptionsHandler', )
 
+class OptionsView():
+    def __init__(self, window, restart, url, instrumented):
+        self._window = window
+        control = self._getWarning()
+        control.URL = url
+        self._setWarning(control, restart, instrumented)
 
-class OptionsHandler(unohelper.Base,
-                     XServiceInfo,
-                     XContainerWindowEventHandler):
-    def __init__(self, ctx):
-        self._ctx = ctx
-        self._manager = None
-        self._logger = getLogger(ctx, g_defaultlog)
+    def setWarning(self, restart, instrumented):
+        self._setWarning(self._getWarning(), restart, instrumented)
 
-    # XContainerWindowEventHandler
-    def callHandlerMethod(self, window, event, method):
-        try:
-            handled = False
-            if method == 'external_event':
-                if event == 'initialize':
-                    self._manager = OptionsManager(self._ctx, self._logger, window)
-                    handled = True
-                elif event == 'ok':
-                    self._manager.saveSetting()
-                    handled = True
-                elif event == 'back':
-                    self._manager.loadSetting()
-                    handled = True
-            return handled
-        except Exception as e:
-            self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod()', 201, e, traceback.format_exc())
+# OptionsView private setter methods
+    def _setWarning(self, control, restart, instrumented):
+        if restart:
+            control.setVisible(False)
+            self._getRestart().setVisible(True)
+        else:
+            self._getRestart().setVisible(False)
+            control.setVisible(not instrumented)
 
-    def getSupportedMethodNames(self):
-        return ('external_event', )
+# OptionsView private control methods
+    def _getRestart(self):
+        return self._window.getControl('Label1')
 
-    # XServiceInfo
-    def supportsService(self, service):
-        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+    def _getWarning(self):
+        return self._window.getControl('Hyperlink1')
 
-    def getImplementationName(self):
-        return g_ImplementationName
-
-    def getSupportedServiceNames(self):
-        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
-
-g_ImplementationHelper.addImplementation(OptionsHandler,                  # UNO object class
-                                         g_ImplementationName,            # Implementation name
-                                         g_ServiceNames)                  # List of implemented services

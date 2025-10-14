@@ -27,68 +27,35 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import unohelper
-
 from com.sun.star.logging.LogLevel import SEVERE
 
-from com.sun.star.lang import XServiceInfo
+from .optionsmodel import OptionsModel
 
-from com.sun.star.awt import XContainerWindowEventHandler
+from .optionsview import OptionsView
 
-from gcontact import OptionsManager
+from .options import OptionsManager as Manager
 
-from gcontact import getLogger
+from ..unotool import executeDispatch
 
-from gcontact import g_identifier
-from gcontact import g_defaultlog
+from ..configuration import g_extension
 
 import traceback
 
-# pythonloader looks for a static g_ImplementationHelper variable
-g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationName = 'io.github.prrvchr.gContactOOo.OptionsHandler'
-g_ServiceNames = ('io.github.prrvchr.gContactOOo.OptionsHandler', )
 
+class OptionsManager():
+    def __init__(self, ctx, logger, window):
+        self._model = OptionsModel(ctx)
+        self._view = OptionsView(window, OptionsManager._restart, *self._model.getViewData())
+        self._manager = Manager(ctx, logger, window)
+        self._logger = logger
 
-class OptionsHandler(unohelper.Base,
-                     XServiceInfo,
-                     XContainerWindowEventHandler):
-    def __init__(self, ctx):
-        self._ctx = ctx
-        self._manager = None
-        self._logger = getLogger(ctx, g_defaultlog)
+    _restart = False
 
-    # XContainerWindowEventHandler
-    def callHandlerMethod(self, window, event, method):
-        try:
-            handled = False
-            if method == 'external_event':
-                if event == 'initialize':
-                    self._manager = OptionsManager(self._ctx, self._logger, window)
-                    handled = True
-                elif event == 'ok':
-                    self._manager.saveSetting()
-                    handled = True
-                elif event == 'back':
-                    self._manager.loadSetting()
-                    handled = True
-            return handled
-        except Exception as e:
-            self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod()', 201, e, traceback.format_exc())
+    def saveSetting(self):
+        if self._manager.saveSetting():
+            OptionsManager._restart = True
+            self._view.setWarning(True, self._model.isInstrumented())
 
-    def getSupportedMethodNames(self):
-        return ('external_event', )
+    def loadSetting(self):
+        self._manager.loadSetting()
 
-    # XServiceInfo
-    def supportsService(self, service):
-        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
-
-    def getImplementationName(self):
-        return g_ImplementationName
-
-    def getSupportedServiceNames(self):
-        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
-
-g_ImplementationHelper.addImplementation(OptionsHandler,                  # UNO object class
-                                         g_ImplementationName,            # Implementation name
-                                         g_ServiceNames)                  # List of implemented services
