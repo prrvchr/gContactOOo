@@ -43,19 +43,34 @@ Being free software I encourage you:
 - To duplicate its [source code][12].
 - To make changes, corrections, improvements.
 - To open [issue][13] if needed.
+- To [participate in the costs][14] of [CASA certification][15].
 
 In short, to participate in the development of this extension.  
 Because it is together that we can make Free Software smarter.
 
 ___
 
+## CASA certification:
+
+To ensure interoperability with **Google**, the **gContactOOo** extension uses the **OAuth2OOo** extension which requires [CASA certification][15].  
+Until now, this certification was free and carried out by a Google partner.  
+The **OAuth2OOo** application obtained its [CASA certification][16] on 11/28/2023.
+
+**Now this certification has become paid and costs $600.**
+
+I never anticipated such costs and I am counting on your contribution to finance this certification.
+
+Thank you for your help. [![Sponsor][17]][14]
+
+___
+
 ## Requirement:
 
 The gContactOOo extension uses the OAuth2OOo extension to work.  
-It must therefore meet the [requirement of the OAuth2OOo extension][14].
+It must therefore meet the [requirement of the OAuth2OOo extension][18].
 
 The gContactOOo extension uses the jdbcDriverOOo extension to work.  
-It must therefore meet the [requirement of the jdbcDriverOOo extension][15].  
+It must therefore meet the [requirement of the jdbcDriverOOo extension][19].  
 Additionally, gContactOOo requires the jdbcDriverOOo extension to be configured to provide `com.sun.star.sdb` as the API level, which is the default configuration.
 
 ___
@@ -65,15 +80,15 @@ ___
 It seems important that the file was not renamed when it was downloaded.
 If necessary, rename it before installing it.
 
-- [![OAuth2OOo logo][17]][18] Install **[OAuth2OOo.oxt][19]** extension [![Version][20]][19]
+- [![OAuth2OOo logo][20]][21] Install **[OAuth2OOo.oxt][22]** extension [![Version][23]][22]
 
     You must install this extension, if it is not already installed.
 
-- [![jdbcDriverOOo logo][21]][22] Install **[jdbcDriverOOo.oxt][23]** extension [![Version][24]][23]
+- [![jdbcDriverOOo logo][24]][25] Install **[jdbcDriverOOo.oxt][26]** extension [![Version][27]][26]
 
     You must install this extension, if it is not already installed.
 
-- ![gContactOOo logo][25] Install **[gContactOOo.oxt][26]** extension [![Version][27]][26]
+- ![gContactOOo logo][28] Install **[gContactOOo.oxt][29]** extension [![Version][30]][29]
 
 Restart LibreOffice after installation.  
 **Be careful, restarting LibreOffice may not be enough.**
@@ -91,7 +106,7 @@ ___
 
 In LibreOffice / OpenOffice go to: **File -> Wizards -> Address Data Source...**
 
-![gContactOOo screenshot 1][28]
+![gContactOOo screenshot 1][31]
 
 The **Address Book Datasource Wizard** open.
 
@@ -99,12 +114,12 @@ In step: **1.Address Book Type**:
 - Select: **Other external data source**.
 - Click button: **Next**.
 
-![gContactOOo screenshot 2][29]
+![gContactOOo screenshot 2][32]
 
 In step: **2.Connection Settings**:
 - Click button: **Settings**.
 
-![gContactOOo screenshot 3][30]
+![gContactOOo screenshot 3][33]
 
 A new wizard opens. **Data source properties**.
 
@@ -113,22 +128,22 @@ In Database type list:
 - Select: **Google Contacts**.
 - Click button: **Next**.
 
-![gContactOOo screenshot 4][31]
+![gContactOOo screenshot 4][34]
 
 In step: **2.Connection Settings**.  
 In General: Enter the DBMS/driver-specific connection string here.
 - Put your Google account (ie: your_account@gmail.com)
 - Click button: **Test connection**.
 
-![gContactOOo screenshot 5][32]
+![gContactOOo screenshot 5][35]
 
-After authorizing the [OAuth2OOo][18] application to access your Contacts, normally you should see: Connection Test: The connection was established successfully.
+After authorizing the [OAuth2OOo][22] application to access your Contacts, normally you should see: Connection Test: The connection was established successfully.
 
-![gContactOOo screenshot 6][33]
+![gContactOOo screenshot 6][36]
 
 If the connection has been established, you can complete this wizard with the **Finish** button.
 
-![gContactOOo screenshot 7][34]
+![gContactOOo screenshot 7][37]
 
 In step: **3.Table Selection**.  
 If your data source has multiple tables, you will be asked to select the primary table.  
@@ -138,7 +153,7 @@ In step: **4.Field Assignment**.
 If necessary it is possible to rename the names of the columns of the data source using the button: **Field Assignment**.  
 Please continue this wizard with the button: **Next**.
 
-![gContactOOo screenshot 8][35]
+![gContactOOo screenshot 8][38]
 
 In step: **5.Data Source Title**.
 
@@ -150,7 +165,7 @@ This odb file must also be made accessible. To do this you must:
 - **Check the box**: Make this address book available to all modules in LibreOffice
 - Named the address book in the field: **Address book name**.
 
-![gContactOOo screenshot 9][36]
+![gContactOOo screenshot 9][39]
 
 Have fun...
 
@@ -158,12 +173,12 @@ ___
 
 ## How to build the extension:
 
-Normally, the extension is created with Eclipse for Java and [LOEclipse][37]. To work around Eclipse, I modified LOEclipse to allow the extension to be created with Apache Ant.  
+Normally, the extension is created with Eclipse for Java and [LOEclipse][40]. To work around Eclipse, I modified LOEclipse to allow the extension to be created with Apache Ant.  
 To create the gContactOOo extension with the help of Apache Ant, you need to:
-- Install the [Java SDK][38] version 8 or higher.
-- Install [Apache Ant][39] version 1.10.0 or higher.
-- Install [LibreOffice and its SDK][40] version 7.x or higher.
-- Clone the [gContactOOo][41] repository on GitHub into a folder.
+- Install the [Java SDK][41] version 8 or higher.
+- Install [Apache Ant][42] version 1.10.0 or higher.
+- Install [LibreOffice and its SDK][43] version 7.x or higher.
+- Clone the [gContactOOo][44] repository on GitHub into a folder.
 - From this folder, move to the directory: `source/gContactOOo/`
 - In this directory, edit the file: `build.properties` so that the `office.install.dir` and `sdk.dir` properties point to the folders where LibreOffice and its SDK were installed, respectively.
 - Start the archive creation process using the command: `ant`
@@ -181,7 +196,7 @@ ___
 
 * LibreOffice 24.8.0.3 (x86_64) - Windows 10(x64) - Python version 3.9.19 (under Lubuntu 22.04 / VirtualBox 6.1.38)
 
-* **Does not work with OpenOffice on Windows** see [bug 128569][37]. Having no solution, I encourage you to install **LibreOffice**.
+* **Does not work with OpenOffice on Windows** see [bug 128569][45]. Having no solution, I encourage you to install **LibreOffice**.
 
 I encourage you in case of problem :confused:  
 to create an [issue][13]  
@@ -195,7 +210,7 @@ ___
 
 This extension was written in order to make usable in free software (LibreOffice or OpenOffice) your personal data (your address book) stored in your Android phone.
 
-With the [eMailerOOo][38] extension, it can be the data source for [mail merge][39] by email, to your correspondents contained in your phone.
+With the [eMailerOOo][46] extension, it can be the data source for [mail merge][47] by email, to your correspondents contained in your phone.
 
 It will give you access to an information system that only larges companies are able, today, to implement.
 
@@ -203,11 +218,11 @@ It will give you access to an information system that only larges companies are 
 
 - Integration and use of the new Hsqldb v2.5.1.
 
-- Writing of a new [Replicator][40] interface, launched in the background (python Thread) responsible for:
+- Writing of a new [Replicator][48] interface, launched in the background (python Thread) responsible for:
 
     - Perform the necessary procedures when creating a new user (initial Pull).
 
-- Writing of a new [DataBase][41] interface, responsible for making all calls to the database.
+- Writing of a new [DataBase][49] interface, responsible for making all calls to the database.
 
 - Many other fix...
 
@@ -217,9 +232,9 @@ It will give you access to an information system that only larges companies are 
 
 - Driver is now registred for a new protocol: **sdbc:address:google:your_account@gmail.com**
 
-- The [jdbcDriverOOo][22] extension now provides the driver needed to access the HsqlDB database used by gContactOOo.
+- The [jdbcDriverOOo][26] extension now provides the driver needed to access the HsqlDB database used by gContactOOo.
 
-- Modifying the [Replicator][40] in order to: 
+- Modifying the [Replicator][48] in order to: 
 
     - Open and close the database at each replication.
     - Go on hold after the last closing of the address book.
@@ -245,10 +260,10 @@ It will give you access to an information system that only larges companies are 
 
 ### What has been done for version 1.1.0:
 
-- All Python packages necessary for the extension are now recorded in a [requirements.txt][42] file following [PEP 508][43].
+- All Python packages necessary for the extension are now recorded in a [requirements.txt][50] file following [PEP 508][51].
 - Now if you are not on Windows then the Python packages necessary for the extension can be easily installed with the command:  
   `pip install requirements.txt`
-- Modification of the [Requirement][44] section.
+- Modification of the [Requirement][52] section.
 
 ### What has been done for version 1.1.1:
 
@@ -257,27 +272,27 @@ It will give you access to an information system that only larges companies are 
 
 ### What has been done for version 1.1.2:
 
-- Integration of a fix to workaround the [issue #159988][45].
+- Integration of a fix to workaround the [issue #159988][53].
 
 ### What has been done for version 1.1.3:
 
-- The creation of the database, during the first connection, uses the UNO API offered by the jdbcDriverOOo extension since version 1.3.2. This makes it possible to record all the information necessary for creating the database in 9 text tables which are in fact [9 csv files][46].
+- The creation of the database, during the first connection, uses the UNO API offered by the jdbcDriverOOo extension since version 1.3.2. This makes it possible to record all the information necessary for creating the database in 9 text tables which are in fact [9 csv files][54].
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.4 and 1.3.2 respectively minimum.
 - Many fixes.
 
 ### What has been done for version 1.1.4:
 
-- Updated the [Python python-dateutil][47] package to version 2.9.0.post0.
-- Updated the [Python decorator][48] package to version 5.1.1.
-- Updated the [Python ijson][49] package to version 3.3.0.
-- Updated the [Python packaging][50] package to version 24.1.
-- Updated the [Python setuptools][51] package to version 72.1.0 in order to respond to the [Dependabot security alert][52].
-- Updated the [Python validators][53] package to version 0.33.0.
+- Updated the [Python python-dateutil][55] package to version 2.9.0.post0.
+- Updated the [Python decorator][56] package to version 5.1.1.
+- Updated the [Python ijson][57] package to version 3.3.0.
+- Updated the [Python packaging][58] package to version 24.1.
+- Updated the [Python setuptools][59] package to version 72.1.0 in order to respond to the [Dependabot security alert][60].
+- Updated the [Python validators][61] package to version 0.33.0.
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.6 and 1.4.2 respectively minimum.
 
 ### What has been done for version 1.1.5:
 
-- Updated the [Python setuptools][51] package to version 73.0.1.
+- Updated the [Python setuptools][59] package to version 73.0.1.
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.7 and 1.4.5 respectively minimum.
 - Changes to extension options that require a restart of LibreOffice will result in a message being displayed.
 - Support for LibreOffice version 24.8.x.
@@ -290,26 +305,26 @@ It will give you access to an information system that only larges companies are 
 ### What has been done for version 1.2.0:
 
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.4.0 and 1.4.6 respectively minimum.
-- It is possible to build the extension archive (ie: the oxt file) with the [Apache Ant][54] utility and the [build.xml][55] script file.
+- It is possible to build the extension archive (ie: the oxt file) with the [Apache Ant][62] utility and the [build.xml][63] script file.
 - The extension will refuse to install under OpenOffice regardless of version or LibreOffice other than 7.x or higher.
 - Added binaries needed for Python libraries to work on Linux and LibreOffice 24.8 (ie: Python 3.9).
 
 ### What has been done for version 1.2.1:
 
-- Updated the [Python packaging][50] package to version 24.2.
-- Updated the [Python setuptools][51] package to version 75.8.0.
-- Updated the [Python six][56] package to version 1.17.0.
-- Updated the [Python validators][53] package to version 0.34.0.
+- Updated the [Python packaging][58] package to version 24.2.
+- Updated the [Python setuptools][59] package to version 75.8.0.
+- Updated the [Python six][64] package to version 1.17.0.
+- Updated the [Python validators][61] package to version 0.34.0.
 - Support for Python version 3.13.
 
 ### What has been done for version 1.3.0:
 
-- Updated the [Python packaging][50] package to version 25.0.
-- Downgrade the [Python setuptools][51] package to version 75.3.2. to ensure support for Python 3.8.
-- Passive registration deployment that allows for much faster installation of extensions and differentiation of registered UNO services from those provided by a Java or Python implementation. This passive registration is provided by the [LOEclipse][37] extension via [PR#152][62] and [PR#157][63].
-- Modified [LOEclipse][37] to support the new `rdb` file format produced by the `unoidl-write` compilation utility. `idl` files have been updated to support both available compilation tools: idlc and unoidl-write.
-- It is now possible to build the oxt file of the gContactOOo extension only with the help of Apache Ant and a copy of the GitHub repository. The [How to build the extension][64] section has been added to the documentation.
-- Implemented [PEP 570][65] in [logging][66] to support unique multiple arguments.
+- Updated the [Python packaging][58] package to version 25.0.
+- Downgrade the [Python setuptools][59] package to version 75.3.2. to ensure support for Python 3.8.
+- Passive registration deployment that allows for much faster installation of extensions and differentiation of registered UNO services from those provided by a Java or Python implementation. This passive registration is provided by the [LOEclipse][40] extension via [PR#152][65] and [PR#157][66].
+- Modified [LOEclipse][40] to support the new `rdb` file format produced by the `unoidl-write` compilation utility. `idl` files have been updated to support both available compilation tools: idlc and unoidl-write.
+- It is now possible to build the oxt file of the gContactOOo extension only with the help of Apache Ant and a copy of the GitHub repository. The [How to build the extension][67] section has been added to the documentation.
+- Implemented [PEP 570][68] in [logging][69] to support unique multiple arguments.
 - Any errors occurring while loading the driver will be logged in the extension's log if logging has been previously enabled. This makes it easier to identify installation problems on Windows.
 - To ensure the correct creation of the gContactOOo database, it will be checked that the jdbcDriverOOo extension has `com.sun.star.sdb` as API level.
 - Requires the **jdbcDriverOOo extension at least version 1.5.0**.
@@ -323,9 +338,10 @@ It will give you access to an information system that only larges companies are 
 
 ### What has been done for version 1.4.0:
 
-- Has been tested under LibreOfficeDev 26.2.
+- If the jdbcDriverOOo extension works without Java instrumentation, a warning message will be displayed in the extension options.
 - Requires the **jdbcDriverOOo extension at least version 1.6.0**.
 - Requires the **OAuth2OOo extension at least version 1.6.0**.
+- Has been tested under LibreOfficeDev 26.2.
 
 ### What remains to be done for version 1.4.0:
 
@@ -348,56 +364,59 @@ It will give you access to an information system that only larges companies are 
 [11]: <https://wiki.openoffice.org/wiki/Documentation/DevGuide/Database/Driver_Service>
 [12]: <https://github.com/prrvchr/gContactOOo>
 [13]: <https://github.com/prrvchr/gContactOOo/issues/new>
-[14]: <https://prrvchr.github.io/OAuth2OOo/#requirement>
-[15]: <https://prrvchr.github.io/jdbcDriverOOo/#requirement>
-[16]: <https://prrvchr.github.io/gContactOOo/#what-has-been-done-for-version-110>
-[17]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
-[18]: <https://prrvchr.github.io/OAuth2OOo>
-[19]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
-[20]: <https://img.shields.io/github/v/tag/prrvchr/OAuth2OOo?label=latest#right>
-[21]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.svg#middle>
-[22]: <https://prrvchr.github.io/jdbcDriverOOo/>
-[23]: <https://github.com/prrvchr/jdbcDriverOOo/releases/latest/download/jdbcDriverOOo.oxt>
-[24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
-[25]: <img/gContactOOo.svg#middle>
-[26]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.4.0#right>
-[28]: <img/gContactOOo-1.png>
-[29]: <img/gContactOOo-2.png>
-[30]: <img/gContactOOo-3.png>
-[31]: <img/gContactOOo-4.png>
-[32]: <img/gContactOOo-5.png>
-[33]: <img/gContactOOo-6.png>
-[34]: <img/gContactOOo-7.png>
-[35]: <img/gContactOOo-8.png>
-[36]: <img/gContactOOo-9.png>
-[37]: <https://github.com/LibreOffice/loeclipse>
-[38]: <https://adoptium.net/temurin/releases/?version=8&package=jdk>
-[39]: <https://ant.apache.org/manual/install.html>
-[40]: <https://downloadarchive.documentfoundation.org/libreoffice/old/7.6.7.2/>
-[41]: <https://github.com/prrvchr/gContactOOo.git>
-[42]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
-[43]: <https://prrvchr.github.io/eMailerOOo>
-[44]: <https://en.wikipedia.org/wiki/Mail_merge>
-[45]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
-[46]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
-[47]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/requirements.txt>
-[48]: <https://peps.python.org/pep-0508/>
-[49]: <https://prrvchr.github.io/gContactOOo/#requirement>
-[50]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
-[51]: <https://github.com/prrvchr/gContactOOo/tree/main/source/gContactOOo/hsqldb>
-[52]: <https://pypi.org/project/python-dateutil/>
-[53]: <https://pypi.org/project/decorator/>
-[54]: <https://pypi.org/project/ijson/>
-[55]: <https://pypi.org/project/packaging/>
-[56]: <https://pypi.org/project/setuptools/>
-[57]: <https://github.com/prrvchr/gContactOOo/security/dependabot/1>
-[58]: <https://pypi.org/project/validators/>
-[59]: <https://ant.apache.org/>
-[60]: <https://github.com/prrvchr/gContactOOo/blob/master/source/gContactOOo/build.xml>
-[61]: <https://pypi.org/project/six/>
-[62]: <https://github.com/LibreOffice/loeclipse/pull/152>
-[63]: <https://github.com/LibreOffice/loeclipse/pull/157>
-[64]: <https://prrvchr.github.io/gContactOOo/#how-to-build-the-extension>
-[65]: <https://peps.python.org/pep-0570/>
-[66]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/logger/logwrapper.py#L109>
+[14]: <https://github.com/sponsors/prrvchr>
+[15]: <https://appdefensealliance.dev/casa>
+[16]: <https://github.com/prrvchr/OAuth2OOo/blob/master/LOV_OAuth2OOo.pdf>
+[17]: <https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86#right>
+[18]: <https://prrvchr.github.io/OAuth2OOo/#requirement>
+[19]: <https://prrvchr.github.io/jdbcDriverOOo/#requirement>
+[20]: <https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.svg#middle>
+[21]: <https://prrvchr.github.io/OAuth2OOo>
+[22]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
+[23]: <https://img.shields.io/github/v/tag/prrvchr/OAuth2OOo?label=latest#right>
+[24]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.svg#middle>
+[25]: <https://prrvchr.github.io/jdbcDriverOOo/>
+[26]: <https://github.com/prrvchr/jdbcDriverOOo/releases/latest/download/jdbcDriverOOo.oxt>
+[27]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
+[28]: <img/gContactOOo.svg#middle>
+[29]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/gContactOOo.oxt>
+[30]: <https://img.shields.io/github/downloads/prrvchr/gContactOOo/latest/total?label=v1.4.0#right>
+[31]: <img/gContactOOo-1.png>
+[32]: <img/gContactOOo-2.png>
+[33]: <img/gContactOOo-3.png>
+[34]: <img/gContactOOo-4.png>
+[35]: <img/gContactOOo-5.png>
+[36]: <img/gContactOOo-6.png>
+[37]: <img/gContactOOo-7.png>
+[38]: <img/gContactOOo-8.png>
+[39]: <img/gContactOOo-9.png>
+[40]: <https://github.com/LibreOffice/loeclipse>
+[41]: <https://adoptium.net/temurin/releases/?version=8&package=jdk>
+[42]: <https://ant.apache.org/manual/install.html>
+[43]: <https://downloadarchive.documentfoundation.org/libreoffice/old/7.6.7.2/>
+[44]: <https://github.com/prrvchr/gContactOOo.git>
+[45]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
+[46]: <https://prrvchr.github.io/eMailerOOo>
+[47]: <https://en.wikipedia.org/wiki/Mail_merge>
+[48]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/replicator.py>
+[49]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/addressbook/database.py>
+[50]: <https://github.com/prrvchr/gContactOOo/releases/latest/download/requirements.txt>
+[51]: <https://peps.python.org/pep-0508/>
+[52]: <https://prrvchr.github.io/gContactOOo/#requirement>
+[53]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
+[54]: <https://github.com/prrvchr/gContactOOo/tree/main/source/gContactOOo/hsqldb>
+[55]: <https://pypi.org/project/python-dateutil/>
+[56]: <https://pypi.org/project/decorator/>
+[57]: <https://pypi.org/project/ijson/>
+[58]: <https://pypi.org/project/packaging/>
+[59]: <https://pypi.org/project/setuptools/>
+[60]: <https://github.com/prrvchr/gContactOOo/security/dependabot/1>
+[61]: <https://pypi.org/project/validators/>
+[62]: <https://ant.apache.org/>
+[63]: <https://github.com/prrvchr/gContactOOo/blob/master/source/gContactOOo/build.xml>
+[64]: <https://pypi.org/project/six/>
+[65]: <https://github.com/LibreOffice/loeclipse/pull/152>
+[66]: <https://github.com/LibreOffice/loeclipse/pull/157>
+[67]: <https://prrvchr.github.io/gContactOOo/#how-to-build-the-extension>
+[68]: <https://peps.python.org/pep-0570/>
+[69]: <https://github.com/prrvchr/gContactOOo/blob/master/uno/lib/uno/logger/logwrapper.py#L109>
