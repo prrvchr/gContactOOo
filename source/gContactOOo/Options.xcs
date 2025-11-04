@@ -24,11 +24,13 @@
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 -->
-<oor:component-schema oor:name="gContactOOo" oor:package="io.github.prrvchr"
-  xml:lang="en-US"
+<!DOCTYPE oor:component-schema SYSTEM "component-schema.dtd">
+<oor:component-schema
   xmlns:oor="http://openoffice.org/2001/registry"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  oor:package="io.github.prrvchr"
+  oor:name="gContactOOo"
+  xml:lang="en-US">
   <component>
     <prop oor:name="AddressBookName" oor:type="xs:string" oor:localized="true"/>
     <prop oor:name="ReplicateTimeout" oor:type="xs:short"/>

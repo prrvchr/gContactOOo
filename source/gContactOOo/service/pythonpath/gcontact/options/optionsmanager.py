@@ -27,53 +27,35 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import unohelper
+from com.sun.star.logging.LogLevel import SEVERE
 
-from com.sun.star.awt import XContainerWindowEventHandler
+from .optionsmodel import OptionsModel
+
+from .optionsview import OptionsView
+
+from .options import OptionsManager as Manager
+
+from ..unotool import executeDispatch
+
+from ..configuration import g_extension
 
 import traceback
 
 
-class WindowHandler(unohelper.Base,
-                    XContainerWindowEventHandler):
-    def __init__(self, manager):
-        self._manager = manager
+class OptionsManager():
+    def __init__(self, ctx, logger, window):
+        self._model = OptionsModel(ctx)
+        self._view = OptionsView(window, OptionsManager._restart, *self._model.getViewData())
+        self._manager = Manager(ctx, logger, window)
+        self._logger = logger
 
-    # XContainerWindowEventHandler
-    def callHandlerMethod(self, window, event, method):
-        try:
-            handled = False
-            if method == 'Level0':
-                self._manager.setApiLevel(0)
-                handled = True
-            elif method == 'Level1':
-                self._manager.setApiLevel(1)
-                handled = True
-            elif method == 'Level2':
-                self._manager.setApiLevel(2)
-                handled = True
-            elif method == 'RowSet0':
-                self._manager.setCachedRowSet(0)
-                handled = True
-            elif method == 'RowSet1':
-                self._manager.setCachedRowSet(1)
-                handled = True
-            elif method == 'RowSet2':
-                self._manager.setCachedRowSet(2)
-                handled = True
-            elif method == 'SystemTable':
-                self._manager.setSystemTable(event.Source.State)
-                handled = True
-            return handled
-        except Exception as e:
-            print("ERROR: %s - %s" % (e, traceback.format_exc()))
+    _restart = False
 
-    def getSupportedMethodNames(self):
-        return ('Level0',
-                'Level1',
-                'Level2',
-                'RowSet0',
-                'RowSet1',
-                'RowSet2',
-                'SystemTable')
+    def saveSetting(self):
+        if self._manager.saveSetting():
+            OptionsManager._restart = True
+            self._view.setWarning(True, self._model.isInstrumented())
+
+    def loadSetting(self):
+        self._manager.loadSetting()
 

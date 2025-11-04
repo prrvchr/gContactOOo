@@ -72,16 +72,13 @@ class OptionsHandler(unohelper.Base,
                 elif event == 'back':
                     self._manager.loadSetting()
                     handled = True
-            elif method == 'ViewData':
-                self._manager.viewData()
-                handled = True
             return handled
         except Exception as e:
+            print("OptionsHandler.callHandlerMethod() ERROR: %s" % traceback.format_exc())
             self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod()', 201, e, traceback.format_exc())
 
     def getSupportedMethodNames(self):
-        return ('external_event',
-                'ViewData')
+        return ('external_event', )
 
     # XServiceInfo
     def supportsService(self, service):
