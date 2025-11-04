@@ -339,8 +339,9 @@ Elle vous donnera accès à un système d'information que seules les grandes ent
 ### Ce qui a été fait pour la version 1.4.0:
 
 - Si l'extension jdbcDriverOOo fonctionne sans l'instrumentation Java, un message d'avertissement s'affichera dans les options de l'extension.
-- Nécessite l'extension **jdbcDriverOOo en version 1.6.0 minimum**.
-- Nécessite l'extension **OAuth2OOo en version 1.6.0 minimum**.
+- Toutes les fenêtres modales s'ouvrent désormais correctement en mode modal.
+- Nécessite l'extension **jdbcDriverOOo en version 1.6.1 minimum**.
+- Nécessite l'extension **OAuth2OOo en version 1.6.1 minimum**.
 - A été testé sous LibreOfficeDev 26.2.
 
 ### Que reste-t-il à faire pour la version 1.4.0:
