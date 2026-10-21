@@ -57,3 +57,12 @@ g_group = 'all'
 g_filter = 'USER_CONTACT_GROUP'
 g_timestamp = '%Y-%m-%dT%H:%M:%S.00'
 g_db_timestamp = 'YYYY-MM-DD"T"HH24:MI:SS.FFFFFFFFFFFF"Z"'
+
+g_sep = '/'
+
+# Setup frame and Job name
+g_setup = '%s.Setup' % g_extension
+
+class State:
+    restart = False
+
