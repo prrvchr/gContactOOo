@@ -27,26 +27,21 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-from .card import DataBase as DataBaseMain
+from .card.database import DataBase as DataBaseMain
 
 import json
-import traceback
 
 
 class DataBase(DataBaseMain):
-    def __init__(self, ctx, logger, url, user='', pwd=''):
-        DataBaseMain.__init__(self, ctx, logger, url, user, pwd)
+    def __init__(self, ctx, logger=None):
+        super().__init__(ctx, logger)
 
     def getMetaData(self, tag, default, dot='.', sep=','):
-        try:
-            paths =  dict(list(self._getPaths(tag, dot)))
-            maps = dict(list(self._getMaps(tag, dot)))
-            types = dict(list(self._getTypes(tag, dot, True)))
-            tmps = list(self._getTmps(tag, dot))
-            fields = next(self._getFields(default, sep))
-        except Exception as e:
-            msg = "Error: %s" % traceback.format_exc()
-            print(msg)
+        paths = dict(list(self._getPaths(tag, dot)))
+        maps = dict(list(self._getMaps(tag, dot)))
+        types = dict(list(self._getTypes(tag, dot, True)))
+        tmps = list(self._getTmps(tag, dot))
+        fields = next(self._getFields(default, sep))
         return paths, maps, types, tmps, fields
 
     def _getPaths(self, tag, dot):
@@ -56,7 +51,6 @@ class DataBase(DataBaseMain):
         while result.next():
             key = result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
             value = result.getString(4)
-            print("DataBase._getPaths() key: '%s' - Value: %s" % (key, value))
             yield key, value
         result.close()
         call.close()
@@ -68,7 +62,6 @@ class DataBase(DataBaseMain):
         while result.next():
             key = result.getString(1) + sep + result.getString(2) + dot + tag
             paths = result.getArray(3).getArray(None)
-            print("DataBase._getMaps() key: '%s' - List: %s" % (key, paths))
             yield key, paths
         result.close()
         call.close()
@@ -81,9 +74,8 @@ class DataBase(DataBaseMain):
         while result.next():
             key = result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
             maps = {}
-            for map in result.getArray(4).getArray(None):
-                maps.update(json.loads(map))
-            print("DataBase._getTypes() key: '%s' - Dict: %s" % (key, maps))
+            for m in result.getArray(4).getArray(None):
+                maps.update(json.loads(m))
             yield key, maps
         result.close()
         call.close()
@@ -96,7 +88,6 @@ class DataBase(DataBaseMain):
             key = result.getString(1)
             key += sep + result.getString(2)
             key += sep + result.getString(3)
-            print("DataBase._getTmps() key: '%s'" % key)
             yield key
         result.close()
         call.close()
@@ -109,6 +100,4 @@ class DataBase(DataBaseMain):
             fields.append(result.getString(1))
         result.close()
         call.close()
-        print("DataBase._getFields() Fields: '%s'" % sep.join(fields))
         yield sep.join(fields)
-

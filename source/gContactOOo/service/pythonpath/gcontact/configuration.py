@@ -30,16 +30,14 @@
 # General configuration
 g_extension = 'gContactOOo'
 g_identifier = 'io.github.prrvchr.%s' % g_extension
-g_protocol = 'sdbc:address:google'
+g_protocol = 'sdbc:address:google:'
 g_implementation = '%s.Driver' % g_identifier
-
-# Resource strings files folder
-g_resource = 'resource'
+g_infos = {'Url': g_protocol}
 g_basename = 'Driver'
 
-g_defaultlog = 'gContactLog'
-g_synclog = 'gContactSync'
-g_errorlog = 'gContactError'
+g_defaultlog = f'{g_identifier}.Driver'
+g_synclog = f'{g_identifier}.Replicator'
+g_errorlog = f'{g_identifier}.Error'
 
 g_scheme = 'https'
 g_host = 'people.googleapis.com'
@@ -57,3 +55,8 @@ g_group = 'all'
 g_filter = 'USER_CONTACT_GROUP'
 g_timestamp = '%Y-%m-%dT%H:%M:%S.00'
 g_db_timestamp = 'YYYY-MM-DD"T"HH24:MI:SS.FFFFFFFFFFFF"Z"'
+
+g_version = '1.5.0'
+
+# Replicator frame and Job name
+g_replicator = '%s.Replicator' % g_extension

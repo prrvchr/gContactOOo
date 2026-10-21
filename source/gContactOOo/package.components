@@ -4,11 +4,30 @@
     <implementation name="io.github.prrvchr.gContactOOo.Driver">
       <service name="io.github.prrvchr.gContactOOo.Driver"/>
       <service name="com.sun.star.sdbc.Driver"/>
+      <service name="com.sun.star.sdbcx.Driver"/>
     </implementation>
   </component>
   <component loader="com.sun.star.loader.Python" uri="service/OptionsHandler.py">
     <implementation name="io.github.prrvchr.gContactOOo.OptionsHandler">
       <service name="io.github.prrvchr.gContactOOo.OptionsHandler"/>
+    </implementation>
+  </component>
+  <component loader="com.sun.star.loader.Python" uri="service/Logger.py">
+    <implementation name="io.github.prrvchr.gContactOOo.Logger">
+      <service name="io.github.prrvchr.gContactOOo.Logger"/>
+      <service name="com.sun.star.task.Job"/>
+    </implementation>
+  </component>
+  <component loader="com.sun.star.loader.Python" uri="service/Setup.py">
+    <implementation name="io.github.prrvchr.gContactOOo.Setup">
+      <service name="io.github.prrvchr.gContactOOo.Setup"/>
+      <service name="com.sun.star.task.Job"/>
+    </implementation>
+  </component>
+  <component loader="com.sun.star.loader.Python" uri="service/Replicator.py">
+    <implementation name="io.github.prrvchr.gContactOOo.Replicator">
+      <service name="io.github.prrvchr.gContactOOo.Replicator"/>
+      <service name="com.sun.star.task.Job"/>
     </implementation>
   </component>
 </components>

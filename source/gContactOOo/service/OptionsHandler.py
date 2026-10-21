@@ -35,12 +35,11 @@ from com.sun.star.lang import XServiceInfo
 
 from com.sun.star.awt import XContainerWindowEventHandler
 
-from gcontact import OptionsManager
+from gcontact.options.optionsmanager import OptionsManager
 
-from gcontact import getLogger
+from gcontact.logger.helper import getLogger
 
-from gcontact import g_identifier
-from gcontact import g_defaultlog
+from gcontact.configuration import g_defaultlog
 
 import traceback
 
@@ -64,7 +63,7 @@ class OptionsHandler(unohelper.Base,
             handled = False
             if method == 'external_event':
                 if event == 'initialize':
-                    self._manager = OptionsManager(self._ctx, self._logger, window)
+                    self._manager = OptionsManager(self._ctx, window, self._logger)
                     handled = True
                 elif event == 'ok':
                     self._manager.saveSetting()
@@ -89,6 +88,7 @@ class OptionsHandler(unohelper.Base,
 
     def getSupportedServiceNames(self):
         return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
 
 g_ImplementationHelper.addImplementation(OptionsHandler,                  # UNO object class
                                          g_ImplementationName,            # Implementation name

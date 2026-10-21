@@ -31,8 +31,17 @@
   oor:package="io.github.prrvchr"
   oor:name="gContactOOo"
   xml:lang="en-US">
+  <templates>
+    <group oor:name="LogPosSizeSet">
+      <prop oor:name="LogPosSize" oor:type="oor:int-list"/>
+    </group>
+  </templates>
   <component>
     <prop oor:name="AddressBookName" oor:type="xs:string" oor:localized="true"/>
-    <prop oor:name="ReplicateTimeout" oor:type="xs:short"/>
+    <prop oor:name="ReplicatorTimeout" oor:type="xs:short"/>
+    <prop oor:name="ReplicatorPosSize" oor:type="oor:int-list"/>
+    <prop oor:name="SetupPosSize" oor:type="oor:int-list"/>
+    <prop oor:name="SetupUpdate" oor:type="xs:short"/>
+    <set oor:name="LogPosSizes" oor:node-type="LogPosSizeSet"/>
   </component>
 </oor:component-schema>

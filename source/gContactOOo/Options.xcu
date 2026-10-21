@@ -35,7 +35,16 @@
     <value xml:lang="en">All my contacts</value>
     <value xml:lang="fr">Tous mes contacts</value>
   </prop>
-  <prop oor:name="ReplicateTimeout">
+  <prop oor:name="ReplicatorTimeout">
     <value>600</value>
+  </prop>
+  <prop oor:name="ReplicatorPosSize" oor:op="fuse">
+    <value>-1 -1 -1 -1</value>
+  </prop>
+  <prop oor:name="SetupPosSize" oor:op="fuse">
+    <value>-1 -1 -1 -1</value>
+  </prop>
+  <prop oor:name="SetupUpdate">
+    <value>0</value>
   </prop>
 </oor:component-data>
