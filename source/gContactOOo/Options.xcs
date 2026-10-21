@@ -33,6 +33,9 @@
   xml:lang="en-US">
   <component>
     <prop oor:name="AddressBookName" oor:type="xs:string" oor:localized="true"/>
-    <prop oor:name="ReplicateTimeout" oor:type="xs:short"/>
+    <prop oor:name="ReplicatorTimeout" oor:type="xs:short"/>
+    <prop oor:name="ReplicatorPosSize" oor:type="oor:int-list"/>
+    <prop oor:name="SetupPosSize" oor:type="oor:int-list"/>
+    <prop oor:name="SetupUpdate" oor:type="xs:short"/>
   </component>
 </oor:component-schema>

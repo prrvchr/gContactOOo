@@ -27,26 +27,69 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-from ..jdbcdriver import isInstrumented
+import unohelper
 
-from ..unotool import getStringResource
+from com.sun.star.lang import XServiceInfo
+from com.sun.star.task import XAsyncJob
 
-from ..configuration import g_identifier
+from gcontact import showReplicator
 
-
+from queue import SimpleQueue
 import traceback
 
 
-class OptionsModel():
+# pythonloader looks for a static g_ImplementationHelper variable
+g_ImplementationHelper = unohelper.ImplementationHelper()
+g_ImplementationName = 'io.github.prrvchr.gContactOOo.Replicator'
+g_ServiceNames = ('io.github.prrvchr.gContactOOo.Replicator',
+                  'com.sun.star.task.Job')
+
+
+class Replicator(unohelper.Base,
+                 XServiceInfo,
+                 XAsyncJob):
     def __init__(self, ctx):
-        self._instrumented = isInstrumented(ctx, 'xdbc:jdbc')
-        resolver = getStringResource(ctx, g_identifier, 'dialogs', 'OptionsDialog')
-        self._url = resolver.resolveString('OptionsDialog.Hyperlink1.Url')
+        self._ctx = ctx
+        if Replicator._queue is None:
+            Replicator._queue = SimpleQueue()
+        print("Replicator.__init__() 1")
 
-# OptionsModel getter methods
-    def isInstrumented(self):
-        return self._instrumented
+    _queue = None
 
-    def getViewData(self):
-        return self._url, self._instrumented
+    # com.sun.star.task.XAsyncJob
+    def executeAsync(self, arguments, listener):
+        try:
+            print("Replicator.executeAsync() 1")
+            queue = Replicator._queue
+            queue.put_nowait((self, listener, arguments))
+            showReplicator(self._ctx, self, queue)
+            print("Replicator.executeAsync() 2")
+        except Exception:
+            # FIXME: It is essential to notify LibreOffice of
+            # FIXME: the Job's completion so as not to block its loading.
+            print("Replicator.executeAsync() ERROR: %s" % traceback.format_exc())
+            pass
+        finally:
+            if listener is not None:
+                listener.jobFinished(self, None)
+        print("Replicator.executeAsync() 3")
+        return None
 
+    # XComponent
+    def dispose(self):
+        self.cancel.set(disposed=True)
+
+    # XServiceInfo
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+
+    def getImplementationName(self):
+        return g_ImplementationName
+
+    def getSupportedServiceNames(self):
+        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
+
+g_ImplementationHelper.addImplementation(Replicator,
+                                         g_ImplementationName,
+                                         g_ServiceNames)

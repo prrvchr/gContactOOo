@@ -57,3 +57,16 @@ g_group = 'all'
 g_filter = 'USER_CONTACT_GROUP'
 g_timestamp = '%Y-%m-%dT%H:%M:%S.00'
 g_db_timestamp = 'YYYY-MM-DD"T"HH24:MI:SS.FFFFFFFFFFFF"Z"'
+
+g_sep = '/'
+g_offset = 11
+
+# Setup frame and Job name
+g_setup = '%s.Setup' % g_extension
+
+# Replicator frame and Job name
+g_replicator = '%s.Replicator' % g_extension
+
+
+class State:
+    restart = False
