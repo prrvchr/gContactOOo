@@ -1,7 +1,5 @@
-#!
-# -*- coding: utf-8 -*-
-
-"""
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
 ║   Copyright (c) 2020-25 https://prrvchr.github.io                                  ║
@@ -25,37 +23,26 @@
 ║   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                    ║
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
-"""
-
-from com.sun.star.logging.LogLevel import SEVERE
-
-from .optionsmodel import OptionsModel
-
-from .optionsview import OptionsView
-
-from .options import OptionsManager as Manager
-
-from ..unotool import executeDispatch
-
-from ..configuration import g_extension
-
-import traceback
-
-
-class OptionsManager():
-    def __init__(self, ctx, logger, window):
-        self._model = OptionsModel(ctx)
-        self._view = OptionsView(window, OptionsManager._restart, *self._model.getViewData())
-        self._manager = Manager(ctx, logger, window)
-        self._logger = logger
-
-    _restart = False
-
-    def saveSetting(self):
-        if self._manager.saveSetting():
-            OptionsManager._restart = True
-            self._view.setWarning(True, self._model.isInstrumented())
-
-    def loadSetting(self):
-        self._manager.loadSetting()
-
+-->
+<!DOCTYPE oor:component-data SYSTEM "component-update.dtd">
+<oor:component-data
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:oor="http://openoffice.org/2001/registry"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  oor:package="org.openoffice.Office"
+  oor:name="Jobs">
+  <node oor:name="Jobs">
+    <node oor:name="gContactOOo.Setup" oor:op="fuse">
+      <prop oor:name="Service">
+        <value>io.github.prrvchr.gContactOOo.Setup</value>
+      </prop>
+    </node>
+  </node>
+  <node oor:name="Events">
+    <node oor:name="OnStartApp" oor:op="fuse">
+      <node oor:name="JobList">
+        <node oor:name="gContactOOo.Setup" oor:op="fuse"/>
+      </node>
+    </node>
+  </node>
+</oor:component-data>

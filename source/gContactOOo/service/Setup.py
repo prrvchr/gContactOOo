@@ -27,26 +27,78 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-from ..jdbcdriver import isInstrumented
+import unohelper
 
-from ..unotool import getStringResource
+from com.sun.star.lang import XServiceInfo
+from com.sun.star.task import XAsyncJob
 
-from ..configuration import g_identifier
+from gcontact import DBSetup
 
+from gcontact import SetupManager
+
+from gcontact import findFrame
+from gcontact import getExtensions
+from gcontact import getJobArguments
+from gcontact import notifyDispatch
+
+from gcontact import g_agent
+from gcontact import g_extension
+from gcontact import g_identifier
+from gcontact import g_java
+from gcontact import g_protocol
+from gcontact import g_script
+from gcontact import g_service
+from gcontact import g_setup
 
 import traceback
 
 
-class OptionsModel():
+# pythonloader looks for a static g_ImplementationHelper variable
+g_ImplementationHelper = unohelper.ImplementationHelper()
+g_ImplementationName = 'io.github.prrvchr.gContactOOo.Setup'
+g_ServiceNames = ('io.github.prrvchr.gContactOOo.Setup',
+                  'com.sun.star.task.Job')
+
+
+class Setup(unohelper.Base,
+            XServiceInfo,
+            XAsyncJob):
     def __init__(self, ctx):
-        self._instrumented = isInstrumented(ctx, 'xdbc:jdbc')
-        resolver = getStringResource(ctx, g_identifier, 'dialogs', 'OptionsDialog')
-        self._url = resolver.resolveString('OptionsDialog.Hyperlink1.Url')
+        self._ctx = ctx
 
-# OptionsModel getter methods
-    def isInstrumented(self):
-        return self._instrumented
+    # XAsyncJob
+    def executeAsync(self, arguments, listener):
+        try:
+            kwargs = getJobArguments(arguments)
+            frame = findFrame(self._ctx, g_setup)
+            if frame:
+                frame.getContainerWindow().toFront()
+                notifyDispatch(self, kwargs.get('dispatch'))
+            else:
+                java = g_extension, g_java, g_script
+                agent = g_service, g_protocol, g_agent
+                database = DBSetup(self._ctx)
+                SetupManager(self._ctx, self, database=database, java=java, agent=agent, python=True, extensions=getExtensions(), name=g_setup, **kwargs)
+        except Exception as e:
+            # FIXME: It is essential to notify LibreOffice of
+            # FIXME: the Job's completion so as not to block its loading.
+            print("Setup.executeAsync() ERROR: %s" % traceback.format_exc())
+            pass
+        finally:
+            if listener is not None:
+                listener.jobFinished(self, None)
+        return None
 
-    def getViewData(self):
-        return self._url, self._instrumented
+    # XServiceInfo
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+    def getImplementationName(self):
+        return g_ImplementationName
+    def getSupportedServiceNames(self):
+        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
+
+g_ImplementationHelper.addImplementation(Setup,
+                                         g_ImplementationName,
+                                         g_ServiceNames)
 

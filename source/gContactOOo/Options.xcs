@@ -34,5 +34,7 @@
   <component>
     <prop oor:name="AddressBookName" oor:type="xs:string" oor:localized="true"/>
     <prop oor:name="ReplicateTimeout" oor:type="xs:short"/>
+    <prop oor:name="SetupPosition" oor:type="oor:int-list"/>
+    <prop oor:name="SetupUpdate" oor:type="xs:short"/>
   </component>
 </oor:component-schema>
