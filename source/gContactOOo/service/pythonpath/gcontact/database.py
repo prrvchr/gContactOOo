@@ -39,12 +39,12 @@ class DataBase(DataBaseMain):
 
     def getMetaData(self, tag, default, dot='.', sep=','):
         try:
-            paths =  dict(list(self._getPaths(tag, dot)))
+            paths = dict(list(self._getPaths(tag, dot)))
             maps = dict(list(self._getMaps(tag, dot)))
             types = dict(list(self._getTypes(tag, dot, True)))
             tmps = list(self._getTmps(tag, dot))
             fields = next(self._getFields(default, sep))
-        except Exception as e:
+        except Exception:
             msg = "Error: %s" % traceback.format_exc()
             print(msg)
         return paths, maps, types, tmps, fields
@@ -81,8 +81,8 @@ class DataBase(DataBaseMain):
         while result.next():
             key = result.getString(1) + sep + result.getString(2) + sep + result.getString(3)
             maps = {}
-            for map in result.getArray(4).getArray(None):
-                maps.update(json.loads(map))
+            for m in result.getArray(4).getArray(None):
+                maps.update(json.loads(m))
             print("DataBase._getTypes() key: '%s' - Dict: %s" % (key, maps))
             yield key, maps
         result.close()
@@ -111,4 +111,3 @@ class DataBase(DataBaseMain):
         call.close()
         print("DataBase._getFields() Fields: '%s'" % sep.join(fields))
         yield sep.join(fields)
-

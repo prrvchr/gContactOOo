@@ -27,35 +27,78 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-from com.sun.star.logging.LogLevel import SEVERE
+import unohelper
 
-from .optionsmodel import OptionsModel
+from com.sun.star.lang import XServiceInfo
+from com.sun.star.task import XAsyncJob
 
-from .optionsview import OptionsView
+from gcontact import DBSetup
 
-from .options import OptionsManager as Manager
+from gcontact import SetupManager
 
-from ..unotool import executeDispatch
+from gcontact import findFrame
+from gcontact import getExtensions
+from gcontact import getJobArguments
+from gcontact import notifyDispatch
 
-from ..configuration import g_extension
+from gcontact import g_agent
+from gcontact import g_extension
+from gcontact import g_java
+from gcontact import g_protocol
+from gcontact import g_script
+from gcontact import g_service
+from gcontact import g_setup
 
 import traceback
 
 
-class OptionsManager():
-    def __init__(self, ctx, logger, window):
-        self._model = OptionsModel(ctx)
-        self._view = OptionsView(window, OptionsManager._restart, *self._model.getViewData())
-        self._manager = Manager(ctx, logger, window)
-        self._logger = logger
+# pythonloader looks for a static g_ImplementationHelper variable
+g_ImplementationHelper = unohelper.ImplementationHelper()
+g_ImplementationName = 'io.github.prrvchr.gContactOOo.Setup'
+g_ServiceNames = ('io.github.prrvchr.gContactOOo.Setup',
+                  'com.sun.star.task.Job')
 
-    _restart = False
 
-    def saveSetting(self):
-        if self._manager.saveSetting():
-            OptionsManager._restart = True
-            self._view.setWarning(True, self._model.isInstrumented())
+class Setup(unohelper.Base,
+            XServiceInfo,
+            XAsyncJob):
+    def __init__(self, ctx):
+        self._ctx = ctx
 
-    def loadSetting(self):
-        self._manager.loadSetting()
+    # XAsyncJob
+    def executeAsync(self, arguments, listener):
+        try:
+            kwargs = getJobArguments(arguments)
+            frame = findFrame(self._ctx, g_setup)
+            if frame:
+                frame.getContainerWindow().toFront()
+                notifyDispatch(self, kwargs.get('dispatch'))
+            else:
+                java = g_extension, g_java, g_script
+                agent = g_service, g_protocol, g_agent
+                database = DBSetup(self._ctx)
+                SetupManager(self._ctx, self, database=database, java=java, agent=agent, python=True, extensions=getExtensions(), name=g_setup, **kwargs)
+        except Exception:
+            # FIXME: It is essential to notify LibreOffice of
+            # FIXME: the Job's completion so as not to block its loading.
+            print("Setup.executeAsync() ERROR: %s" % traceback.format_exc())
+            pass
+        finally:
+            if listener is not None:
+                listener.jobFinished(self, None)
+        return None
 
+    # XServiceInfo
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+
+    def getImplementationName(self):
+        return g_ImplementationName
+
+    def getSupportedServiceNames(self):
+        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
+
+g_ImplementationHelper.addImplementation(Setup,
+                                         g_ImplementationName,
+                                         g_ServiceNames)

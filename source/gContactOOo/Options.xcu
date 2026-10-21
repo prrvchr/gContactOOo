@@ -38,4 +38,10 @@
   <prop oor:name="ReplicateTimeout">
     <value>600</value>
   </prop>
+  <prop oor:name="SetupPosition" oor:op="fuse">
+    <value>-1 -1</value>
+  </prop>
+  <prop oor:name="SetupUpdate">
+    <value>0</value>
+  </prop>
 </oor:component-data>

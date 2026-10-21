@@ -29,17 +29,14 @@
 
 import uno
 
-from com.sun.star.logging.LogLevel import INFO
-from com.sun.star.logging.LogLevel import SEVERE
-
-from com.sun.star.ucb.ConnectionMode import OFFLINE
-from com.sun.star.ucb.ConnectionMode import ONLINE
+from com.sun.star.rest.ParameterType import QUERY
 
 from .card import Provider as ProviderMain
 
 from .dbtool import currentDateTimeInTZ
 from .dbtool import currentUnoDateTime
 
+from .configuration import State
 from .configuration import g_host
 from .configuration import g_url
 from .configuration import g_page
@@ -47,7 +44,10 @@ from .configuration import g_member
 from .configuration import g_chunk
 
 import json
-import ijson
+try:
+    import ijson
+except ImportError as e:
+    State.restart = True
 import traceback
 
 
@@ -64,6 +64,7 @@ class Provider(ProviderMain):
     @property
     def Host(self):
         return g_host
+
     @property
     def BaseUrl(self):
         return g_url
@@ -129,7 +130,7 @@ class Provider(ProviderMain):
         page, count, args = self._pullGroups(database, user, book, page, count)
         if not args:
             page, count, args = self._pullGroupMembers(database, user, book, page, count)
-        return  page, count, args
+        return page, count, args
 
     # Private method
     def _pullCard(self, database, mtd, user, book, page, count):
@@ -156,7 +157,7 @@ class Provider(ProviderMain):
 
     def _parseCards(self, user, parameter, mtd, args):
         key = tmp = False
-        query =  uno.getConstantByName('com.sun.star.rest.ParameterType.QUERY')
+        query = uno.getConstantByName('com.sun.star.rest.ParameterType.QUERY')
         while parameter.hasNextPage():
             response = user.Request.execute(parameter)
             if not response.Ok:
@@ -173,7 +174,7 @@ class Provider(ProviderMain):
                     elif (prefix, event) == ('nextSyncToken', 'string'):
                         parameter.SyncToken = value
                     elif (prefix, event) == ('connections.item', 'start_map'):
-                        cid = etag = tmp = label = None
+                        cid = etag = tmp = None
                         data = {}
                         deleted = False
                     elif (prefix, event) == ('connections.item.metadata.item.deleted.', 'boolean'):
@@ -182,7 +183,7 @@ class Provider(ProviderMain):
                         cid = self._getResource(value)
                     elif (prefix, event) == ('connections.item.etag', 'string'):
                         etag = value
-                    # FIXME: All the data parsing is done based on the tables: Resources, Properties and Types 
+                    # FIXME: All the data parsing is done based on the tables: Resources, Properties and Types
                     # FIXME: Only properties listed in these tables will be parsed
                     # FIXME: This is the part for simple property import (use of tables: Resources and Properties)
                     elif event == 'string' and prefix in self._paths:
@@ -262,7 +263,7 @@ class Provider(ProviderMain):
             members = self._parseGroupMembers(response)
             count += database.mergeGroupMembers(gid, timestamp, members)
             page += 1
-        return  page, count, args
+        return page, count, args
 
     def _parseGroupMembers(self, response):
         members = []
@@ -278,7 +279,6 @@ class Provider(ProviderMain):
         parser.close()
         response.close()
         return tuple(members)
-
 
     def _getRequestParameter(self, request, method, data=None):
         parameter = request.getRequestParameter(method)
@@ -302,11 +302,11 @@ class Provider(ProviderMain):
             parameter.Url += '/contactGroups'
             parameter.setQuery('groupFields', 'name,groupType,memberCount,metadata')
             parameter.setQuery('pageSize', '%s' % g_page)
-            #TODO: We need to manager Token and deleted record
-            #if data.Token:
-            #    parameter.setQuery('syncToken', data.Token)
-            #else:
-            #parameter.setQuery('requestSyncToken', 'true')
+            # TODO: We need to manager Token and deleted record
+            # if data.Token:
+            #     parameter.setQuery('syncToken', data.Token)
+            # else:
+            # parameter.setQuery('requestSyncToken', 'true')
 
         elif method == 'getGroupMembers':
             parameter.Url += '/contactGroups/' + data
@@ -316,6 +316,5 @@ class Provider(ProviderMain):
         return parameter
 
     def _getResource(self, value):
-        tmp, sep, value = value.rpartition('/')
+        _, _, value = value.rpartition('/')
         return value
-
