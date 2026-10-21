@@ -39,7 +39,6 @@ from gcontact import OptionsManager
 
 from gcontact import getLogger
 
-from gcontact import g_identifier
 from gcontact import g_defaultlog
 
 import traceback
@@ -72,13 +71,17 @@ class OptionsHandler(unohelper.Base,
                 elif event == 'back':
                     self._manager.loadSetting()
                     handled = True
+            elif method == 'ShowSetup':
+                self._manager.showSetup()
+                handled = True
             return handled
         except Exception as e:
             print("OptionsHandler.callHandlerMethod() ERROR: %s" % traceback.format_exc())
             self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod()', 201, e, traceback.format_exc())
 
     def getSupportedMethodNames(self):
-        return ('external_event', )
+        return ('external_event',
+                'ShowSetup')
 
     # XServiceInfo
     def supportsService(self, service):
@@ -89,6 +92,7 @@ class OptionsHandler(unohelper.Base,
 
     def getSupportedServiceNames(self):
         return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
 
 g_ImplementationHelper.addImplementation(OptionsHandler,                  # UNO object class
                                          g_ImplementationName,            # Implementation name

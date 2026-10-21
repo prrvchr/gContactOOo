@@ -27,35 +27,77 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-from com.sun.star.logging.LogLevel import SEVERE
+import unohelper
 
-from .optionsmodel import OptionsModel
+from com.sun.star.lang import XServiceInfo
+from com.sun.star.task import XAsyncJob
 
-from .optionsview import OptionsView
+from gcontact import Cancel
 
-from .options import OptionsManager as Manager
+from queue import SimpleQueue
 
-from ..unotool import executeDispatch
+from gcontact import executeReplicator
+from gcontact import getConfiguration
+from gcontact import getLogger
 
-from ..configuration import g_extension
+from gcontact import g_identifier
+from gcontact import g_synclog
 
 import traceback
 
 
-class OptionsManager():
-    def __init__(self, ctx, logger, window):
-        self._model = OptionsModel(ctx)
-        self._view = OptionsView(window, OptionsManager._restart, *self._model.getViewData())
-        self._manager = Manager(ctx, logger, window)
-        self._logger = logger
+# pythonloader looks for a static g_ImplementationHelper variable
+g_ImplementationHelper = unohelper.ImplementationHelper()
+g_ImplementationName = 'io.github.prrvchr.gContactOOo.Replicator'
+g_ServiceNames = ('io.github.prrvchr.gContactOOo.Replicator',
+                  'com.sun.star.task.Job')
 
-    _restart = False
 
-    def saveSetting(self):
-        if self._manager.saveSetting():
-            OptionsManager._restart = True
-            self._view.setWarning(True, self._model.isInstrumented())
+class Replicator(unohelper.Base,
+                 XServiceInfo,
+                 XAsyncJob):
+    def __init__(self, ctx):
+        print("Replicator.__init__() 1")
+        self._ctx = ctx
+        self._config = getConfiguration(ctx, g_identifier)
+        self.cancel = Cancel()
+        print("Replicator.__init__() 2")
 
-    def loadSetting(self):
-        self._manager.loadSetting()
+    _queue = SimpleQueue()
 
+    # com.sun.star.task.XAsyncJob
+    def executeAsync(self, arguments, listener):
+        try:
+            print("Replicator.executeAsync() 1")
+            queue = Replicator._queue
+            queue.put(arguments, listener)
+            if queue.qsize() == 1:
+                self.cancel.reset()
+                logger = getLogger(self._ctx, g_synclog)
+                timeout = self._config.getByName('ReplicateTimeout')
+                executeReplicator(self._ctx, self, logger, self.cancel, timeout, queue)
+            print("Replicator.executeAsync() 2")
+        except Exception:
+            print("Replicator.executeAsync() ERROR: %s" % traceback.format_exc())
+            if listener is not None:
+                listener.jobFinished(self, None)
+        return None
+
+    # XComponent
+    def dispose(self):
+        self.cancel.set(disposed=True)
+
+    # XServiceInfo
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+
+    def getImplementationName(self):
+        return g_ImplementationName
+
+    def getSupportedServiceNames(self):
+        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
+
+g_ImplementationHelper.addImplementation(Replicator,
+                                         g_ImplementationName,
+                                         g_ServiceNames)
