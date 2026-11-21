@@ -32,14 +32,12 @@ from com.sun.star.logging.LogLevel import SEVERE
 
 from com.sun.star.uno import Exception as UnoException
 
-from ..unotool import canUpdatePackages
 from ..unotool import createService
 from ..unotool import getConfiguration
 from ..unotool import getStringResource
 
 from ..jdbcdriver import g_service as jdbc
 
-from ..configuration import g_extension
 from ..configuration import g_identifier
 from ..configuration import g_service as embedded
 
@@ -49,55 +47,35 @@ class OptionsModel():
         self._ctx = ctx
         self._url = url
         self._logger = logger
-        self._update = canUpdatePackages()
         self._config = getConfiguration(ctx, g_identifier, True)
         self._resolver = getStringResource(ctx, g_identifier, 'dialogs', 'OptionsDialog')
         self._logger.logprb(INFO, 'OptionsModel', '__init__', 401)
-        self._resources = {'Title': 'OptionsDialog.FixedLine1.Label',
-                           'Link':  'OptionsDialog.Label4.Url.%s'}
+        self._resources = {'Link': 'OptionsDialog.Label3.Url.%s'}
 
 # OptionsModel getter methods
-    def getViewData(self):
-        return self._getTitle()
-
-    def getInitData(self, state):
-        return self._getSetupMode(), self._update, *self.getRefreshData(state)
+    def getConfig(self):
+        return self._config
 
     def getRefreshData(self, state):
         return state.getMessage(self._ctx), self._getLink(state.code)
 
-    def saveSetting(self, mode):
-        if self._update and mode != self._getSetupMode():
-            self._config.replaceByName('SetupUpdate', mode)
-            self._config.commitChanges()
-
     def getDriverVersion(self, apilevel):
-        driver = None
         version = 'N/A'
-        try:
-            # We must try all the required services
-            driver = createService(self._ctx, embedded)
-            driver = createService(self._ctx, jdbc)
-            if driver and self._url:
-                connection = driver.connect(self._url, ())
-                version = connection.getMetaData().getDriverVersion()
-                connection.close()
-        except UnoException as e:
-            # If the driver is None, the error is already logged
-            if driver is not None:
+        if self._url:
+            driver = None
+            try:
+                driver = createService(self._ctx, jdbc)
+                if driver:
+                    connection = driver.connect(self._url, ())
+                    version = connection.getMetaData().getDriverVersion()
+                    connection.close()
+                else:
+                    self._logger.logprb(SEVERE, 'OptionsModel', 'getDriverVersion', 103, jdbc, apilevel)
+            except UnoException as e:
                 self._logger.logprb(SEVERE, 'OptionsModel', 'getDriverVersion', 102, embedded, apilevel, e.Message)
-        except Exception as ex:
-            # If the driver is None, the error is already logged
-            if driver is not None:
+            except Exception as ex:
                 self._logger.logprb(SEVERE, 'OptionsModel', 'getDriverVersion', 102, embedded, apilevel, str(ex))
         return version
-
-    def _getSetupMode(self):
-        return self._config.getByName('SetupUpdate')
-
-    def _getTitle(self):
-        resource = self._resources.get('Title')
-        return self._resolver.resolveString(resource).format(extension=g_extension)
 
     def _getLink(self, code):
         resource = self._resources.get('Link') % code
