@@ -70,8 +70,8 @@ OPERATORS = {'==': operator.eq,
              '!=': operator.ne,
              '>=': operator.ge,
              '<=': operator.le,
-             '>':  operator.gt,
-             '<':  operator.lt}
+             '>':  operator.gt,  # noqa
+             '<':  operator.lt}  # noqa
 
 
 def getOsLocation(url):
@@ -86,7 +86,7 @@ def getSetupUpdateMode(ctx, identifier):
     return getConfiguration(ctx, identifier).getByName('SetupUpdate')
 
 
-def showSetup(ctx, listener=None, /, **kwargs):
+def showSetup(ctx, listener=None, /, **kwargs):  # noqa
     url = f'vnd.sun.star.job:service={g_identifier}.Setup'
     executeDesktopDispatch(ctx, url, listener, **kwargs)
 
@@ -129,9 +129,9 @@ def getJavaStatus(ctx):
 def getJavaVersion(ctx, extension, java, script, error=False):
     results = 3, java
     try:
-        service = 'com.sun.star.script.provider.MasterScriptProviderFactory'
-        factory = createService(ctx, service)
-        provider = factory.createScriptProvider('')
+        service = '/singletons/com.sun.star.script.provider.theMasterScriptProviderFactory'
+        factory = ctx.getByName(service)
+        provider = factory.createScriptProvider(ctx)
         url = f'vnd.sun.star.script:{script}?language=Java&location=user:uno_packages/{extension}'
         macro = provider.getScript(url)
         if macro:
